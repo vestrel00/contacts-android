@@ -197,7 +197,7 @@ private class SimContactsDeleteImpl(
 }
 
 internal fun ContentResolver.deleteSimContact(simContact: ExistingSimContactEntity): Boolean =
-    delete(Table.SimContacts.uri, simContact.deleteWhere, null) > 0
+    delete(Table.SimContacts.uri(), simContact.deleteWhere, null) > 0
 
 private class SimContactsDeleteResult private constructor(
     private val simContactsToDeleteResultMap: Map<ExistingSimContactEntity, Boolean>,

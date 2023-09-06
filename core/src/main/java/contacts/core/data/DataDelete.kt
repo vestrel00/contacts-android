@@ -2,13 +2,11 @@ package contacts.core.data
 
 import android.content.ContentProviderOperation
 import android.content.ContentProviderOperation.newDelete
-import android.content.ContentResolver
 import contacts.core.*
 import contacts.core.entities.ExistingDataEntity
 import contacts.core.entities.operation.withSelection
-import contacts.core.entities.table.ProfileUris
-import contacts.core.entities.table.Table
 import contacts.core.util.applyBatch
+import contacts.core.util.dataUri
 import contacts.core.util.deleteSuccess
 import contacts.core.util.isProfileId
 
@@ -246,7 +244,7 @@ private class DataDeleteImpl(
                             // is only done to enforce API design.
                             false
                         } else {
-                            contentResolver.deleteDataWhere(Fields.DataId equalTo dataId, isProfile)
+                            contactsApi.deleteDataWhere(Fields.DataId equalTo dataId, isProfile)
                         }
                     )
                 }
@@ -254,7 +252,7 @@ private class DataDeleteImpl(
 
             val whereResultMap = buildMap {
                 dataWhere?.let {
-                    put(it.toString(), contentResolver.deleteDataWhere(it, isProfile))
+                    put(it.toString(), contactsApi.deleteDataWhere(it, isProfile))
                 }
             }
 
@@ -280,12 +278,12 @@ private class DataDeleteImpl(
                 val operations = arrayListOf<ContentProviderOperation>()
 
                 if (validDataIds.isNotEmpty()) {
-                    deleteOperationFor(Fields.DataId `in` validDataIds, isProfile)
+                    contactsApi.deleteOperationFor(Fields.DataId `in` validDataIds, isProfile)
                         .let(operations::add)
                 }
 
                 dataWhere?.let {
-                    deleteOperationFor(it, isProfile).let(operations::add)
+                    contactsApi.deleteOperationFor(it, isProfile).let(operations::add)
                 }
 
                 DataDeleteAllResult(isSuccessful = contentResolver.applyBatch(operations).deleteSuccess)
@@ -296,13 +294,13 @@ private class DataDeleteImpl(
     }
 }
 
-private fun ContentResolver.deleteDataWhere(
+private fun Contacts.deleteDataWhere(
     where: Where<AbstractDataField>, isProfile: Boolean
-): Boolean = applyBatch(deleteOperationFor(where, isProfile)).deleteSuccess
+): Boolean = contentResolver.applyBatch(deleteOperationFor(where, isProfile)).deleteSuccess
 
-private fun deleteOperationFor(
+private fun Contacts.deleteOperationFor(
     where: Where<AbstractDataField>, isProfile: Boolean
-): ContentProviderOperation = newDelete(if (isProfile) ProfileUris.DATA.uri else Table.Data.uri)
+): ContentProviderOperation = newDelete(dataUri(isProfile))
     .withSelection(where)
     .build()
 

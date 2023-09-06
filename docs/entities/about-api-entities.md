@@ -173,7 +173,12 @@ newRawContact.setDataAsReadOnly(true)
 Checking if an `ExistingDataEntity` is read-only requires a separate query. You can use extension
 functions defined in `DataIsReadOnly.kt` for this purpose.
 
-> ℹ️ For more info, read [Convenience functions | Check if Data is read-only](./../other/convenience-functions.md#check-if-data-is-read-only).
+> ℹ️ For more info, read [Convenience functions | Check if Data is read-only](./../other/convenience-functions.md#getset-data-read-only).
+
+Modifying read-only data locally as a sync adapter is possible by using an instance of 
+`contacts.core.Contacts` with the `callerIsSyncAdapter` flag set to true.
+
+> ℹ️ For more info, read [Contacts API Setup | Sync adapter operations](./../setup/setup-contacts-api.md#sync-adapter-operations).
 
 ## Data integrity
 

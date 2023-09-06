@@ -1,7 +1,6 @@
 package contacts.core.groups
 
 import android.accounts.Account
-import android.content.ContentResolver
 import contacts.core.*
 import contacts.core.entities.Group
 import contacts.core.entities.mapper.groupMapper
@@ -340,7 +339,7 @@ private class GroupsQueryImpl(
         var groups = if (!permissions.canQuery() || cancel()) {
             emptyList()
         } else {
-            contentResolver.resolve(
+            contactsApi.resolve(
                 rawContactsWhere, INCLUDE, where, orderBy, limit, offset, cancel
             )
         }
@@ -366,7 +365,7 @@ private class GroupsQueryImpl(
     }
 }
 
-private fun ContentResolver.resolve(
+private fun Contacts.resolve(
     rawContactsWhere: Where<GroupsField>?,
     include: Include<GroupsField>,
     where: Where<GroupsField>?,

@@ -17,7 +17,7 @@ import contacts.entities.custom.googlecontacts.userdefined.*;
 public class IntegrateGoogleContactsCustomDataActivity extends Activity {
 
     Contacts contacts = ContactsFactory.create(
-            this, new CustomDataRegistry().register(new GoogleContactsRegistration())
+            this, false, new CustomDataRegistry().register(new GoogleContactsRegistration())
     );
 
     List<Contact> getContactsWithGoogleContactsCustomData() {

@@ -393,11 +393,11 @@ private class ProfileInsertImpl(
             // using this library from inserting new Contacts using Samsung or Xiaomi accounts if the
             // calling app does not have access to the account via the system AccountManager.
             // FIXME? Perhaps we should fail the insert operation instead of defaulting to the local account?
-            val account = rawContact.account.nullIfNotInSystem(contactsApi.applicationContext)
+            val account = rawContact.account.nullIfNotInSystem(contactsApi)
 
             if (
                 (!allowMultipleRawContactsPerAccount
-                        && contentResolver.profileRawContactExistFor(account))
+                        && contactsApi.profileRawContactExistFor(account))
                 || cancel()
             ) {
                 ProfileInsertFailed()
@@ -425,8 +425,8 @@ private class ProfileInsertImpl(
     }
 }
 
-private fun ContentResolver.profileRawContactExistFor(account: Account?): Boolean = query(
-    ProfileUris.RAW_CONTACTS.uri,
+private fun Contacts.profileRawContactExistFor(account: Account?): Boolean = contentResolver.query(
+    ProfileUris.RAW_CONTACTS.uri(callerIsSyncAdapter),
     Include(RawContactsFields.Id),
     // There may be RawContacts that are marked for deletion that have not yet been deleted.
     (RawContactsFields.Deleted notEqualTo true) and account.toRawContactsWhere()

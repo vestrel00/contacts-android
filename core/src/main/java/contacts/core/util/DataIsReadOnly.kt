@@ -7,8 +7,6 @@ import contacts.core.and
 import contacts.core.contentResolver
 import contacts.core.entities.ExistingDataEntity
 import contacts.core.entities.cursor.dataCursor
-import contacts.core.entities.table.ProfileUris
-import contacts.core.entities.table.Table
 import contacts.core.equalTo
 import contacts.core.`in`
 
@@ -108,7 +106,7 @@ private fun Contacts.dataReadOnlyList(
     existingDataIds: Collection<Long>,
     cancel: () -> Boolean = { false }
 ): List<Long> = contentResolver.query(
-    if (isProfile) ProfileUris.DATA.uri else Table.Data.uri,
+    dataUri(isProfile),
     Include(Fields.DataId),
     (Fields.DataId `in` existingDataIds) and (Fields.DataIsReadOnly equalTo true)
 ) {

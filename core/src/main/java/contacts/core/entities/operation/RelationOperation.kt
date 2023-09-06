@@ -5,8 +5,15 @@ import contacts.core.RelationField
 import contacts.core.entities.MimeType
 import contacts.core.entities.RelationEntity
 
-internal class RelationOperation(isProfile: Boolean, includeFields: Set<RelationField>) :
-    AbstractDataOperation<RelationField, RelationEntity>(isProfile, includeFields) {
+internal class RelationOperation(
+    callerIsSyncAdapter: Boolean,
+    isProfile: Boolean,
+    includeFields: Set<RelationField>
+) : AbstractDataOperation<RelationField, RelationEntity>(
+    callerIsSyncAdapter = callerIsSyncAdapter,
+    isProfile = isProfile,
+    includeFields = includeFields
+) {
 
     override val mimeType = MimeType.Relation
 

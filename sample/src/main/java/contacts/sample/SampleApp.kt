@@ -16,7 +16,8 @@ class SampleApp : Application() {
     // frameworks such as dagger, hilt, or koin. Again, this sample is made to be barebones!
     val contacts by lazy(LazyThreadSafetyMode.NONE) {
         Contacts(
-            this,
+            context = this,
+            callerIsSyncAdapter = false,
             customDataRegistry = CustomDataRegistry().register(
                 GenderRegistration(),
                 GoogleContactsRegistration(),

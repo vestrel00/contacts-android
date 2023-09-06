@@ -1,6 +1,5 @@
 package contacts.core.sim
 
-import android.content.ContentResolver
 import contacts.core.*
 import contacts.core.entities.ExistingSimContactEntity
 import contacts.core.entities.MutableSimContact
@@ -320,7 +319,8 @@ private class SimContactsUpdateImpl(
                     FailureReason.NAME_EXCEEDED_MAX_CHAR_LIMIT
                 } else if (entry.modified.number.length > maxCharacterLimits.numberMaxLength()) {
                     FailureReason.NUMBER_EXCEEDED_MAX_CHAR_LIMIT
-                } else if (!contentResolver.updateSimContact(
+                } else if (
+                    !contactsApi.updateSimContact(
                         entry.current,
                         entry.modified,
                         cancel
@@ -342,13 +342,13 @@ private class SimContactsUpdateImpl(
 private val String?.length: Int
     get() = this?.let { length } ?: 0
 
-private fun ContentResolver.updateSimContact(
+private fun Contacts.updateSimContact(
     current: ExistingSimContactEntity,
     modified: MutableSimContact,
     cancel: () -> Boolean
 ): Boolean {
     val result = SimContactsOperation().update(current, modified)?.let {
-        update(Table.SimContacts.uri, it, null, null)
+        contentResolver.update(Table.SimContacts.uri(), it, null, null)
     }
 
     var updateSuccess = result != null && result > 0

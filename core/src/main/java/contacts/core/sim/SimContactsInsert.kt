@@ -1,6 +1,5 @@
 package contacts.core.sim
 
-import android.content.ContentResolver
 import contacts.core.*
 import contacts.core.entities.NewSimContact
 import contacts.core.entities.operation.SimContactsOperation
@@ -268,7 +267,7 @@ private class SimContactsInsertImpl(
                     FailureReason.NAME_EXCEEDED_MAX_CHAR_LIMIT
                 } else if (simContact.number.length > maxCharacterLimits.numberMaxLength()) {
                     FailureReason.NUMBER_EXCEEDED_MAX_CHAR_LIMIT
-                } else if (!contentResolver.insertSimContact(simContact, cancel)) {
+                } else if (!contactsApi.insertSimContact(simContact, cancel)) {
                     FailureReason.UNKNOWN
                 } else {
                     null
@@ -285,9 +284,9 @@ private class SimContactsInsertImpl(
 private val String?.length: Int
     get() = this?.let { length } ?: 0
 
-fun ContentResolver.insertSimContact(simContact: NewSimContact, cancel: () -> Boolean): Boolean {
+fun Contacts.insertSimContact(simContact: NewSimContact, cancel: () -> Boolean): Boolean {
     val result = SimContactsOperation().insert(simContact)?.let {
-        insert(Table.SimContacts.uri, it)
+        contentResolver.insert(Table.SimContacts.uri(), it)
     }
 
     // Successful result is always "content://icc/adn/0"

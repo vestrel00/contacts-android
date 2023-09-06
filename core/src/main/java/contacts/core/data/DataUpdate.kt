@@ -1,6 +1,5 @@
 package contacts.core.data
 
-import android.content.ContentResolver
 import contacts.core.*
 import contacts.core.entities.ExistingDataEntity
 import contacts.core.entities.custom.CustomDataRegistry
@@ -240,7 +239,7 @@ private class DataUpdateImpl(
                     // succeed. This is only done to enforce API design.
                     false
                 } else {
-                    contentResolver.updateData(include.fields, data, customDataRegistry)
+                    contactsApi.updateData(include.fields, data, customDataRegistry)
                 }
             }
             DataUpdateResult(results)
@@ -250,11 +249,15 @@ private class DataUpdateImpl(
     }
 }
 
-private fun ContentResolver.updateData(
+private fun Contacts.updateData(
     includeFields: Set<AbstractDataField>,
     data: ExistingDataEntity,
     customDataRegistry: CustomDataRegistry
-): Boolean = data.updateOperation(includeFields, customDataRegistry)?.let { applyBatch(it) } != null
+): Boolean = data.updateOperation(
+    callerIsSyncAdapter = callerIsSyncAdapter,
+    includeFields = includeFields,
+    customDataRegistry = customDataRegistry
+)?.let { contentResolver.applyBatch(it) } != null
 
 private class DataUpdateResult private constructor(
     private val dataIdsResultMap: Map<Long, Boolean>,

@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
  * and removal.
  *
  * Setting the [contact] will automatically update the views. Any modifications in the views will
- * also be made to the [contact]'s photo upon [savePhoto] (only if it is mutable).
+ * also be made to the [contact]'s photo upon [onPhotoPicked] (only if it is mutable).
  *
  * ## Note
  *

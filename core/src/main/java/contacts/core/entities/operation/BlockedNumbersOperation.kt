@@ -16,7 +16,9 @@ internal class BlockedNumbersOperation {
         if (blockedNumber.number.isNullOrBlank()) { // The number is mandatory
             null
         } else {
-            newInsert(TABLE)
+            // callerIsSyncAdapter only applies to ContactsContact tables. The value passed here
+            // should not matter.
+            newInsert(TABLE, callerIsSyncAdapter = false)
                 .withValue(BlockedNumbersFields.Number, blockedNumber.number)
                 .withValue(BlockedNumbersFields.NormalizedNumber, blockedNumber.normalizedNumber)
                 .build()

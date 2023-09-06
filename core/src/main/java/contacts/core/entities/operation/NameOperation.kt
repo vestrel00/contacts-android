@@ -5,8 +5,15 @@ import contacts.core.NameField
 import contacts.core.entities.MimeType
 import contacts.core.entities.NameEntity
 
-internal class NameOperation(isProfile: Boolean, includeFields: Set<NameField>) :
-    AbstractDataOperation<NameField, NameEntity>(isProfile, includeFields) {
+internal class NameOperation(
+    callerIsSyncAdapter: Boolean,
+    isProfile: Boolean,
+    includeFields: Set<NameField>
+) : AbstractDataOperation<NameField, NameEntity>(
+    callerIsSyncAdapter = callerIsSyncAdapter,
+    isProfile = isProfile,
+    includeFields = includeFields
+) {
 
     override val mimeType = MimeType.Name
 

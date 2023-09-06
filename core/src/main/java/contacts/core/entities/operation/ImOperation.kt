@@ -5,8 +5,15 @@ import contacts.core.ImField
 import contacts.core.entities.ImEntity
 import contacts.core.entities.MimeType
 
-internal class ImOperation(isProfile: Boolean, includeFields: Set<ImField>) :
-    AbstractDataOperation<ImField, ImEntity>(isProfile, includeFields) {
+internal class ImOperation(
+    callerIsSyncAdapter: Boolean,
+    isProfile: Boolean,
+    includeFields: Set<ImField>
+) : AbstractDataOperation<ImField, ImEntity>(
+    callerIsSyncAdapter = callerIsSyncAdapter,
+    isProfile = isProfile,
+    includeFields = includeFields
+) {
 
     override val mimeType = MimeType.Im
 

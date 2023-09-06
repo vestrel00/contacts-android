@@ -5,8 +5,15 @@ import contacts.core.Fields
 import contacts.core.entities.EmailEntity
 import contacts.core.entities.MimeType
 
-internal class EmailOperation(isProfile: Boolean, includeFields: Set<EmailField>) :
-    AbstractDataOperation<EmailField, EmailEntity>(isProfile, includeFields) {
+internal class EmailOperation(
+    callerIsSyncAdapter: Boolean,
+    isProfile: Boolean,
+    includeFields: Set<EmailField>
+) : AbstractDataOperation<EmailField, EmailEntity>(
+    callerIsSyncAdapter = callerIsSyncAdapter,
+    isProfile = isProfile,
+    includeFields = includeFields
+) {
 
     override val mimeType = MimeType.Email
 

@@ -9,7 +9,7 @@ import contacts.entities.custom.pokemon.*
 
 class IntegratePokemonCustomDataActivity : Activity() {
 
-    val contacts = Contacts(this, CustomDataRegistry().register(PokemonRegistration()))
+    val contacts = Contacts(this, false, CustomDataRegistry().register(PokemonRegistration()))
 
     fun getContactsWithPokemonCustomData(): List<Contact> = contacts
         .query()

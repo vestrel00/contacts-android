@@ -11,7 +11,7 @@ import contacts.entities.custom.googlecontacts.userdefined.*
 
 class IntegrateGoogleContactsCustomDataActivity : Activity() {
 
-    val contacts = Contacts(this, CustomDataRegistry().register(GoogleContactsRegistration()))
+    val contacts = Contacts(this, false, CustomDataRegistry().register(GoogleContactsRegistration()))
 
     fun getContactsWithGoogleContactsCustomData(): List<Contact> = contacts
         .query()

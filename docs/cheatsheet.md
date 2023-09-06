@@ -1313,7 +1313,7 @@ heading explore each API in full detail. You may also find these samples in the 
     
     class IntegrateGoogleContactsCustomDataActivity : Activity() {
     
-        val contacts = Contacts(this, CustomDataRegistry().register(GoogleContactsRegistration()))
+        val contacts = Contacts(this, false, CustomDataRegistry().register(GoogleContactsRegistration()))
     
         fun getContactsWithGoogleContactsCustomData(): List<Contact> = contacts
             .query()
@@ -1393,7 +1393,7 @@ heading explore each API in full detail. You may also find these samples in the 
     public class IntegrateGoogleContactsCustomDataActivity extends Activity {
     
         Contacts contacts = ContactsFactory.create(
-                this, new CustomDataRegistry().register(new GoogleContactsRegistration())
+                this, false, new CustomDataRegistry().register(new GoogleContactsRegistration())
         );
     
         List<Contact> getContactsWithGoogleContactsCustomData() {
@@ -1489,7 +1489,7 @@ heading explore each API in full detail. You may also find these samples in the 
     
     class IntegrateGenderCustomDataActivity : Activity() {
     
-        val contacts = Contacts(this, CustomDataRegistry().register(GenderRegistration()))
+        val contacts = Contacts(this, false, CustomDataRegistry().register(GenderRegistration()))
     
         fun getContactsWithGenderCustomData(): List<Contact> = contacts
             .query()
@@ -1552,7 +1552,7 @@ heading explore each API in full detail. You may also find these samples in the 
     public class IntegrateGenderCustomDataActivity extends Activity {
     
         Contacts contacts = ContactsFactory.create(
-                this, new CustomDataRegistry().register(new GenderRegistration())
+                this, false, new CustomDataRegistry().register(new GenderRegistration())
         );
     
         List<Contact> getContactsWithGenderCustomData() {
@@ -1625,7 +1625,7 @@ heading explore each API in full detail. You may also find these samples in the 
     
     class IntegrateHandleNameCustomDataActivity : Activity() {
     
-        val contacts = Contacts(this, CustomDataRegistry().register(HandleNameRegistration()))
+        val contacts = Contacts(this, false, CustomDataRegistry().register(HandleNameRegistration()))
     
         fun getContactsWithHandleNameCustomData(): List<Contact> = contacts
             .query()
@@ -1688,7 +1688,7 @@ heading explore each API in full detail. You may also find these samples in the 
     public class IntegrateHandleNameCustomDataActivity extends Activity {
     
         Contacts contacts = ContactsFactory.create(
-                this, new CustomDataRegistry().register(new HandleNameRegistration())
+                this, false, new CustomDataRegistry().register(new HandleNameRegistration())
         );
     
         List<Contact> getContactsWithHandleNameCustomData() {
@@ -1762,7 +1762,7 @@ heading explore each API in full detail. You may also find these samples in the 
     
     class IntegratePokemonCustomDataActivity : Activity() {
     
-        val contacts = Contacts(this, CustomDataRegistry().register(PokemonRegistration()))
+        val contacts = Contacts(this, false, CustomDataRegistry().register(PokemonRegistration()))
     
         fun getContactsWithPokemonCustomData(): List<Contact> = contacts
             .query()
@@ -1831,7 +1831,7 @@ heading explore each API in full detail. You may also find these samples in the 
     public class IntegratePokemonCustomDataActivity extends Activity {
     
         Contacts contacts = ContactsFactory.create(
-                this, new CustomDataRegistry().register(new PokemonRegistration())
+                this, false, new CustomDataRegistry().register(new PokemonRegistration())
         );
     
         List<Contact> getContactsWithPokemonCustomData() {
@@ -1912,7 +1912,7 @@ heading explore each API in full detail. You may also find these samples in the 
     
     class IntegrateRpgCustomDataActivity : Activity() {
     
-        val contacts = Contacts(this, CustomDataRegistry().register(RpgRegistration()))
+        val contacts = Contacts(this, false, CustomDataRegistry().register(RpgRegistration()))
     
         fun getContactsWithRpgCustomData(): List<Contact> = contacts
             .query()
@@ -1996,7 +1996,7 @@ heading explore each API in full detail. You may also find these samples in the 
     public class IntegrateRpgCustomDataActivity extends Activity {
     
         Contacts contacts = ContactsFactory.create(
-                this, new CustomDataRegistry().register(new RpgRegistration())
+                this, false, new CustomDataRegistry().register(new RpgRegistration())
         );
     
         List<Contact> getContactsWithRpgCustomData() {
@@ -3795,7 +3795,7 @@ heading explore each API in full detail. You may also find these samples in the 
     class LogContactsApiActivity : Activity() {
     
         fun createContactsApiWithLoggingEnabled(redactLogMessages: Boolean): Contacts = Contacts(
-            this, logger = AndroidLogger(redactMessages = redactLogMessages)
+            this, false, logger = AndroidLogger(redactMessages = redactLogMessages)
         )
     }
     ```
@@ -3806,12 +3806,15 @@ heading explore each API in full detail. You may also find these samples in the 
     import android.app.Activity;
     
     import contacts.core.*;
+    import contacts.core.entities.custom.CustomDataRegistry;
     import contacts.core.log.AndroidLogger;
     
     public class LogContactsApiActivity extends Activity {
     
         Contacts createContactsApiWithLoggingEnabled(Boolean redactLogMessages) {
-            return ContactsFactory.create(this, new AndroidLogger(redactLogMessages));
+            return ContactsFactory.create(
+                    this, false, new CustomDataRegistry(), new AndroidLogger(redactLogMessages)
+            );
         }
     }
     ```

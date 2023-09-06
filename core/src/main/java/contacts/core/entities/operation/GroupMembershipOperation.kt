@@ -3,11 +3,12 @@ package contacts.core.entities.operation
 import android.accounts.Account
 import android.content.ContentProviderOperation
 import android.content.ContentResolver
-import android.content.Context
+import contacts.core.Contacts
 import contacts.core.Fields
 import contacts.core.GroupMembershipField
 import contacts.core.Include
 import contacts.core.RawContactsFields
+import contacts.core.contentResolver
 import contacts.core.entities.Entity
 import contacts.core.entities.Group
 import contacts.core.entities.GroupMembership
@@ -16,20 +17,24 @@ import contacts.core.entities.MimeType
 import contacts.core.entities.cursor.account
 import contacts.core.entities.cursor.rawContactsCursor
 import contacts.core.entities.mapper.groupMembershipMapper
-import contacts.core.entities.table.ProfileUris
-import contacts.core.entities.table.Table
 import contacts.core.equalTo
 import contacts.core.groups.Groups
 import contacts.core.util.contacts
 import contacts.core.util.isProfileId
 import contacts.core.util.nullIfNotInSystem
 import contacts.core.util.query
+import contacts.core.util.rawContactsUri
 
 internal class GroupMembershipOperation(
+    callerIsSyncAdapter: Boolean,
     isProfile: Boolean,
     includeFields: Set<GroupMembershipField>,
     private val groups: Groups
-) : AbstractDataOperation<GroupMembershipField, GroupMembershipEntity>(isProfile, includeFields) {
+) : AbstractDataOperation<GroupMembershipField, GroupMembershipEntity>(
+    callerIsSyncAdapter = callerIsSyncAdapter,
+    isProfile = isProfile,
+    includeFields = includeFields
+) {
 
     override val mimeType = MimeType.GroupMembership
 
@@ -82,14 +87,14 @@ internal class GroupMembershipOperation(
     fun updateInsertOrDelete(
         groupMemberships: Collection<GroupMembershipEntity>,
         rawContactId: Long,
-        context: Context
+        contactsApi: Contacts
     ): List<ContentProviderOperation> = buildList {
         if (includeFields.isEmpty()) {
             // No-op when no fields are included.
             return@buildList
         }
 
-        val account: Account? = context.accountForRawContactWithId(rawContactId)
+        val account: Account? = contactsApi.accountForRawContactWithId(rawContactId)
 
         // A map of Group.id -> Group
         val accountGroups: Map<Long, Group> =
@@ -97,7 +102,7 @@ internal class GroupMembershipOperation(
 
         // A map of Group.id -> GroupMembership
         val groupMembershipsInDB: MutableMap<Long, GroupMembership> =
-            context.contentResolver.getGroupMembershipsInDB(rawContactId)
+            contactsApi.contentResolver.getGroupMembershipsInDB(rawContactId)
                 .asSequence()
                 // There should not exist any memberships in the DB that does not belong to the same
                 // account. Just in case though...
@@ -164,9 +169,9 @@ internal class GroupMembershipOperation(
  *
  * This only requires [contacts.core.ContactsPermissions.READ_PERMISSION].
  */
-private fun Context.accountForRawContactWithId(rawContactId: Long): Account? =
+private fun Contacts.accountForRawContactWithId(rawContactId: Long): Account? =
     contentResolver.query(
-        if (rawContactId.isProfileId) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri,
+        rawContactsUri(rawContactId.isProfileId),
         Include(RawContactsFields.AccountName, RawContactsFields.AccountType),
         RawContactsFields.Id equalTo rawContactId
     ) {

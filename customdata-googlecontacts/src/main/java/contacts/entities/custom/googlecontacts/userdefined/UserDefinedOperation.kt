@@ -10,13 +10,23 @@ internal class UserDefinedOperationFactory :
     AbstractCustomDataOperation.Factory<UserDefinedField, UserDefinedEntity> {
 
     override fun create(
-        isProfile: Boolean, includeFields: Set<UserDefinedField>
-    ): AbstractCustomDataOperation<UserDefinedField, UserDefinedEntity> =
-        UserDefinedOperation(isProfile, includeFields)
+        callerIsSyncAdapter: Boolean, isProfile: Boolean, includeFields: Set<UserDefinedField>
+    ): AbstractCustomDataOperation<UserDefinedField, UserDefinedEntity> = UserDefinedOperation(
+        callerIsSyncAdapter = callerIsSyncAdapter,
+        isProfile = isProfile,
+        includeFields = includeFields
+    )
 }
 
-private class UserDefinedOperation(isProfile: Boolean, includeFields: Set<UserDefinedField>) :
-    AbstractCustomDataOperation<UserDefinedField, UserDefinedEntity>(isProfile, includeFields) {
+private class UserDefinedOperation(
+    callerIsSyncAdapter: Boolean,
+    isProfile: Boolean,
+    includeFields: Set<UserDefinedField>
+) : AbstractCustomDataOperation<UserDefinedField, UserDefinedEntity>(
+    callerIsSyncAdapter = callerIsSyncAdapter,
+    isProfile = isProfile,
+    includeFields = includeFields
+) {
 
     override val mimeType: MimeType.Custom = GoogleContactsMimeType.UserDefined
 

@@ -1,7 +1,7 @@
 package contacts.core.util
 
-import android.content.ContentResolver
 import contacts.core.AbstractDataField
+import contacts.core.Contacts
 import contacts.core.ContactsField
 import contacts.core.ContactsFields
 import contacts.core.Fields
@@ -19,7 +19,7 @@ import contacts.core.notEqualTo
 
 // region Contacts table
 
-internal fun ContentResolver.findContactIdsInContactsTable(
+internal fun Contacts.findContactIdsInContactsTable(
     contactsWhere: Where<ContactsField>?,
     suppressDbExceptions: Boolean = false,
     cancel: () -> Boolean = { false }
@@ -41,7 +41,7 @@ internal fun ContentResolver.findContactIdsInContactsTable(
 
 // region RawContacts table
 
-internal fun ContentResolver.findContactIdsInRawContactsTable(
+internal fun Contacts.findContactIdsInRawContactsTable(
     rawContactsWhere: Where<RawContactsField>?,
     suppressDbExceptions: Boolean = false,
     cancel: () -> Boolean = { false }
@@ -63,7 +63,7 @@ internal fun ContentResolver.findContactIdsInRawContactsTable(
 }
 
 
-internal fun ContentResolver.findRawContactIdsInRawContactsTable(
+internal fun Contacts.findRawContactIdsInRawContactsTable(
     rawContactsWhere: Where<RawContactsField>?,
     suppressDbExceptions: Boolean = false,
     cancel: () -> Boolean = { false }
@@ -88,7 +88,7 @@ internal fun ContentResolver.findRawContactIdsInRawContactsTable(
 
 // region Data table
 
-internal fun ContentResolver.findContactIdsInDataTable(
+internal fun Contacts.findContactIdsInDataTable(
     where: Where<AbstractDataField>?, cancel: () -> Boolean = { false }
 ): Set<Long> = if (cancel()) emptySet() else {
     query(Table.Data, Include(Fields.Contact.Id), where) {
@@ -101,7 +101,7 @@ internal fun ContentResolver.findContactIdsInDataTable(
     } ?: emptySet()
 }
 
-internal fun ContentResolver.findRawContactIdsInDataTable(
+internal fun Contacts.findRawContactIdsInDataTable(
     where: Where<AbstractDataField>, cancel: () -> Boolean = { false }
 ): Set<Long> = query(Table.Data, Include(Fields.RawContact.Id), where) { cursor ->
     buildSet {

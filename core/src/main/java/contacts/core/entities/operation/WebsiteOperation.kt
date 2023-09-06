@@ -5,8 +5,15 @@ import contacts.core.WebsiteField
 import contacts.core.entities.MimeType
 import contacts.core.entities.WebsiteEntity
 
-internal class WebsiteOperation(isProfile: Boolean, includeFields: Set<WebsiteField>) :
-    AbstractDataOperation<WebsiteField, WebsiteEntity>(isProfile, includeFields) {
+internal class WebsiteOperation(
+    callerIsSyncAdapter: Boolean,
+    isProfile: Boolean,
+    includeFields: Set<WebsiteField>
+) : AbstractDataOperation<WebsiteField, WebsiteEntity>(
+    callerIsSyncAdapter = callerIsSyncAdapter,
+    isProfile = isProfile,
+    includeFields = includeFields
+) {
 
     override val mimeType = MimeType.Website
 

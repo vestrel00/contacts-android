@@ -297,7 +297,7 @@ private fun ContentResolver.deleteBlockedNumbersWhere(where: Where<BlockedNumber
     applyBlockedNumberBatch(deleteOperationFor(where)).deleteSuccess
 
 private fun deleteOperationFor(where: Where<BlockedNumbersField>): ContentProviderOperation =
-    ContentProviderOperation.newDelete(Table.BlockedNumbers.uri)
+    ContentProviderOperation.newDelete(Table.BlockedNumbers.uri())
         .withSelection(where)
         .build()
 

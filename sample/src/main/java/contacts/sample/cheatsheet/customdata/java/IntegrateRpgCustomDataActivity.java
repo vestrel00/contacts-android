@@ -17,7 +17,7 @@ import contacts.entities.custom.rpg.stats.*;
 public class IntegrateRpgCustomDataActivity extends Activity {
 
     Contacts contacts = ContactsFactory.create(
-            this, new CustomDataRegistry().register(new RpgRegistration())
+            this, false, new CustomDataRegistry().register(new RpgRegistration())
     );
 
     List<Contact> getContactsWithRpgCustomData() {

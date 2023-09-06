@@ -2,7 +2,6 @@ package contacts.core.util
 
 import android.accounts.Account
 import android.annotation.SuppressLint
-import android.content.Context
 import contacts.core.*
 
 /**
@@ -18,7 +17,8 @@ import contacts.core.*
  * in the RawContacts table instead of null. This will return false for [Account] instances created
  * with this name and type.
  */
-internal fun Account?.isInSystem(context: Context): Boolean = nullIfNotInSystem(context) != null
+internal fun Account?.isInSystem(contactsApi: Contacts): Boolean =
+    nullIfNotInSystem(contactsApi) != null
 
 /**
  * Returns true if [this] is NOT in the list of all accounts in the system.
@@ -33,7 +33,7 @@ internal fun Account?.isInSystem(context: Context): Boolean = nullIfNotInSystem(
  * in the RawContacts table instead of null. This will return true for [Account] instances created
  * with this name and type.
  */
-internal fun Account?.isNotInSystem(context: Context): Boolean = !isInSystem(context)
+internal fun Account?.isNotInSystem(contactsApi: Contacts): Boolean = !isInSystem(contactsApi)
 
 /**
  * Verifies that [this] given [Account] is in the list of all accounts in the system and returns
@@ -50,8 +50,8 @@ internal fun Account?.isNotInSystem(context: Context): Boolean = !isInSystem(con
  * with this name and type.
  */
 @SuppressLint("MissingPermission")
-internal fun Account?.nullIfNotInSystem(context: Context): Account? = this?.let {
-    nullIfNotIn(Contacts(context).accounts().query().find())
+internal fun Account?.nullIfNotInSystem(contactsApi: Contacts): Account? = this?.let {
+    nullIfNotIn(contactsApi.accounts().query().find())
 }
 
 /**

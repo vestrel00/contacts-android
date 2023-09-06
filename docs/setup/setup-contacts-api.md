@@ -27,15 +27,24 @@ It's up to you if you just want to create instances on demand. Or, hold on to in
 [black box testing][black-box-testing] and [white box testing][white-box-testing] a walk in the
 park!
 
+## Sync adapter operations
+
+Instances of `Contacts` may be initialized with `callerIsSyncAdapter: Boolean` to set the value
+of `ContactsContract.CALLER_IS_SYNCADAPTER` for all CRUD APIs provided by the instance that use 
+`android.provider.ContactsContract` URIs.
+
+For more info, read the in-code documentation of `contacts.core.Contacts.callerIsSyncAdapter`.
+
 ## Logging support
 
-Instances of `Contacts` hold on to a `Logger` for logging support.
+Instances of `Contacts` may be initialized with `logger: Logger` for logging support.
 
 For more info, read [Log API input and output](./../logging/log-api-input-output.md).
 
 ## Custom data integration
 
-Instances of `Contacts` hold on to an instance of `CustomDataRegistry` for custom data integration.
+Instances of `Contacts` may be initialized with `customDataRegistry: CustomDataRegistry` for custom 
+data integration.
 
 For more info, read [Integrate custom data](./../customdata/integrate-custom-data.md).
 

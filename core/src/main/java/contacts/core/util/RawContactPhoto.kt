@@ -15,8 +15,6 @@ import contacts.core.entities.MutableRawContact
 import contacts.core.entities.NewRawContact
 import contacts.core.entities.cursor.photoCursor
 import contacts.core.entities.operation.withSelection
-import contacts.core.entities.table.ProfileUris
-import contacts.core.entities.table.Table
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.InputStream
@@ -159,15 +157,13 @@ internal inline fun <T> InputStream.apply(block: (InputStream) -> T): T {
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingRawContactEntity.photoThumbnailInputStream(
-    contacts: Contacts
-): InputStream? {
+fun ExistingRawContactEntity.photoThumbnailInputStream(contacts: Contacts): InputStream? {
     if (!contacts.permissions.canQuery()) {
         return null
     }
 
     return contacts.contentResolver.query(
-        if (isProfile) ProfileUris.DATA.uri else Table.Data.uri,
+        contacts.dataUri(isProfile),
         Include(Fields.Photo.PhotoThumbnail),
         (Fields.RawContact.Id equalTo id)
                 and (Fields.MimeType equalTo MimeType.Photo)
@@ -473,7 +469,7 @@ internal fun Contacts.removeRawContactPhotoDirect(rawContactId: Long): Boolean {
     }
 
     return contentResolver.applyBatch(
-        newDelete(if (rawContactId.isProfileId) ProfileUris.DATA.uri else Table.Data.uri)
+        newDelete(dataUri(isProfile = rawContactId.isProfileId))
             .withSelection(
                 (Fields.RawContact.Id equalTo rawContactId)
                         and (Fields.MimeType equalTo MimeType.Photo)

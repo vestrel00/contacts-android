@@ -15,7 +15,7 @@ import contacts.entities.custom.pokemon.*;
 public class IntegratePokemonCustomDataActivity extends Activity {
 
     Contacts contacts = ContactsFactory.create(
-            this, new CustomDataRegistry().register(new PokemonRegistration())
+            this, false, new CustomDataRegistry().register(new PokemonRegistration())
     );
 
     List<Contact> getContactsWithPokemonCustomData() {

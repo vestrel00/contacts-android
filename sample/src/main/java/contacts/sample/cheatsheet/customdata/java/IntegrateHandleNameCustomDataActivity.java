@@ -15,7 +15,7 @@ import contacts.entities.custom.handlename.*;
 public class IntegrateHandleNameCustomDataActivity extends Activity {
 
     Contacts contacts = ContactsFactory.create(
-            this, new CustomDataRegistry().register(new HandleNameRegistration())
+            this, false, new CustomDataRegistry().register(new HandleNameRegistration())
     );
 
     List<Contact> getContactsWithHandleNameCustomData() {

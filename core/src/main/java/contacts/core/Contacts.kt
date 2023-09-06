@@ -155,6 +155,35 @@ interface Contacts {
      * Registry for all [CrudApi.Listener]s.
      */
     val apiListenerRegistry: CrudApiListenerRegistry
+
+    /**
+     * Sets the value of [android.provider.ContactsContract.CALLER_IS_SYNCADAPTER] for all CRUD APIs
+     * provided by this instance of [Contacts] that use [android.provider.ContactsContract] URIs.
+     *
+     * ## For sync adapter use only!
+     *
+     * Applications should NOT set this value to true!
+     *
+     * As mentioned in the official docs, setting the value for this property at the time of
+     * insertion or updating its value afterwards is typically only done in the context of sync
+     * adapters. This is not for general app use!
+     *
+     * If you are using this API in your sync adapter implementation, then you should set this value
+     * to true. It will allow you to perform certain insert, update, and delete operations that
+     * may otherwise fail. For example, attempting to update read-only rows
+     * ([contacts.core.entities.NewDataEntity.isReadOnly]) in the Data table
+     * (e.g. name, email, phone) will result in the actual value of the read-only data to remain
+     * unchanged (even if the API result indicates success). If this is set to true, updating
+     * read-only data should result in actual changes to take effect. Updating read-only data is
+     * just one of the many different behaviors/side-effects that this value affects.
+     *
+     * This library is not responsible for documenting all of the different behaviors/side-effects
+     * caused by setting this to true.
+     *
+     * Do NOT mess with this unless you know exactly what you are doing. Otherwise, it MAY cause
+     * issues with syncing with respect to the Account's sync adapter and remote servers/databases.
+     */
+    val callerIsSyncAdapter: Boolean
 }
 
 /**
@@ -164,8 +193,9 @@ interface Contacts {
 @Suppress("FunctionName")
 fun Contacts(
     context: Context,
+    callerIsSyncAdapter: Boolean = false,
     customDataRegistry: CustomDataRegistry = CustomDataRegistry(),
-    logger: Logger = EmptyLogger()
+    logger: Logger = EmptyLogger(),
 ): Contacts {
     val apiListenerRegistry = CrudApiListenerRegistry()
     val loggerRegistry = LoggerRegistry(logger)
@@ -175,7 +205,8 @@ fun Contacts(
         AccountsPermissions(context.applicationContext),
         loggerRegistry,
         customDataRegistry,
-        apiListenerRegistry.register(loggerRegistry.apiListener)
+        apiListenerRegistry.register(loggerRegistry.apiListener),
+        callerIsSyncAdapter
     )
 }
 
@@ -191,13 +222,10 @@ object ContactsFactory {
     @JvmOverloads
     fun create(
         context: Context,
+        callerIsSyncAdapter: Boolean = false,
         customDataRegistry: CustomDataRegistry = CustomDataRegistry(),
         logger: Logger = EmptyLogger()
-    ): Contacts = Contacts(context, customDataRegistry, logger)
-
-    @JvmStatic
-    fun create(context: Context, logger: Logger): Contacts =
-        create(context, CustomDataRegistry(), logger)
+    ): Contacts = Contacts(context, callerIsSyncAdapter, customDataRegistry, logger)
 }
 
 private class ContactsImpl(
@@ -206,7 +234,8 @@ private class ContactsImpl(
     override val accountsPermissions: AccountsPermissions,
     override val loggerRegistry: LoggerRegistry,
     override val customDataRegistry: CustomDataRegistry,
-    override val apiListenerRegistry: CrudApiListenerRegistry
+    override val apiListenerRegistry: CrudApiListenerRegistry,
+    override val callerIsSyncAdapter: Boolean
 ) : Contacts {
 
     override fun query() = Query(this)

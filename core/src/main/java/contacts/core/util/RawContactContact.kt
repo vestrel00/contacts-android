@@ -1,11 +1,13 @@
 package contacts.core.util
 
-import contacts.core.*
+import contacts.core.Contacts
+import contacts.core.Include
+import contacts.core.RawContactsFields
+import contacts.core.contentResolver
 import contacts.core.entities.Contact
 import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.entities.cursor.rawContactsCursor
-import contacts.core.entities.table.ProfileUris
-import contacts.core.entities.table.Table
+import contacts.core.equalTo
 
 /**
  * Returns the [Contact] with the [ExistingRawContactEntity.contactId].
@@ -43,7 +45,7 @@ fun ExistingRawContactEntity.contact(
 
 private fun Contacts.getContactIdFromRawContactsTable(rawContactId: Long): Long? =
     contentResolver.query(
-        if (rawContactId.isProfileId) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri,
+        rawContactsUri(isProfile = rawContactId.isProfileId),
         Include(RawContactsFields.ContactId),
         RawContactsFields.Id equalTo rawContactId
     ) {

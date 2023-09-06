@@ -52,7 +52,7 @@ class SampleAppPreferences(private val context: Context) {
 
     var phoneticName: PhoneticName
         get() = sharedPrefs.getString(PHONETIC_NAME, null)?.let(PhoneticName::valueOf)
-            ?: PhoneticName.ALWAYS_SHOW
+            ?: ALWAYS_SHOW
         set(value) {
             sharedPrefs
                 .edit()

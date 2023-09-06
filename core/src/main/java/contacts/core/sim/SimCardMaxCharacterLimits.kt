@@ -1,6 +1,5 @@
 package contacts.core.sim
 
-import android.content.ContentResolver
 import android.content.Context
 import android.content.SharedPreferences
 import android.telephony.TelephonyManager
@@ -146,7 +145,7 @@ private class SimCardMaxCharacterLimitsImpl(
             if (cachedMaxLength > 0) {
                 cachedMaxLength
             } else {
-                val maxLength = contactsApi.contentResolver.maxCharLimit(
+                val maxLength = contactsApi.maxCharLimit(
                     nameChar = "X",
                     numberChar = null,
                     initialMaxCharLimit = INITIAL_MAX_CHAR_LIMIT,
@@ -168,7 +167,7 @@ private class SimCardMaxCharacterLimitsImpl(
             if (cachedMaxLength > 0) {
                 cachedMaxLength
             } else {
-                val maxLength = contactsApi.contentResolver.maxCharLimit(
+                val maxLength = contactsApi.maxCharLimit(
                     nameChar = null,
                     numberChar = "1",
                     initialMaxCharLimit = INITIAL_MAX_CHAR_LIMIT,
@@ -213,7 +212,7 @@ private class SimCardMaxCharacterLimitsPreferences(private val applicationContex
     }
 }
 
-private fun ContentResolver.maxCharLimit(
+private fun Contacts.maxCharLimit(
     nameChar: String?,
     numberChar: String?,
     initialMaxCharLimit: Int,
@@ -233,7 +232,7 @@ private fun ContentResolver.maxCharLimit(
                 // inserted. Therefore, we have to check for this possibility.
                 insertSuccess = false
             } else {
-                deleteSimContact(insertedSimContact)
+                contentResolver.deleteSimContact(insertedSimContact)
             }
         } else {
             length--

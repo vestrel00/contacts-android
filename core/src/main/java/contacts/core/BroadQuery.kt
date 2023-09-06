@@ -728,7 +728,7 @@ private class BroadQueryImpl(
         var contacts = if (!permissions.canQuery()) {
             emptyList()
         } else {
-            contentResolver.resolve(
+            contactsApi.resolve(
                 customDataRegistry,
                 rawContactsWhere, groupMembershipWhere,
                 include, includeRawContactsFields,
@@ -765,7 +765,7 @@ private class BroadQueryImpl(
     }
 }
 
-private fun ContentResolver.resolve(
+private fun Contacts.resolve(
     customDataRegistry: CustomDataRegistry,
     rawContactsWhere: Where<RawContactsField>?,
     groupMembershipWhere: Where<GroupMembershipField>?,
@@ -783,7 +783,7 @@ private fun ContentResolver.resolve(
 
     // Get Contact Ids partially matching the searchString from the Contacts table. If searchString
     // is null, skip.
-    if (searchString != null && searchString.isNotEmpty() && !cancel()) {
+    if (!searchString.isNullOrEmpty() && !cancel()) {
         contactIds = mutableSetOf<Long>().apply {
             addAll(findMatchingContactIds(match, searchString, cancel))
         }
@@ -839,7 +839,7 @@ private fun ContentResolver.resolve(
     )
 }
 
-private fun ContentResolver.findMatchingContactIds(
+private fun Contacts.findMatchingContactIds(
     match: Match, searchString: String, cancel: () -> Boolean
 ): Set<Long> = when (match) {
     Match.ANY -> findContactIdsInContactsTable(searchString, cancel)
@@ -855,14 +855,16 @@ private fun ContentResolver.findMatchingContactIds(
     )
 }
 
-private fun ContentResolver.findContactIdsInContactsTable(
+private fun Contacts.findContactIdsInContactsTable(
     searchString: String, cancel: () -> Boolean
-): Set<Long> = query(
+): Set<Long> = contentResolver.query(
     Uri.withAppendedPath(
         // The documentation states that this matches "various parts of the contact name".
         // However, it actually matches more than just the name. Even data such as note
         // that is not in ContactsContract.DisplayNameSources!
-        ContactsContract.Contacts.CONTENT_FILTER_URI,
+        // Also, note that CALLER_IS_SYNCADAPTER probably does not really matter for queries but
+        // might as well be consistent...
+        ContactsContract.Contacts.CONTENT_FILTER_URI.forSyncAdapter(callerIsSyncAdapter),
         Uri.encode(searchString)
     ),
     Include(ContactsFields.Id),
@@ -876,11 +878,16 @@ private fun ContentResolver.findContactIdsInContactsTable(
     contactIds
 } ?: emptySet()
 
-private fun ContentResolver.findContactIdsInDataTable(
+private fun Contacts.findContactIdsInDataTable(
     contentFilterUri: Uri,
     searchString: String, cancel: () -> Boolean
-): Set<Long> = query(
-    Uri.withAppendedPath(contentFilterUri, Uri.encode(searchString)),
+): Set<Long> = contentResolver.query(
+    Uri.withAppendedPath(
+        // Note that CALLER_IS_SYNCADAPTER probably does not really matter for queries but might as well
+        // be consistent...
+        contentFilterUri.forSyncAdapter(callerIsSyncAdapter),
+        Uri.encode(searchString)
+    ),
     Include(Fields.Contact.Id),
     null
 ) {

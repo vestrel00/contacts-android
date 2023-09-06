@@ -1,7 +1,6 @@
 package contacts.core.groups
 
 import android.accounts.Account
-import android.content.ContentResolver
 import contacts.core.*
 import contacts.core.entities.ExistingGroupEntity
 import contacts.core.entities.Group
@@ -251,7 +250,7 @@ private class GroupsUpdateImpl(
                     if (differentGroupWithSameTitle != null) {
                         // The title of this group belongs to a different existing group.
                         failureReasons[group] = FailureReason.TITLE_ALREADY_EXIST
-                    } else if (!cancel() && contentResolver.updateGroup(group)) {
+                    } else if (!cancel() && contactsApi.updateGroup(group)) {
                         /*
                          * Update success.
                          *
@@ -290,8 +289,8 @@ private class GroupsUpdateImpl(
     }
 }
 
-private fun ContentResolver.updateGroup(group: ExistingGroupEntity): Boolean =
-    applyBatch(GroupsOperation().update(group)) != null
+private fun Contacts.updateGroup(group: ExistingGroupEntity): Boolean =
+    contentResolver.applyBatch(GroupsOperation(callerIsSyncAdapter).update(group)) != null
 
 private class GroupsUpdateResult private constructor(
     private val failureReasons: Map<ExistingGroupEntity, FailureReason>,

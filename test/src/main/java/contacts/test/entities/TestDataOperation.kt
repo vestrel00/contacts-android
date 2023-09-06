@@ -7,13 +7,23 @@ internal class TestDataOperationFactory :
     AbstractCustomDataOperation.Factory<TestDataField, TestDataEntity> {
 
     override fun create(
-        isProfile: Boolean, includeFields: Set<TestDataField>
-    ): AbstractCustomDataOperation<TestDataField, TestDataEntity> =
-        TestDataOperation(isProfile, includeFields)
+        callerIsSyncAdapter: Boolean, isProfile: Boolean, includeFields: Set<TestDataField>
+    ): AbstractCustomDataOperation<TestDataField, TestDataEntity> = TestDataOperation(
+        callerIsSyncAdapter = callerIsSyncAdapter,
+        isProfile = isProfile,
+        includeFields = includeFields
+    )
 }
 
-private class TestDataOperation(isProfile: Boolean, includeFields: Set<TestDataField>) :
-    AbstractCustomDataOperation<TestDataField, TestDataEntity>(isProfile, includeFields) {
+private class TestDataOperation(
+    callerIsSyncAdapter: Boolean,
+    isProfile: Boolean,
+    includeFields: Set<TestDataField>
+) : AbstractCustomDataOperation<TestDataField, TestDataEntity>(
+    callerIsSyncAdapter = callerIsSyncAdapter,
+    isProfile = isProfile,
+    includeFields = includeFields
+) {
 
     override val mimeType: MimeType.Custom = TestDataMimeType
 

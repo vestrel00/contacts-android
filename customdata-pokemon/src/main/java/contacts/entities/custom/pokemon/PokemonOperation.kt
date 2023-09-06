@@ -7,13 +7,23 @@ internal class PokemonOperationFactory :
     AbstractCustomDataOperation.Factory<PokemonField, PokemonEntity> {
 
     override fun create(
-        isProfile: Boolean, includeFields: Set<PokemonField>
-    ): AbstractCustomDataOperation<PokemonField, PokemonEntity> =
-        PokemonOperation(isProfile, includeFields)
+        callerIsSyncAdapter: Boolean, isProfile: Boolean, includeFields: Set<PokemonField>
+    ): AbstractCustomDataOperation<PokemonField, PokemonEntity> = PokemonOperation(
+        callerIsSyncAdapter = callerIsSyncAdapter,
+        isProfile = isProfile,
+        includeFields = includeFields
+    )
 }
 
-private class PokemonOperation(isProfile: Boolean, includeFields: Set<PokemonField>) :
-    AbstractCustomDataOperation<PokemonField, PokemonEntity>(isProfile, includeFields) {
+private class PokemonOperation(
+    callerIsSyncAdapter: Boolean,
+    isProfile: Boolean,
+    includeFields: Set<PokemonField>
+) : AbstractCustomDataOperation<PokemonField, PokemonEntity>(
+    callerIsSyncAdapter = callerIsSyncAdapter,
+    isProfile = isProfile,
+    includeFields = includeFields
+) {
 
     override val mimeType: MimeType.Custom = PokemonMimeType
 

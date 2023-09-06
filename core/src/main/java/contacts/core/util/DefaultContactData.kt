@@ -2,12 +2,15 @@ package contacts.core.util
 
 import android.content.ContentProviderOperation
 import android.content.ContentProviderOperation.newUpdate
-import contacts.core.*
+import contacts.core.Contacts
+import contacts.core.ContactsPermissions
+import contacts.core.Fields
+import contacts.core.and
+import contacts.core.contentResolver
 import contacts.core.entities.ExistingDataEntity
 import contacts.core.entities.operation.withSelection
 import contacts.core.entities.operation.withValue
-import contacts.core.entities.table.ProfileUris
-import contacts.core.entities.table.Table
+import contacts.core.equalTo
 
 /**
  * Returns the default data entity in the collection or null if not found.
@@ -71,9 +74,9 @@ fun ExistingDataEntity.setAsDefault(contacts: Contacts): Boolean {
     }
 
     return contacts.contentResolver.applyBatch(
-        clearPrimary(rawContactId),
-        clearSuperPrimary(contactId),
-        setPrimaryAndSuperPrimary(dataId)
+        clearPrimary(rawContactId, contacts),
+        clearSuperPrimary(contactId, contacts),
+        setPrimaryAndSuperPrimary(dataId, contacts)
     ) != null
 }
 
@@ -120,17 +123,17 @@ fun ExistingDataEntity.setAsDefault(contacts: Contacts): Boolean {
  * This should be called in a background thread to avoid blocking the UI thread.
  */
 // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
-fun ExistingDataEntity.clearDefault(contactsApi: Contacts): Boolean {
+fun ExistingDataEntity.clearDefault(contacts: Contacts): Boolean {
     val rawContactId = rawContactId
     val contactId = contactId
 
-    if (!contactsApi.permissions.canUpdateDelete()) {
+    if (!contacts.permissions.canUpdateDelete()) {
         return false
     }
 
-    return contactsApi.contentResolver.applyBatch(
-        clearPrimary(rawContactId),
-        clearSuperPrimary(contactId)
+    return contacts.contentResolver.applyBatch(
+        clearPrimary(rawContactId, contacts),
+        clearSuperPrimary(contactId, contacts)
     ) != null
 }
 
@@ -142,14 +145,16 @@ fun ExistingDataEntity.clearDefault(contactsApi: Contacts): Boolean {
  *
  * See DEV_NOTES "Data Primary and Super Primary Rows" section for more info.
  */
-private fun ExistingDataEntity.clearPrimary(rawContactId: Long): ContentProviderOperation =
-    newUpdate(if (isProfile) ProfileUris.DATA.uri else Table.Data.uri)
-        .withSelection(
-            (Fields.RawContact.Id equalTo rawContactId)
-                    and (Fields.MimeType equalTo mimeType)
-        )
-        .withValue(Fields.IsPrimary, 0)
-        .build()
+private fun ExistingDataEntity.clearPrimary(
+    rawContactId: Long,
+    contactsApi: Contacts
+): ContentProviderOperation = newUpdate(contactsApi.dataUri(isProfile))
+    .withSelection(
+        (Fields.RawContact.Id equalTo rawContactId)
+                and (Fields.MimeType equalTo mimeType)
+    )
+    .withValue(Fields.IsPrimary, 0)
+    .build()
 
 /**
  * Provides the operation to set all super primary data rows with the same
@@ -159,14 +164,16 @@ private fun ExistingDataEntity.clearPrimary(rawContactId: Long): ContentProvider
  *
  * See DEV_NOTES "Data Primary and Super Primary Rows" section for more info.
  */
-private fun ExistingDataEntity.clearSuperPrimary(contactId: Long): ContentProviderOperation =
-    newUpdate(if (isProfile) ProfileUris.DATA.uri else Table.Data.uri)
-        .withSelection(
-            (Fields.Contact.Id equalTo contactId)
-                    and (Fields.MimeType equalTo mimeType)
-        )
-        .withValue(Fields.IsSuperPrimary, 0)
-        .build()
+private fun ExistingDataEntity.clearSuperPrimary(
+    contactId: Long,
+    contactsApi: Contacts
+): ContentProviderOperation = newUpdate(contactsApi.dataUri(isProfile))
+    .withSelection(
+        (Fields.Contact.Id equalTo contactId)
+                and (Fields.MimeType equalTo mimeType)
+    )
+    .withValue(Fields.IsSuperPrimary, 0)
+    .build()
 
 /**
  * Provides the operation to set this data row as the primary and super primary.
@@ -175,9 +182,11 @@ private fun ExistingDataEntity.clearSuperPrimary(contactId: Long): ContentProvid
  *
  * See DEV_NOTES "Data Primary and Super Primary Rows" section for more info.
  */
-private fun ExistingDataEntity.setPrimaryAndSuperPrimary(dataId: Long): ContentProviderOperation =
-    newUpdate(if (isProfile) ProfileUris.DATA.uri else Table.Data.uri)
-        .withSelection(Fields.DataId equalTo dataId)
-        .withValue(Fields.IsPrimary, 1)
-        .withValue(Fields.IsSuperPrimary, 1)
-        .build()
+private fun ExistingDataEntity.setPrimaryAndSuperPrimary(
+    dataId: Long,
+    contactsApi: Contacts
+): ContentProviderOperation = newUpdate(contactsApi.dataUri(isProfile))
+    .withSelection(Fields.DataId equalTo dataId)
+    .withValue(Fields.IsPrimary, 1)
+    .withValue(Fields.IsSuperPrimary, 1)
+    .build()

@@ -10,13 +10,25 @@ internal class FileAsOperationFactory :
     AbstractCustomDataOperation.Factory<FileAsField, FileAsEntity> {
 
     override fun create(
-        isProfile: Boolean, includeFields: Set<FileAsField>
-    ): AbstractCustomDataOperation<FileAsField, FileAsEntity> =
-        FileAsOperation(isProfile, includeFields)
+        callerIsSyncAdapter: Boolean,
+        isProfile: Boolean,
+        includeFields: Set<FileAsField>
+    ): AbstractCustomDataOperation<FileAsField, FileAsEntity> = FileAsOperation(
+        callerIsSyncAdapter = callerIsSyncAdapter,
+        isProfile = isProfile,
+        includeFields = includeFields
+    )
 }
 
-private class FileAsOperation(isProfile: Boolean, includeFields: Set<FileAsField>) :
-    AbstractCustomDataOperation<FileAsField, FileAsEntity>(isProfile, includeFields) {
+private class FileAsOperation(
+    callerIsSyncAdapter: Boolean,
+    isProfile: Boolean,
+    includeFields: Set<FileAsField>
+) : AbstractCustomDataOperation<FileAsField, FileAsEntity>(
+    callerIsSyncAdapter = callerIsSyncAdapter,
+    isProfile = isProfile,
+    includeFields = includeFields
+) {
 
     override val mimeType: MimeType.Custom = GoogleContactsMimeType.FileAs
 

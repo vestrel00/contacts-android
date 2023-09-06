@@ -83,10 +83,10 @@ class AccountView @JvmOverloads constructor(
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        setOnClickListener { _ ->
-            activity?.let { activity ->
+        setOnClickListener {
+            activity?.let {
                 AccountsActivity.selectAccounts(
-                    activity,
+                    it,
                     false,
                     arrayListOf(rawContact?.account),
                     rawContact?.idOrNull?.toString()

@@ -12,9 +12,9 @@ private val TABLE = Table.Groups
 /**
  * Builds [ContentProviderOperation]s for [Table.Groups].
  */
-internal class GroupsOperation {
+internal class GroupsOperation constructor(private val callerIsSyncAdapter: Boolean) {
 
-    fun insert(group: NewGroup): ContentProviderOperation = newInsert(TABLE)
+    fun insert(group: NewGroup): ContentProviderOperation = newInsert(TABLE, callerIsSyncAdapter)
         .withValue(GroupsFields.Title, group.title)
         .withValue(GroupsFields.AccountName, group.account?.name)
         .withValue(GroupsFields.AccountType, group.account?.type)
@@ -25,9 +25,10 @@ internal class GroupsOperation {
         // .withValue(Fields.Group.AutoAdd, it.autoAdd.toSqlValue())
         .build()
 
-    fun update(group: ExistingGroupEntity): ContentProviderOperation = newUpdate(TABLE)
-        .withSelection(GroupsFields.Id equalTo group.id)
-        .withValue(GroupsFields.Title, group.title)
-        .withValue(GroupsFields.SourceId, group.sourceId)
-        .build()
+    fun update(group: ExistingGroupEntity): ContentProviderOperation =
+        newUpdate(TABLE, callerIsSyncAdapter)
+            .withSelection(GroupsFields.Id equalTo group.id)
+            .withValue(GroupsFields.Title, group.title)
+            .withValue(GroupsFields.SourceId, group.sourceId)
+            .build()
 }

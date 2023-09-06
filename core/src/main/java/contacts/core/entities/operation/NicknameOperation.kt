@@ -5,8 +5,15 @@ import contacts.core.NicknameField
 import contacts.core.entities.MimeType
 import contacts.core.entities.NicknameEntity
 
-internal class NicknameOperation(isProfile: Boolean, includeFields: Set<NicknameField>) :
-    AbstractDataOperation<NicknameField, NicknameEntity>(isProfile, includeFields) {
+internal class NicknameOperation(
+    callerIsSyncAdapter: Boolean,
+    isProfile: Boolean,
+    includeFields: Set<NicknameField>
+) : AbstractDataOperation<NicknameField, NicknameEntity>(
+    callerIsSyncAdapter = callerIsSyncAdapter,
+    isProfile = isProfile,
+    includeFields = includeFields
+) {
 
     override val mimeType = MimeType.Nickname
 

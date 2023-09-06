@@ -12,14 +12,19 @@ import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
 import contacts.core.equalTo
+import contacts.core.util.rawContactsUri
 
 /**
  * Builds [ContentProviderOperation]s for [Table.RawContacts] and [ProfileUris.RAW_CONTACTS].
  */
-internal class RawContactsOperation(private val isProfile: Boolean) {
+internal class RawContactsOperation(
+    callerIsSyncAdapter: Boolean, isProfile: Boolean
+) {
 
-    private val contentUri: Uri
-        get() = if (isProfile) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri
+    private val contentUri: Uri = rawContactsUri(
+        callerIsSyncAdapter = callerIsSyncAdapter,
+        isProfile = isProfile
+    )
 
     fun insert(rawContactAccount: Account?, sourceId: String?): ContentProviderOperation =
         newInsert(contentUri)
@@ -35,8 +40,7 @@ internal class RawContactsOperation(private val isProfile: Boolean) {
             .build()
 
     fun update(
-        rawContact: ExistingRawContactEntity,
-        includeFields: Set<RawContactsField>
+        rawContact: ExistingRawContactEntity, includeFields: Set<RawContactsField>
     ): ContentProviderOperation? = if (!includeFields.contains(RawContactsFields.SourceId)) {
         null
     } else {

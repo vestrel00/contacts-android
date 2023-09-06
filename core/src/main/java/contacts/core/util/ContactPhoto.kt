@@ -9,15 +9,10 @@ import android.net.Uri
 import android.provider.ContactsContract
 import contacts.core.*
 import contacts.core.entities.ExistingContactEntity
-import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.entities.MimeType
 import contacts.core.entities.MutableContact
-import contacts.core.entities.PhotoEntity
 import contacts.core.entities.cursor.contactsCursor
-import contacts.core.entities.cursor.dataCursor
 import contacts.core.entities.operation.withSelection
-import contacts.core.entities.table.ProfileUris
-import contacts.core.entities.table.Table
 import java.io.IOException
 import java.io.InputStream
 
@@ -55,7 +50,7 @@ fun ExistingContactEntity.photoInputStream(contacts: Contacts): InputStream? {
     }
 
     return contacts.contentResolver.query(
-        if (isProfile) ProfileUris.CONTACTS.uri else Table.Contacts.uri,
+        contacts.contactsUri(isProfile = isProfile),
         Include(ContactsFields.PhotoUri),
         ContactsFields.Id equalTo id
     ) {
@@ -203,7 +198,7 @@ fun ExistingContactEntity.photoThumbnailInputStream(contacts: Contacts): InputSt
     }
 
     return contacts.contentResolver.query(
-        if (isProfile) ProfileUris.CONTACTS.uri else Table.Contacts.uri,
+        contacts.contactsUri(isProfile = isProfile),
         Include(ContactsFields.PhotoThumbnailUri),
         ContactsFields.Id equalTo id
     ) {
@@ -474,8 +469,9 @@ fun ExistingContactEntity.removePhotoDirect(
     }
 
     return contacts.contentResolver.applyBatch(
-        newDelete(if (isProfile) ProfileUris.DATA.uri else Table.Data.uri)
-            .withSelection(whereId and (Fields.MimeType equalTo MimeType.Photo))
+        newDelete(
+            contacts.dataUri(isProfile = isProfile)
+        ).withSelection(whereId and (Fields.MimeType equalTo MimeType.Photo))
             .build()
     ) != null
 }

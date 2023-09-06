@@ -7,13 +7,23 @@ internal class HandleNameOperationFactory :
     AbstractCustomDataOperation.Factory<HandleNameField, HandleNameEntity> {
 
     override fun create(
-        isProfile: Boolean, includeFields: Set<HandleNameField>
-    ): AbstractCustomDataOperation<HandleNameField, HandleNameEntity> =
-        HandleNameOperation(isProfile, includeFields)
+        callerIsSyncAdapter: Boolean, isProfile: Boolean, includeFields: Set<HandleNameField>
+    ): AbstractCustomDataOperation<HandleNameField, HandleNameEntity> = HandleNameOperation(
+        callerIsSyncAdapter = callerIsSyncAdapter,
+        isProfile = isProfile,
+        includeFields = includeFields
+    )
 }
 
-private class HandleNameOperation(isProfile: Boolean, includeFields: Set<HandleNameField>) :
-    AbstractCustomDataOperation<HandleNameField, HandleNameEntity>(isProfile, includeFields) {
+private class HandleNameOperation(
+    callerIsSyncAdapter: Boolean,
+    isProfile: Boolean,
+    includeFields: Set<HandleNameField>
+) : AbstractCustomDataOperation<HandleNameField, HandleNameEntity>(
+    callerIsSyncAdapter = callerIsSyncAdapter,
+    isProfile = isProfile,
+    includeFields = includeFields
+) {
 
     override val mimeType: MimeType.Custom = HandleNameMimeType
 

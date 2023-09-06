@@ -5,8 +5,15 @@ import contacts.core.SipAddressField
 import contacts.core.entities.MimeType
 import contacts.core.entities.SipAddressEntity
 
-internal class SipAddressOperation(isProfile: Boolean, includeFields: Set<SipAddressField>) :
-    AbstractDataOperation<SipAddressField, SipAddressEntity>(isProfile, includeFields) {
+internal class SipAddressOperation(
+    callerIsSyncAdapter: Boolean,
+    isProfile: Boolean,
+    includeFields: Set<SipAddressField>
+) : AbstractDataOperation<SipAddressField, SipAddressEntity>(
+    callerIsSyncAdapter = callerIsSyncAdapter,
+    isProfile = isProfile,
+    includeFields = includeFields
+) {
 
     override val mimeType = MimeType.SipAddress
 

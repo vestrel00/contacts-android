@@ -1,6 +1,5 @@
 package contacts.core.blockednumbers
 
-import android.content.ContentResolver
 import contacts.core.*
 import contacts.core.entities.BlockedNumber
 import contacts.core.entities.mapper.blockedNumberMapper
@@ -297,7 +296,7 @@ private class BlockedNumbersQueryImpl(
         var blockedNumbers = if (!privileges.canReadAndWrite() || cancel()) {
             emptyList()
         } else {
-            contentResolver.resolve(INCLUDE, where, orderBy, limit, offset, cancel)
+            contactsApi.resolve(INCLUDE, where, orderBy, limit, offset, cancel)
         }
 
         val isLimitBreached = blockedNumbers.size > limit
@@ -320,7 +319,7 @@ private class BlockedNumbersQueryImpl(
     }
 }
 
-private fun ContentResolver.resolve(
+private fun Contacts.resolve(
     include: Include<BlockedNumbersField>,
     where: Where<BlockedNumbersField>?,
     orderBy: CompoundOrderBy<BlockedNumbersField>,

@@ -4,9 +4,9 @@ import android.content.ContentProviderOperation
 import android.content.ContentProviderOperation.newUpdate
 import contacts.core.*
 import contacts.core.entities.OptionsEntity
-import contacts.core.entities.table.ProfileUris
-import contacts.core.entities.table.Table
+import contacts.core.util.contactsUri
 import contacts.core.util.isProfileId
+import contacts.core.util.rawContactsUri
 import contacts.core.util.toSqlValue
 
 /*
@@ -17,11 +17,19 @@ import contacts.core.util.toSqlValue
 internal class OptionsOperation {
 
     fun updateContactOptions(
-        contactId: Long, options: OptionsEntity?, includeFields: Set<DataContactsField>
+        callerIsSyncAdapter: Boolean,
+        contactId: Long,
+        options: OptionsEntity?,
+        includeFields: Set<DataContactsField>
     ): ContentProviderOperation? = if (includeFields.isEmpty()) {
         null
     } else {
-        newUpdate(if (contactId.isProfileId) ProfileUris.CONTACTS.uri else Table.Contacts.uri)
+        newUpdate(
+            contactsUri(
+                callerIsSyncAdapter = callerIsSyncAdapter,
+                isProfile = contactId.isProfileId
+            )
+        )
             .withSelection(ContactsFields.Id equalTo contactId)
             .withIncludedValue(
                 includeFields,
@@ -44,12 +52,18 @@ internal class OptionsOperation {
     }
 
     fun updateRawContactOptions(
-        options: OptionsEntity?, rawContactId: Long,  includeFields: Set<RawContactsField>
+        callerIsSyncAdapter: Boolean,
+        options: OptionsEntity?,
+        rawContactId: Long,
+        includeFields: Set<RawContactsField>
     ): ContentProviderOperation? = if (includeFields.isEmpty()) {
         null
     } else {
         newUpdate(
-            if (rawContactId.isProfileId) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri
+            rawContactsUri(
+                callerIsSyncAdapter = callerIsSyncAdapter,
+                isProfile = rawContactId.isProfileId
+            )
         )
             .withSelection(RawContactsFields.Id equalTo rawContactId)
             .withRawContactOptions(options, includeFields)
@@ -57,14 +71,18 @@ internal class OptionsOperation {
     }
 
     fun updateNewRawContactOptions(
+        callerIsSyncAdapter: Boolean,
+        isProfile: Boolean,
         options: OptionsEntity?,
-        includeFields: Set<RawContactsField>,
-        isProfile: Boolean
+        includeFields: Set<RawContactsField>
     ): ContentProviderOperation? = if (includeFields.isEmpty()) {
         null
     } else {
         newUpdate(
-            if (isProfile) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri
+            rawContactsUri(
+                callerIsSyncAdapter = callerIsSyncAdapter,
+                isProfile = isProfile
+            )
         )
             // The actual value in arrayOf does not matter.
             // It will be replaced by withSelectionBackReference.

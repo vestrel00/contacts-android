@@ -11,7 +11,7 @@ import contacts.entities.custom.rpg.stats.*
 
 class IntegrateRpgCustomDataActivity : Activity() {
 
-    val contacts = Contacts(this, CustomDataRegistry().register(RpgRegistration()))
+    val contacts = Contacts(this, false, CustomDataRegistry().register(RpgRegistration()))
 
     fun getContactsWithRpgCustomData(): List<Contact> = contacts
         .query()

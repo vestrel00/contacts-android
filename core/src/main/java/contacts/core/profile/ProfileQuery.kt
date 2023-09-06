@@ -1,7 +1,6 @@
 package contacts.core.profile
 
 import android.accounts.Account
-import android.content.ContentResolver
 import contacts.core.*
 import contacts.core.entities.Contact
 import contacts.core.entities.cursor.rawContactsCursor
@@ -331,7 +330,7 @@ private class ProfileQueryImpl(
         val profileContact = if (!permissions.canQuery()) {
             null
         } else {
-            contentResolver.resolve(
+            contactsApi.resolve(
                 customDataRegistry, rawContactsWhere, include, includeRawContactsFields, cancel
             )
         }
@@ -350,7 +349,7 @@ private class ProfileQueryImpl(
     }
 }
 
-private fun ContentResolver.resolve(
+private fun Contacts.resolve(
     customDataRegistry: CustomDataRegistry,
     rawContactsWhere: Where<RawContactsField>?,
     include: Include<AbstractDataField>,
@@ -367,8 +366,8 @@ private fun ContentResolver.resolve(
     val contactsMapper = ContactsMapper(customDataRegistry, cancel)
 
     // Collect the profile Contact, if exist.
-    query(
-        ProfileUris.CONTACTS.uri,
+    contentResolver.query(
+        ProfileUris.CONTACTS.uri(callerIsSyncAdapter),
         include.onlyContactsFields(),
         null,
         processCursor = contactsMapper::processContactsCursor
@@ -376,8 +375,10 @@ private fun ContentResolver.resolve(
 
     // Collect RawContacts.
     if (!cancel() && rawContactIds.isNotEmpty()) {
-        query(
-            ProfileUris.RAW_CONTACTS.uri,
+        contentResolver.query(
+            // Note that CALLER_IS_SYNCADAPTER probably does not really matter for queries but
+            // might as well be consistent...
+            ProfileUris.RAW_CONTACTS.uri(callerIsSyncAdapter),
             includeRawContactsFields,
             RawContactsFields.Id `in` rawContactIds,
             processCursor = contactsMapper::processRawContactsCursor
@@ -386,8 +387,10 @@ private fun ContentResolver.resolve(
 
     // Collect Data
     if (!cancel() && rawContactIds.isNotEmpty()) {
-        query(
-            ProfileUris.DATA.uri,
+        contentResolver.query(
+            // Note that CALLER_IS_SYNCADAPTER probably does not really matter for queries but
+            // might as well be consistent...
+            ProfileUris.DATA.uri(callerIsSyncAdapter),
             include,
             Fields.RawContact.Id `in` rawContactIds,
             processCursor = contactsMapper::processDataCursor
@@ -397,10 +400,12 @@ private fun ContentResolver.resolve(
     return contactsMapper.mapContacts().firstOrNull()
 }
 
-private fun ContentResolver.rawContactIds(
+private fun Contacts.rawContactIds(
     rawContactsWhere: Where<RawContactsField>?, cancel: () -> Boolean
-): Set<Long> = query(
-    ProfileUris.RAW_CONTACTS.uri,
+): Set<Long> = contentResolver.query(
+    // Note that CALLER_IS_SYNCADAPTER probably does not really matter for queries but
+    // might as well be consistent...
+    ProfileUris.RAW_CONTACTS.uri(callerIsSyncAdapter),
     Include(RawContactsFields.Id),
     // There may be RawContacts that are marked for deletion that have not yet been deleted.
     (RawContactsFields.Deleted notEqualTo true) and rawContactsWhere

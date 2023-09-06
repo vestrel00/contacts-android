@@ -1,7 +1,6 @@
 package contacts.core.groups
 
 import android.accounts.Account
-import android.content.ContentResolver
 import contacts.core.*
 import contacts.core.entities.NewGroup
 import contacts.core.entities.operation.GroupsOperation
@@ -265,7 +264,7 @@ private class GroupsInsertImpl(
                         null
                     } else {
                         // Group title does not yet exist. Proceed to insert.
-                        contentResolver.insertGroup(group).also { id ->
+                        contactsApi.insertGroup(group).also { id ->
                             if (id == null) {
                                 // Insert failed.
                                 failureReasons[group] = FailureReason.UNKNOWN
@@ -289,8 +288,8 @@ private class GroupsInsertImpl(
     }
 }
 
-private fun ContentResolver.insertGroup(group: NewGroup): Long? {
-    val results = applyBatch(GroupsOperation().insert(group))
+private fun Contacts.insertGroup(group: NewGroup): Long? {
+    val results = contentResolver.applyBatch(GroupsOperation(callerIsSyncAdapter).insert(group))
 
     /*
      * The ContentProviderResult[0] contains the first result of the batch, which is the

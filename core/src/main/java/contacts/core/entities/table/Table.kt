@@ -6,59 +6,58 @@ import android.os.Build
 import android.provider.BlockedNumberContract
 import android.provider.ContactsContract
 import contacts.core.*
+import contacts.core.util.forSyncAdapter
 
 /**
  * Defines all of the database tables used by this library.
  */
-internal sealed interface Table<out T : Field> {
+internal sealed class Table<out T : Field>(protected val uri: Uri) {
 
-    val uri: Uri
+    sealed class ContactsContractTable<out T : Field>(uri: Uri) : Table<T>(uri) {
+        fun uri(callerIsSyncAdapter: Boolean): Uri = uri.forSyncAdapter(callerIsSyncAdapter)
+    }
+
+    // Expose the protected uri. We could just remove the protected modifier from uri but making
+    // the refactors for https://github.com/vestrel00/contacts-android/issues/308 would have been
+    // more difficult do without missing anything.
+    fun uri(): Uri = uri
 
     /**
      * See [ContactsContract.Data].
      */
-    object Data : Table<AbstractDataField> {
-        override val uri: Uri = ContactsContract.Data.CONTENT_URI
-    }
+    object Data : ContactsContractTable<AbstractDataField>(ContactsContract.Data.CONTENT_URI)
 
     /**
      * See [ContactsContract.RawContacts].
      */
-    object RawContacts : Table<RawContactsField> {
-        override val uri: Uri = ContactsContract.RawContacts.CONTENT_URI
-    }
+    object RawContacts : ContactsContractTable<RawContactsField>(
+        ContactsContract.RawContacts.CONTENT_URI
+    )
 
     /**
      * See [ContactsContract.Contacts].
      */
-    object Contacts : Table<ContactsField> {
-        override val uri: Uri = ContactsContract.Contacts.CONTENT_URI
-    }
+    object Contacts : ContactsContractTable<ContactsField>(ContactsContract.Contacts.CONTENT_URI)
 
     /**
      * See [ContactsContract.Groups].
      */
-    object Groups : Table<GroupsField> {
-        override val uri: Uri = ContactsContract.Groups.CONTENT_URI
-    }
+    object Groups : ContactsContractTable<GroupsField>(ContactsContract.Groups.CONTENT_URI)
 
     /**
      * See [ContactsContract.AggregationExceptions].
      */
-    object AggregationExceptions : Table<AggregationExceptionsField> {
-        override val uri: Uri = ContactsContract.AggregationExceptions.CONTENT_URI
-    }
+    object AggregationExceptions : ContactsContractTable<AggregationExceptionsField>(
+        ContactsContract.AggregationExceptions.CONTENT_URI
+    )
 
     /**
      * See [BlockedNumberContract.BlockedNumbers].
      */
     // [ANDROID X] @RequiresApi (not using annotation to avoid dependency on androidx.annotation)
     @TargetApi(Build.VERSION_CODES.N)
-    object BlockedNumbers : Table<BlockedNumbersField> {
-        override val uri: Uri = BlockedNumberContract.BlockedNumbers.CONTENT_URI
-    }
+    object BlockedNumbers :
+        Table<BlockedNumbersField>(BlockedNumberContract.BlockedNumbers.CONTENT_URI)
 
-    object SimContacts : Table<SimContactsField> {
-        override val uri: Uri = Uri.parse("content://icc/adn")
-    }
+    object SimContacts : Table<SimContactsField>(Uri.parse("content://icc/adn"))
 }

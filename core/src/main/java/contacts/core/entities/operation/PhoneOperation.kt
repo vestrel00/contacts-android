@@ -5,8 +5,15 @@ import contacts.core.PhoneField
 import contacts.core.entities.MimeType
 import contacts.core.entities.PhoneEntity
 
-internal class PhoneOperation(isProfile: Boolean, includeFields: Set<PhoneField>) :
-    AbstractDataOperation<PhoneField, PhoneEntity>(isProfile, includeFields) {
+internal class PhoneOperation(
+    callerIsSyncAdapter: Boolean,
+    isProfile: Boolean,
+    includeFields: Set<PhoneField>
+) : AbstractDataOperation<PhoneField, PhoneEntity>(
+    callerIsSyncAdapter = callerIsSyncAdapter,
+    isProfile = isProfile,
+    includeFields = includeFields
+) {
 
     override val mimeType = MimeType.Phone
 

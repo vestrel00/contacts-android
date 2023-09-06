@@ -398,7 +398,7 @@ private class UpdateImpl(
                     // enforce API design.
                     false
                 } else if (contact.isBlank && deleteBlanks) {
-                    contentResolver.deleteRawContactsWhere(RawContactsFields.ContactId equalTo contact.id)
+                    contactsApi.deleteRawContactsWhere(RawContactsFields.ContactId equalTo contact.id)
                 } else {
                     contactsApi.updateContact(
                         include.fields,
@@ -419,7 +419,7 @@ private class UpdateImpl(
                     // enforce API design.
                     false
                 } else if (rawContact.isBlank && deleteBlanks) {
-                    contentResolver.deleteRawContactsWhere(RawContactsFields.Id equalTo rawContact.id)
+                    contactsApi.deleteRawContactsWhere(RawContactsFields.Id equalTo rawContact.id)
                 } else {
                     contactsApi.updateRawContact(
                         include.fields,
@@ -469,6 +469,7 @@ internal fun Contacts.updateContact(
     // takes priority of RawContacts options. Users may exclude Fields.Contact.Options if they want
     // to update RawContact options.
     OptionsOperation().updateContactOptions(
+        callerIsSyncAdapter = callerIsSyncAdapter,
         contact.id,
         contact.options,
         Fields.Contact.Options.intersect(includeFields)
@@ -550,62 +551,86 @@ private fun Contacts.updateOperationsForRawContact(
 
     val operations = arrayListOf<ContentProviderOperation>()
 
-    RawContactsOperation(isProfile)
-        .update(rawContact, includeRawContactsFields)
+    RawContactsOperation(
+        callerIsSyncAdapter = callerIsSyncAdapter,
+        isProfile = isProfile
+    ).update(rawContact, includeRawContactsFields)
         ?.let(operations::add)
 
     operations.addAll(
-        AddressOperation(isProfile, Fields.Address.intersect(includeFields))
-            .updateInsertOrDeleteDataForRawContact(
-                rawContact.addresses, rawContact.id, contentResolver
-            )
-    )
-
-    operations.addAll(
-        EmailOperation(isProfile, Fields.Email.intersect(includeFields))
-            .updateInsertOrDeleteDataForRawContact(
-                rawContact.emails, rawContact.id, contentResolver
-            )
-    )
-
-    operations.addAll(
-        EventOperation(isProfile, Fields.Event.intersect(includeFields))
-            .updateInsertOrDeleteDataForRawContact(
-                rawContact.events, rawContact.id, contentResolver
-            )
-    )
-
-    operations.addAll(
-        GroupMembershipOperation(
-            isProfile,
-            Fields.GroupMembership.intersect(includeFields),
-            groups()
-        ).updateInsertOrDelete(
-            rawContact.groupMemberships, rawContact.id, applicationContext
+        AddressOperation(
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
+            Fields.Address.intersect(includeFields)
+        ).updateInsertOrDeleteDataForRawContact(
+            rawContact.addresses, rawContact.id, contentResolver
         )
     )
 
     operations.addAll(
-        ImOperation(isProfile, Fields.Im.intersect(includeFields))
-            .updateInsertOrDeleteDataForRawContact(
-                rawContact.ims, rawContact.id, contentResolver
-            )
+        EmailOperation(
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
+            Fields.Email.intersect(includeFields)
+        ).updateInsertOrDeleteDataForRawContact(
+            rawContact.emails, rawContact.id, contentResolver
+        )
     )
 
-    NameOperation(isProfile, Fields.Name.intersect(includeFields))
-        .updateInsertOrDeleteDataForRawContact(
-            rawContact.name, rawContact.id, contentResolver
-        )?.let(operations::add)
+    operations.addAll(
+        EventOperation(
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
+            Fields.Event.intersect(includeFields)
+        ).updateInsertOrDeleteDataForRawContact(
+            rawContact.events, rawContact.id, contentResolver
+        )
+    )
 
-    NicknameOperation(isProfile, Fields.Nickname.intersect(includeFields))
-        .updateInsertOrDeleteDataForRawContact(
-            rawContact.nickname, rawContact.id, contentResolver
-        )?.let(operations::add)
+    operations.addAll(
+        GroupMembershipOperation(
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
+            Fields.GroupMembership.intersect(includeFields),
+            groups()
+        ).updateInsertOrDelete(
+            rawContact.groupMemberships, rawContact.id, this
+        )
+    )
 
-    NoteOperation(isProfile, Fields.Note.intersect(includeFields))
-        .updateInsertOrDeleteDataForRawContact(
-            rawContact.note, rawContact.id, contentResolver
-        )?.let(operations::add)
+    operations.addAll(
+        ImOperation(
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
+            Fields.Im.intersect(includeFields)
+        ).updateInsertOrDeleteDataForRawContact(
+            rawContact.ims, rawContact.id, contentResolver
+        )
+    )
+
+    NameOperation(
+        callerIsSyncAdapter = callerIsSyncAdapter,
+        isProfile = isProfile,
+        Fields.Name.intersect(includeFields)
+    ).updateInsertOrDeleteDataForRawContact(
+        rawContact.name, rawContact.id, contentResolver
+    )?.let(operations::add)
+
+    NicknameOperation(
+        callerIsSyncAdapter = callerIsSyncAdapter,
+        isProfile = isProfile,
+        Fields.Nickname.intersect(includeFields)
+    ).updateInsertOrDeleteDataForRawContact(
+        rawContact.nickname, rawContact.id, contentResolver
+    )?.let(operations::add)
+
+    NoteOperation(
+        callerIsSyncAdapter = callerIsSyncAdapter,
+        isProfile = isProfile,
+        Fields.Note.intersect(includeFields)
+    ).updateInsertOrDeleteDataForRawContact(
+        rawContact.note, rawContact.id, contentResolver
+    )?.let(operations::add)
 
     // Apply the options operations after the group memberships operation.
     // Any remove or add membership operation to the favorites group will be overshadowed by the
@@ -613,48 +638,65 @@ private fun Contacts.updateOperationsForRawContact(
     // group membership to the favorites group (if exist). If starred is false, then the favorites
     // group membership will be removed.
     OptionsOperation().updateRawContactOptions(
+        callerIsSyncAdapter = callerIsSyncAdapter,
         rawContact.options,
         rawContact.id,
         RawContactsFields.Options.all.intersect(includeRawContactsFields)
     )?.let(operations::add)
 
-    OrganizationOperation(isProfile, Fields.Organization.intersect(includeFields))
-        .updateInsertOrDeleteDataForRawContact(
-            rawContact.organization, rawContact.id, contentResolver
-        )?.let(operations::add)
+    OrganizationOperation(
+        callerIsSyncAdapter = callerIsSyncAdapter,
+        isProfile = isProfile,
+        Fields.Organization.intersect(includeFields)
+    ).updateInsertOrDeleteDataForRawContact(
+        rawContact.organization, rawContact.id, contentResolver
+    )?.let(operations::add)
 
     operations.addAll(
-        PhoneOperation(isProfile, Fields.Phone.intersect(includeFields))
-            .updateInsertOrDeleteDataForRawContact(
-                rawContact.phones, rawContact.id, contentResolver
-            )
+        PhoneOperation(
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
+            Fields.Phone.intersect(includeFields)
+        ).updateInsertOrDeleteDataForRawContact(
+            rawContact.phones, rawContact.id, contentResolver
+        )
     )
 
     // Photo is intentionally excluded here. Use the ContactPhoto and RawContactPhoto extensions
     // to set full-sized and thumbnail photos.
 
     operations.addAll(
-        RelationOperation(isProfile, Fields.Relation.intersect(includeFields))
-            .updateInsertOrDeleteDataForRawContact(
-                rawContact.relations, rawContact.id, contentResolver
-            )
+        RelationOperation(
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
+            Fields.Relation.intersect(includeFields)
+        ).updateInsertOrDeleteDataForRawContact(
+            rawContact.relations, rawContact.id, contentResolver
+        )
     )
 
-    SipAddressOperation(isProfile, Fields.SipAddress.intersect(includeFields))
-        .updateInsertOrDeleteDataForRawContact(
-            rawContact.sipAddress, rawContact.id, contentResolver
-        )?.let(operations::add)
+    SipAddressOperation(
+        callerIsSyncAdapter = callerIsSyncAdapter,
+        isProfile = isProfile,
+        Fields.SipAddress.intersect(includeFields)
+    ).updateInsertOrDeleteDataForRawContact(
+        rawContact.sipAddress, rawContact.id, contentResolver
+    )?.let(operations::add)
 
     operations.addAll(
-        WebsiteOperation(isProfile, Fields.Website.intersect(includeFields))
-            .updateInsertOrDeleteDataForRawContact(
-                rawContact.websites, rawContact.id, contentResolver
-            )
+        WebsiteOperation(
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
+            Fields.Website.intersect(includeFields)
+        ).updateInsertOrDeleteDataForRawContact(
+            rawContact.websites, rawContact.id, contentResolver
+        )
     )
 
     // Process custom data
     operations.addAll(
         rawContact.customDataUpdateInsertOrDeleteOperations(
+            callerIsSyncAdapter = callerIsSyncAdapter,
             contentResolver, includeFields, customDataRegistry
         )
     )
@@ -663,6 +705,7 @@ private fun Contacts.updateOperationsForRawContact(
 }
 
 private fun ExistingRawContactEntity.customDataUpdateInsertOrDeleteOperations(
+    callerIsSyncAdapter: Boolean,
     contentResolver: ContentResolver,
     includeFields: Set<AbstractDataField>,
     customDataRegistry: CustomDataRegistry
@@ -672,8 +715,9 @@ private fun ExistingRawContactEntity.customDataUpdateInsertOrDeleteOperations(
 
         val countRestriction = customDataEntry.countRestriction
         val customDataOperation = customDataEntry.operationFactory.create(
-            isProfile,
-            customDataEntry.fieldSet.intersect(includeFields)
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
+            includeFields = customDataEntry.fieldSet.intersect(includeFields)
         )
 
         when (countRestriction) {

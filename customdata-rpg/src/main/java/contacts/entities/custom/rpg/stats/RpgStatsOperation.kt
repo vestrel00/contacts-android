@@ -10,13 +10,23 @@ internal class RpgStatsOperationFactory :
     AbstractCustomDataOperation.Factory<RpgStatsField, RpgStatsEntity> {
 
     override fun create(
-        isProfile: Boolean, includeFields: Set<RpgStatsField>
-    ): AbstractCustomDataOperation<RpgStatsField, RpgStatsEntity> =
-        RpgStatsOperation(isProfile, includeFields)
+        callerIsSyncAdapter: Boolean, isProfile: Boolean, includeFields: Set<RpgStatsField>
+    ): AbstractCustomDataOperation<RpgStatsField, RpgStatsEntity> = RpgStatsOperation(
+        callerIsSyncAdapter = callerIsSyncAdapter,
+        isProfile = isProfile,
+        includeFields = includeFields
+    )
 }
 
-private class RpgStatsOperation(isProfile: Boolean, includeFields: Set<RpgStatsField>) :
-    AbstractCustomDataOperation<RpgStatsField, RpgStatsEntity>(isProfile, includeFields) {
+private class RpgStatsOperation(
+    callerIsSyncAdapter: Boolean,
+    isProfile: Boolean,
+    includeFields: Set<RpgStatsField>
+) : AbstractCustomDataOperation<RpgStatsField, RpgStatsEntity>(
+    callerIsSyncAdapter = callerIsSyncAdapter,
+    isProfile = isProfile,
+    includeFields = includeFields
+) {
 
     override val mimeType: MimeType.Custom = RpgMimeType.Stats
 

@@ -204,7 +204,7 @@ sealed interface RawContactEntity : Entity {
      * insertion or updating its value afterwards is typically only done in the context of sync
      * adapters. This is not for general app use!
      *
-     * Do NOT mess with this unless you know exactly what you are doing. Otherwise, it WILL cause
+     * Do NOT mess with this unless you know exactly what you are doing. Otherwise, it MAY cause
      * issues with syncing with respect to the Account's sync adapter and remote servers/databases.
      *
      * ## Other things to note

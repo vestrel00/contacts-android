@@ -17,9 +17,9 @@ import contacts.core.entities.cursor.CursorHolder
 import contacts.core.entities.cursor.dataCursor
 import contacts.core.entities.isNotNullOrBlank
 import contacts.core.entities.propertiesAreAllNullOrBlank
-import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
 import contacts.core.equalTo
+import contacts.core.util.dataUri
 import contacts.core.util.query
 import contacts.core.util.toSqlValue
 
@@ -30,12 +30,16 @@ import contacts.core.util.toSqlValue
  *
  * Insert and update functions will do nothing for data that is not specified in [includeFields].
  */
-abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
+abstract class AbstractDataOperation<F : DataField, E : DataEntity> constructor(
+    callerIsSyncAdapter: Boolean,
     isProfile: Boolean,
     protected val includeFields: Set<F>
 ) {
 
-    internal val contentUri: Uri = if (isProfile) ProfileUris.DATA.uri else Table.Data.uri
+    internal val contentUri: Uri = dataUri(
+        callerIsSyncAdapter = callerIsSyncAdapter,
+        isProfile = isProfile
+    )
 
     protected abstract val mimeType: MimeType
 

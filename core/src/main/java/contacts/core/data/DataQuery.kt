@@ -1,13 +1,10 @@
 package contacts.core.data
 
 import android.accounts.Account
-import android.content.ContentResolver
 import contacts.core.*
 import contacts.core.entities.*
 import contacts.core.entities.cursor.rawContactsCursor
 import contacts.core.entities.mapper.dataEntityMapperFor
-import contacts.core.entities.table.ProfileUris
-import contacts.core.entities.table.Table
 import contacts.core.util.*
 
 /**
@@ -602,8 +599,7 @@ internal fun <T : ExistingDataEntity> Contacts.resolveDataEntity(
     if (rawContactsWhere != null) {
         // Limit the data to the set associated with the RawContacts found in the RawContacts
         // table matching the rawContactsWhere.
-        val rawContactIds =
-            contentResolver.findRawContactIdsInRawContactsTable(isProfile, rawContactsWhere, cancel)
+        val rawContactIds = findRawContactIdsInRawContactsTable(isProfile, rawContactsWhere, cancel)
 
         dataWhere = dataWhere and (Fields.RawContact.Id `in` rawContactIds)
     }
@@ -614,7 +610,7 @@ internal fun <T : ExistingDataEntity> Contacts.resolveDataEntity(
 
     return contentResolver.query(
         // mimeType.contentUri(),
-        if (isProfile) ProfileUris.DATA.uri else Table.Data.uri,
+        dataUri(isProfile),
         include, dataWhere, "$orderBy LIMIT $limit OFFSET $offset"
     ) {
         buildList {
@@ -632,28 +628,27 @@ internal fun <T : ExistingDataEntity> Contacts.resolveDataEntity(
     } ?: emptyList()
 }
 
-private fun ContentResolver.findRawContactIdsInRawContactsTable(
+private fun Contacts.findRawContactIdsInRawContactsTable(
     isProfile: Boolean,
     rawContactsWhere: Where<RawContactsField>,
     cancel: () -> Boolean
-): Set<Long> =
-    query(
-        if (isProfile) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri,
-        Include(RawContactsFields.Id),
-        rawContactsWhere
-    ) {
-        buildSet {
-            val rawContactsCursor = it.rawContactsCursor()
-            while (!cancel() && it.moveToNext()) {
-                add(rawContactsCursor.rawContactId)
-            }
-
-            // Ensure only complete data sets are returned.
-            if (cancel()) {
-                clear()
-            }
+): Set<Long> = contentResolver.query(
+    rawContactsUri(isProfile),
+    Include(RawContactsFields.Id),
+    rawContactsWhere
+) {
+    buildSet {
+        val rawContactsCursor = it.rawContactsCursor()
+        while (!cancel() && it.moveToNext()) {
+            add(rawContactsCursor.rawContactId)
         }
-    } ?: emptySet()
+
+        // Ensure only complete data sets are returned.
+        if (cancel()) {
+            clear()
+        }
+    }
+} ?: emptySet()
 
 private class DataQueryResult<E : ExistingDataEntity> private constructor(
     data: List<E>,

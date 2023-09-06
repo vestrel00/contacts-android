@@ -1,6 +1,5 @@
 package contacts.core.util
 
-import android.content.ContentResolver
 import contacts.core.*
 
 /**
@@ -177,7 +176,7 @@ internal fun <T : Field, R : Field> Where<T>.copyWithFieldValueSubstitutions(
         throw InvalidWhereFormException(this)
     }
 
-internal fun ContentResolver.reduceDataTableWhereForMatchingContactIds(
+internal fun Contacts.reduceDataTableWhereForMatchingContactIds(
     where: Where<AbstractDataField>,
     cancel: () -> Boolean = { false }
 ): Where<AbstractDataField> = reduceDataTableWhereForMatchingIds(
@@ -186,7 +185,7 @@ internal fun ContentResolver.reduceDataTableWhereForMatchingContactIds(
     findContactIdsInDataTable(it, cancel)
 }
 
-internal fun ContentResolver.reduceDataTableWhereForMatchingRawContactIds(
+internal fun Contacts.reduceDataTableWhereForMatchingRawContactIds(
     where: Where<AbstractDataField>,
     cancel: () -> Boolean = { false }
 ): Where<AbstractDataField> = reduceDataTableWhereForMatchingIds(

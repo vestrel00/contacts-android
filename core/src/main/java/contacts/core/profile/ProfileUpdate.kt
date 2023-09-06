@@ -391,7 +391,7 @@ private class ProfileUpdateImpl(
                     // enforce API design.
                     false
                 } else if (it.isBlank && deleteBlanks) {
-                    contentResolver.deleteRawContactsWhere(RawContactsFields.ContactId equalTo it.id)
+                    contactsApi.deleteRawContactsWhere(RawContactsFields.ContactId equalTo it.id)
                 } else {
                     contactsApi.updateContact(
                         include.fields,
@@ -412,7 +412,7 @@ private class ProfileUpdateImpl(
                     // design.
                     false
                 } else if (rawContact.isBlank && deleteBlanks) {
-                    contentResolver.deleteProfileContact()
+                    contactsApi.deleteProfileContact()
                 } else {
                     contactsApi.updateRawContact(
                         include.fields,

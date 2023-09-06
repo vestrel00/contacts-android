@@ -437,10 +437,7 @@ private class MoveRawContactsAcrossAccountsImpl(
                 // Ensure that the target Account is in system or is referencing the local "null"
                 // system Account.
                 val targetAccount = entry.targetAccount?.nullIfSamsungOrXiaomiLocalAccount()
-                if (
-                    targetAccount != null
-                    && targetAccount.isNotInSystem(contactsApi.applicationContext)
-                ) {
+                if (targetAccount != null && targetAccount.isNotInSystem(contactsApi)) {
                     failureReasons[entry.rawContactId] = FailureReason.INVALID_ACCOUNT
                     break
                 }
@@ -512,7 +509,7 @@ private class MoveRawContactsAcrossAccountsImpl(
                 contactsApi.link(rawContactCopyId, originalRawContact.contactId, cancel)
 
                 // Delete the original RawContact.
-                val originalDeleted = contentResolver.deleteRawContactsWhere(
+                val originalDeleted = contactsApi.deleteRawContactsWhere(
                     RawContactsFields.Id equalTo originalRawContact.id
                 )
 

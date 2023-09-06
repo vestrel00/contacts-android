@@ -1,7 +1,6 @@
 package contacts.core.profile
 
 import android.content.ContentProviderOperation.newDelete
-import android.content.ContentResolver
 import contacts.core.*
 import contacts.core.entities.ExistingContactEntity
 import contacts.core.entities.ExistingRawContactEntity
@@ -214,7 +213,7 @@ private class ProfileDeleteImpl(
         } else if (deleteProfileContact) {
             ProfileDeleteResult(
                 emptyMap(),
-                profileContactDeleteSuccess = contentResolver.deleteProfileContact(),
+                profileContactDeleteSuccess = contactsApi.deleteProfileContact(),
             )
         } else {
             val rawContactsResult = mutableMapOf<Long, Boolean>()
@@ -226,7 +225,7 @@ private class ProfileDeleteImpl(
                         // design.
                         false
                     } else {
-                        contentResolver.deleteRawContactsWhere(
+                        contactsApi.deleteRawContactsWhere(
                             RawContactsFields.Id equalTo rawContactId
                         )
                     }
@@ -248,7 +247,7 @@ private class ProfileDeleteImpl(
         ) {
             ProfileDeleteAllResult(isSuccessful = false)
         } else if (deleteProfileContact) {
-            ProfileDeleteAllResult(isSuccessful = contentResolver.deleteProfileContact())
+            ProfileDeleteAllResult(isSuccessful = contactsApi.deleteProfileContact())
         } else {
             val profileRawContactIds = rawContactIds.filter { it.isProfileId }
 
@@ -258,7 +257,10 @@ private class ProfileDeleteImpl(
             } else {
                 ProfileDeleteAllResult(
                     isSuccessful = contentResolver.applyBatch(
-                        RawContactsOperation(true)
+                        RawContactsOperation(
+                            callerIsSyncAdapter = contactsApi.callerIsSyncAdapter,
+                            isProfile = true
+                        )
                             .deleteRawContactsWhere(RawContactsFields.Id `in` profileRawContactIds)
                     ).deleteSuccess
                 )
@@ -269,8 +271,10 @@ private class ProfileDeleteImpl(
     }
 }
 
-internal fun ContentResolver.deleteProfileContact(): Boolean =
-    applyBatch(newDelete(ProfileUris.RAW_CONTACTS.uri).build()).deleteSuccess
+internal fun Contacts.deleteProfileContact(): Boolean =
+    contentResolver.applyBatch(
+        newDelete(ProfileUris.RAW_CONTACTS.uri(callerIsSyncAdapter)).build()
+    ).deleteSuccess
 
 private class ProfileDeleteResult private constructor(
     private val rawContactIdsResultMap: Map<Long, Boolean>,

@@ -9,7 +9,7 @@ import contacts.entities.custom.gender.*
 
 class IntegrateGenderCustomDataActivity : Activity() {
 
-    val contacts = Contacts(this, CustomDataRegistry().register(GenderRegistration()))
+    val contacts = Contacts(this, false, CustomDataRegistry().register(GenderRegistration()))
 
     fun getContactsWithGenderCustomData(): List<Contact> = contacts
         .query()

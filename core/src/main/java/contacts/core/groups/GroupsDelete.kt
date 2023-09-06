@@ -1,9 +1,9 @@
 package contacts.core.groups
 
 import android.content.ContentProviderOperation
-import android.content.ContentResolver
 import contacts.core.*
 import contacts.core.entities.ExistingGroupEntity
+import contacts.core.entities.operation.newDelete
 import contacts.core.entities.operation.withSelection
 import contacts.core.entities.table.Table
 import contacts.core.util.applyBatch
@@ -259,7 +259,7 @@ private class GroupsDeleteImpl(
         } else {
             val results = mutableMapOf<Long, Boolean>()
             for (groupId in groupsIds) {
-                results[groupId] = contentResolver.deleteGroupsWhere(
+                results[groupId] = contactsApi.deleteGroupsWhere(
                     // Attempting to delete a read-only group will result in a "successful" result
                     // even though the group was not actually deleted. The group will be marked as
                     // "deleted" in the local Contacts Provider database but will cause sync adapter
@@ -273,7 +273,7 @@ private class GroupsDeleteImpl(
 
             val whereResultMap = mutableMapOf<String, Boolean>()
             groupsWhere?.let {
-                whereResultMap[it.toString()] = contentResolver.deleteGroupsWhere(
+                whereResultMap[it.toString()] = contactsApi.deleteGroupsWhere(
                     // Attempting to delete a read-only group will result in a "successful" result
                     // even though the group was not actually deleted. The group will be marked as
                     // "deleted" in the local Contacts Provider database but will cause sync adapter
@@ -300,7 +300,7 @@ private class GroupsDeleteImpl(
             val operations = arrayListOf<ContentProviderOperation>()
 
             if (groupsIds.isNotEmpty()) {
-                deleteOperationFor(
+                contactsApi.deleteOperationFor(
                     // Attempting to delete a read-only group will result in a "successful" result
                     // even though the group was not actually deleted. The group will be marked as
                     // "deleted" in the local Contacts Provider database but will cause sync adapter
@@ -313,7 +313,7 @@ private class GroupsDeleteImpl(
             }
 
             groupsWhere?.let {
-                deleteOperationFor(
+                contactsApi.deleteOperationFor(
                     // Attempting to delete a read-only group will result in a "successful" result
                     // even though the group was not actually deleted. The group will be marked as
                     // "deleted" in the local Contacts Provider database but will cause sync adapter
@@ -334,11 +334,11 @@ private class GroupsDeleteImpl(
     }
 }
 
-private fun ContentResolver.deleteGroupsWhere(where: Where<GroupsField>): Boolean =
-    applyBatch(deleteOperationFor(where)).deleteSuccess
+private fun Contacts.deleteGroupsWhere(where: Where<GroupsField>): Boolean =
+    contentResolver.applyBatch(deleteOperationFor(where)).deleteSuccess
 
-private fun deleteOperationFor(where: Where<GroupsField>): ContentProviderOperation =
-    ContentProviderOperation.newDelete(Table.Groups.uri)
+private fun Contacts.deleteOperationFor(where: Where<GroupsField>): ContentProviderOperation =
+    newDelete(Table.Groups, callerIsSyncAdapter)
         .withSelection(where)
         .build()
 

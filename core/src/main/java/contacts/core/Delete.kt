@@ -1,7 +1,6 @@
 package contacts.core
 
 import android.content.ContentProviderOperation
-import android.content.ContentResolver
 import contacts.core.entities.ExistingContactEntity
 import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.entities.operation.RawContactsOperation
@@ -439,7 +438,7 @@ private class DeleteImpl(
                         // to enforce API design.
                         false
                     } else {
-                        contentResolver.deleteRawContactsWhere(
+                        contactsApi.deleteRawContactsWhere(
                             RawContactsFields.Id equalTo rawContactId
                         )
                     }
@@ -453,32 +452,32 @@ private class DeleteImpl(
                     // enforce API design.
                     false
                 } else {
-                    contentResolver.deleteRawContactsWhere(RawContactsFields.ContactId equalTo contactId)
+                    contactsApi.deleteRawContactsWhere(RawContactsFields.ContactId equalTo contactId)
                 }
             }
 
             val whereResultMap = mutableMapOf<String, Boolean>()
             rawContactsWhere?.let {
-                whereResultMap[it.toString()] = contentResolver.deleteRawContactsWhere(it)
+                whereResultMap[it.toString()] = contactsApi.deleteRawContactsWhere(it)
             }
             rawContactsWhereData?.let {
-                val reducedWhere = contentResolver.reduceDataTableWhereForMatchingRawContactIds(it)
-                whereResultMap[it.toString()] = contentResolver.deleteRawContactsWhere(
+                val reducedWhere = contactsApi.reduceDataTableWhereForMatchingRawContactIds(it)
+                whereResultMap[it.toString()] = contactsApi.deleteRawContactsWhere(
                     RawContactsFields.Id
-                            `in` contentResolver.findRawContactIdsInDataTable(reducedWhere)
+                            `in` contactsApi.findRawContactIdsInDataTable(reducedWhere)
                 )
             }
             contactsWhere?.let {
-                whereResultMap[it.toString()] = contentResolver.deleteRawContactsWhere(
+                whereResultMap[it.toString()] = contactsApi.deleteRawContactsWhere(
                     RawContactsFields.ContactId
-                            `in` contentResolver.findContactIdsInContactsTable(it)
+                            `in` contactsApi.findContactIdsInContactsTable(it)
                 )
             }
             contactsWhereData?.let {
-                val reducedWhere = contentResolver.reduceDataTableWhereForMatchingContactIds(it)
-                whereResultMap[it.toString()] = contentResolver.deleteRawContactsWhere(
+                val reducedWhere = contactsApi.reduceDataTableWhereForMatchingContactIds(it)
+                whereResultMap[it.toString()] = contactsApi.deleteRawContactsWhere(
                     RawContactsFields.ContactId
-                            `in` contentResolver.findContactIdsInDataTable(reducedWhere)
+                            `in` contactsApi.findContactIdsInDataTable(reducedWhere)
                 )
             }
 
@@ -506,37 +505,36 @@ private class DeleteImpl(
                 val operations = arrayListOf<ContentProviderOperation>()
 
                 if (nonProfileRawContactIds.isNotEmpty()) {
-                    deleteOperationFor(RawContactsFields.Id `in` nonProfileRawContactIds)
+                    contactsApi.deleteOperationFor(RawContactsFields.Id `in` nonProfileRawContactIds)
                         .let(operations::add)
                 }
 
                 if (nonProfileContactIds.isNotEmpty()) {
-                    deleteOperationFor(RawContactsFields.ContactId `in` nonProfileContactIds)
+                    contactsApi.deleteOperationFor(RawContactsFields.ContactId `in` nonProfileContactIds)
                         .let(operations::add)
                 }
 
                 rawContactsWhere?.let {
-                    deleteOperationFor(it).let(operations::add)
+                    contactsApi.deleteOperationFor(it).let(operations::add)
                 }
                 rawContactsWhereData?.let {
-                    val reducedWhere =
-                        contentResolver.reduceDataTableWhereForMatchingRawContactIds(it)
-                    deleteOperationFor(
+                    val reducedWhere = contactsApi.reduceDataTableWhereForMatchingRawContactIds(it)
+                    contactsApi.deleteOperationFor(
                         RawContactsFields.Id
-                                `in` contentResolver.findRawContactIdsInDataTable(reducedWhere)
+                                `in` contactsApi.findRawContactIdsInDataTable(reducedWhere)
                     ).let(operations::add)
                 }
                 contactsWhere?.let {
-                    deleteOperationFor(
+                    contactsApi.deleteOperationFor(
                         RawContactsFields.ContactId
-                                `in` contentResolver.findContactIdsInContactsTable(it)
+                                `in` contactsApi.findContactIdsInContactsTable(it)
                     ).let(operations::add)
                 }
                 contactsWhereData?.let {
-                    val reducedWhere = contentResolver.reduceDataTableWhereForMatchingContactIds(it)
-                    deleteOperationFor(
+                    val reducedWhere = contactsApi.reduceDataTableWhereForMatchingContactIds(it)
+                    contactsApi.deleteOperationFor(
                         RawContactsFields.ContactId
-                                `in` contentResolver.findContactIdsInDataTable(reducedWhere)
+                                `in` contactsApi.findContactIdsInDataTable(reducedWhere)
                     ).let(operations::add)
                 }
 
@@ -548,11 +546,14 @@ private class DeleteImpl(
     }
 }
 
-internal fun ContentResolver.deleteRawContactsWhere(where: Where<RawContactsField>): Boolean =
-    applyBatch(deleteOperationFor(where)).deleteSuccess
+internal fun Contacts.deleteRawContactsWhere(where: Where<RawContactsField>): Boolean =
+    contentResolver.applyBatch(deleteOperationFor(where)).deleteSuccess
 
-private fun deleteOperationFor(where: Where<RawContactsField>): ContentProviderOperation =
-    RawContactsOperation(false).deleteRawContactsWhere(where)
+private fun Contacts.deleteOperationFor(where: Where<RawContactsField>): ContentProviderOperation =
+    RawContactsOperation(
+        callerIsSyncAdapter = callerIsSyncAdapter,
+        isProfile = false
+    ).deleteRawContactsWhere(where)
 
 private class DeleteResult private constructor(
     private val rawContactIdsResultMap: Map<Long, Boolean>,

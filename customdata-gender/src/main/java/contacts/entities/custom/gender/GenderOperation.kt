@@ -7,13 +7,25 @@ internal class GenderOperationFactory :
     AbstractCustomDataOperation.Factory<GenderField, GenderEntity> {
 
     override fun create(
-        isProfile: Boolean, includeFields: Set<GenderField>
-    ): AbstractCustomDataOperation<GenderField, GenderEntity> =
-        GenderOperation(isProfile, includeFields)
+        callerIsSyncAdapter: Boolean,
+        isProfile: Boolean,
+        includeFields: Set<GenderField>
+    ): AbstractCustomDataOperation<GenderField, GenderEntity> = GenderOperation(
+        callerIsSyncAdapter = callerIsSyncAdapter,
+        isProfile = isProfile,
+        includeFields = includeFields
+    )
 }
 
-private class GenderOperation(isProfile: Boolean, includeFields: Set<GenderField>) :
-    AbstractCustomDataOperation<GenderField, GenderEntity>(isProfile, includeFields) {
+private class GenderOperation(
+    callerIsSyncAdapter: Boolean,
+    isProfile: Boolean,
+    includeFields: Set<GenderField>
+) : AbstractCustomDataOperation<GenderField, GenderEntity>(
+    callerIsSyncAdapter = callerIsSyncAdapter,
+    isProfile = isProfile,
+    includeFields = includeFields
+) {
 
     override val mimeType: MimeType.Custom = GenderMimeType
 

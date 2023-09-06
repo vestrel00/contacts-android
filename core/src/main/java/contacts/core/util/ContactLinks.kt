@@ -174,7 +174,7 @@ fun ExistingContactEntity.linkDirect(
 
     // Note that the result uri is null. There is no meaningful information we can get here.
     contactsApi.contentResolver.applyBatch(
-        aggregateExceptionsOperations(
+        contactsApi.aggregateExceptionsOperations(
             sortedRawContactIds,
             ContactsContract.AggregationExceptions.TYPE_KEEP_TOGETHER
         )
@@ -279,7 +279,7 @@ fun ExistingContactEntity.unlinkDirect(contactsApi: Contacts): ContactUnlink.Res
     }
 
     contactsApi.contentResolver.applyBatch(
-        aggregateExceptionsOperations(
+        contactsApi.aggregateExceptionsOperations(
             sortedRawContactIds,
             ContactsContract.AggregationExceptions.TYPE_KEEP_SEPARATE
         )
@@ -299,7 +299,7 @@ fun ExistingContactEntity.unlinkDirect(contactsApi: Contacts): ContactUnlink.Res
  *
  * See DEV_NOTES "AggregationExceptions table" section.
  */
-private fun aggregateExceptionsOperations(sortedRawContactIds: List<Long>, type: Int):
+private fun Contacts.aggregateExceptionsOperations(sortedRawContactIds: List<Long>, type: Int):
         ArrayList<ContentProviderOperation> = arrayListOf<ContentProviderOperation>().apply {
 
     for (i in 0 until (sortedRawContactIds.size - 1)) {
@@ -308,7 +308,7 @@ private fun aggregateExceptionsOperations(sortedRawContactIds: List<Long>, type:
             val rawContactId1 = sortedRawContactIds[i]
             val rawContactId2 = sortedRawContactIds[j]
 
-            val operation = newUpdate(Table.AggregationExceptions)
+            val operation = newUpdate(Table.AggregationExceptions, callerIsSyncAdapter)
                 .withValue(AggregationExceptionsFields.Type, type)
                 .withValue(AggregationExceptionsFields.RawContactId1, rawContactId1)
                 .withValue(AggregationExceptionsFields.RawContactId2, rawContactId2)
@@ -357,7 +357,7 @@ private fun Contacts.nameRowIdToUseAsDefault(contactIds: Set<Long>): Long? {
 private fun Contacts.nameRawContactIdStructuredNameId(contactId: Long): Long? {
     val nameRawContactId = nameRawContactId(contactId) ?: return null
 
-    return contentResolver.query(
+    return query(
         Table.Data,
         Include(Fields.DataId),
         (Fields.RawContact.Id equalTo nameRawContactId)
@@ -376,7 +376,7 @@ private fun Contacts.nameRawContactIdStructuredNameId(contactId: Long): Long? {
  */
 // [ANDROID X] @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 // (not using annotation to avoid dependency on androidx.annotation)
-private fun Contacts.nameRawContactId(contactId: Long): Long? = contentResolver.query(
+private fun Contacts.nameRawContactId(contactId: Long): Long? = query(
     Table.Contacts,
     Include(ContactsFields.DisplayNameSource, ContactsFields.NameRawContactId),
     ContactsFields.Id equalTo contactId
@@ -401,7 +401,7 @@ private fun Contacts.nameRawContactId(contactId: Long): Long? = contentResolver.
 /**
  * Returns the RawContact IDs of the Contacts with the given [contactIds] in ascending order.
  */
-private fun Contacts.sortedRawContactIds(contactIds: Set<Long>): List<Long> = contentResolver.query(
+private fun Contacts.sortedRawContactIds(contactIds: Set<Long>): List<Long> = query(
     Table.RawContacts,
     Include(RawContactsFields.Id),
     RawContactsFields.ContactId `in` contactIds,
@@ -415,7 +415,7 @@ private fun Contacts.sortedRawContactIds(contactIds: Set<Long>): List<Long> = co
     }
 } ?: emptyList()
 
-private fun Contacts.nameWithId(nameRowId: Long): Name? = contentResolver.query(
+private fun Contacts.nameWithId(nameRowId: Long): Name? = query(
     Table.Data,
     Include(Fields.Required),
     Fields.DataId equalTo nameRowId
@@ -423,7 +423,7 @@ private fun Contacts.nameWithId(nameRowId: Long): Name? = contentResolver.query(
     it.getNextOrNull { it.nameMapper().value }
 }
 
-private fun Contacts.contactIdOfRawContact(rawContactId: Long): Long? = contentResolver.query(
+private fun Contacts.contactIdOfRawContact(rawContactId: Long): Long? = query(
     Table.RawContacts,
     Include(RawContactsFields.ContactId),
     RawContactsFields.Id equalTo rawContactId

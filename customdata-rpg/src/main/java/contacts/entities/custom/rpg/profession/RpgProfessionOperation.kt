@@ -10,13 +10,24 @@ internal class RpgProfessionOperationFactory :
     AbstractCustomDataOperation.Factory<RpgProfessionField, RpgProfessionEntity> {
 
     override fun create(
-        isProfile: Boolean, includeFields: Set<RpgProfessionField>
+        callerIsSyncAdapter: Boolean, isProfile: Boolean, includeFields: Set<RpgProfessionField>
     ): AbstractCustomDataOperation<RpgProfessionField, RpgProfessionEntity> =
-        RpgProfessionOperation(isProfile, includeFields)
+        RpgProfessionOperation(
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
+            includeFields = includeFields
+        )
 }
 
-private class RpgProfessionOperation(isProfile: Boolean, includeFields: Set<RpgProfessionField>) :
-    AbstractCustomDataOperation<RpgProfessionField, RpgProfessionEntity>(isProfile, includeFields) {
+private class RpgProfessionOperation(
+    callerIsSyncAdapter: Boolean,
+    isProfile: Boolean,
+    includeFields: Set<RpgProfessionField>
+) : AbstractCustomDataOperation<RpgProfessionField, RpgProfessionEntity>(
+    callerIsSyncAdapter = callerIsSyncAdapter,
+    isProfile = isProfile,
+    includeFields = includeFields
+) {
 
     override val mimeType: MimeType.Custom = RpgMimeType.Profession
 

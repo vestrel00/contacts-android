@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
  * modification, and removal.
  *
  * Setting the [rawContact] will automatically update the views. Any modifications in the views will
- * also be made to the [rawContact]'s photo upon [savePhoto] (only if it is mutable).
+ * also be made to the [rawContact]'s photo upon [onPhotoPicked] (only if it is mutable).
  *
  * ## Note
  *

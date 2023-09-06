@@ -15,7 +15,7 @@ import contacts.entities.custom.gender.*;
 public class IntegrateGenderCustomDataActivity extends Activity {
 
     Contacts contacts = ContactsFactory.create(
-            this, new CustomDataRegistry().register(new GenderRegistration())
+            this, false, new CustomDataRegistry().register(new GenderRegistration())
     );
 
     List<Contact> getContactsWithGenderCustomData() {

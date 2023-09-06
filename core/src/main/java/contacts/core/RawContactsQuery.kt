@@ -1,11 +1,9 @@
 package contacts.core
 
 import android.accounts.Account
-import android.content.ContentResolver
 import contacts.core.entities.RawContact
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.entities.mapper.ContactsMapper
-import contacts.core.entities.table.ProfileUris
 import contacts.core.entities.table.Table
 import contacts.core.util.*
 
@@ -530,7 +528,7 @@ private class RawContactsQueryImpl(
         var rawContacts = if (!permissions.canQuery()) {
             RawContactsQueryResult(emptyList(), isLimitBreached = false)
         } else {
-            contentResolver.resolve(
+            contactsApi.resolve(
                 isProfile,
                 customDataRegistry,
                 include, includeRawContactsFields,
@@ -565,7 +563,7 @@ private class RawContactsQueryImpl(
     }
 }
 
-private fun ContentResolver.resolve(
+private fun Contacts.resolve(
     isProfile: Boolean,
     customDataRegistry: CustomDataRegistry,
     include: Include<AbstractDataField>,
@@ -634,7 +632,7 @@ private fun ContentResolver.resolve(
     )
 }
 
-internal fun ContentResolver.resolve(
+internal fun Contacts.resolve(
     isProfile: Boolean,
     customDataRegistry: CustomDataRegistry,
     rawContactIds: MutableSet<Long>?,
@@ -655,8 +653,8 @@ internal fun ContentResolver.resolve(
     val contactsMapper = ContactsMapper(customDataRegistry, cancel)
 
     // Collect RawContacts. If rawContactIds is null, then all RawContacts are collected.
-    query(
-        if (isProfile) ProfileUris.RAW_CONTACTS.uri else Table.RawContacts.uri,
+    contentResolver.query(
+        rawContactsUri(isProfile),
         includeRawContactsFields,
         (RawContactsFields.Deleted notEqualTo true) and rawContactIds?.let {
             RawContactsFields.Id `in` it

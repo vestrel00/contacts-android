@@ -11,7 +11,7 @@ This library provides several insert and update APIs that support custom data in
     - [Insert device owner Contact profile](./../profile/insert-profile.md)
 3. `Update`
     - [Update contacts](./../basics/update-contacts.md)
-2. `ProfileUpdate`
+4`ProfileUpdate`
     - [Update device owner Contact profile](./../profile/update-profile.md)
 
 To help illustrate how custom data integrates with these query APIs, we'll use the `HandleName`

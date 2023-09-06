@@ -10,17 +10,19 @@ import android.net.Uri
 import android.os.Build
 import android.provider.BlockedNumberContract
 import android.provider.ContactsContract
+import contacts.core.Contacts
 import contacts.core.ContactsException
 import contacts.core.Field
 import contacts.core.Include
 import contacts.core.Where
+import contacts.core.contentResolver
 import contacts.core.entities.cursor.CursorHolder
 import contacts.core.entities.cursor.toEntityCursor
 import contacts.core.entities.table.Table
 
 // region QUERY
 
-internal inline fun <reified T : Field, R> ContentResolver.query(
+internal inline fun <reified T : Field, R> Contacts.query(
     table: Table<T>, include: Include<T>, where: Where<T>?,
 
     /**
@@ -38,7 +40,16 @@ internal inline fun <reified T : Field, R> ContentResolver.query(
      * Function that processes the non-null cursor (if any rows have been matched).
      */
     processCursor: (CursorHolder<T>) -> R?
-): R? = query(table.uri, include, where, sortOrder, suppressDbExceptions, processCursor)
+): R? = contentResolver.query(
+    // As per ContactsContract.CALLER_IS_SYNCADAPTER documentation, there is probably no effect in
+    // setting CALLER_IS_SYNCADAPTER for queries. However, it does not hurt to be consistent.
+    if (table is Table.ContactsContractTable) {
+        table.uri(callerIsSyncAdapter)
+    } else {
+        table.uri()
+    },
+    include, where, sortOrder, suppressDbExceptions, processCursor
+)
 
 @SuppressLint("Recycle")
 internal inline fun <reified T : Field, R> ContentResolver.query(

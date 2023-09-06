@@ -1,6 +1,5 @@
 package contacts.core.sim
 
-import android.content.ContentResolver
 import contacts.core.*
 import contacts.core.entities.SimContact
 import contacts.core.entities.mapper.simContactMapper
@@ -160,14 +159,14 @@ private class SimContactsQueryImpl(
         return if (!permissions.canQuery() || !simCardInfo.isReady) {
             SimContactsQueryResult(emptyList())
         } else {
-            contentResolver.getSimContacts(cancel)
+            contactsApi.getSimContacts(cancel)
         }
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
     }
 }
 
-internal fun ContentResolver.getSimContacts(cancel: () -> Boolean): SimContactsQuery.Result = query(
+internal fun Contacts.getSimContacts(cancel: () -> Boolean): SimContactsQuery.Result = query(
     Table.SimContacts,
     // The actual database query selection is not supported. However, we still need to include all
     // fields so that our custom cursors will not return null.

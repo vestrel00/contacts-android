@@ -4,14 +4,34 @@ import android.content.ContentProviderOperation
 import android.content.ContentProviderOperation.Builder
 import contacts.core.Field
 import contacts.core.Where
-import contacts.core.entities.isNotNullOrBlank
 import contacts.core.entities.table.Table
 
-internal fun newInsert(table: Table<*>): Builder = ContentProviderOperation.newInsert(table.uri)
+internal fun newInsert(table: Table<*>, callerIsSyncAdapter: Boolean): Builder =
+    ContentProviderOperation.newInsert(
+        if (table is Table.ContactsContractTable) {
+            table.uri(callerIsSyncAdapter)
+        } else {
+            table.uri()
+        }
+    )
 
-internal fun newUpdate(table: Table<*>): Builder = ContentProviderOperation.newUpdate(table.uri)
+internal fun newUpdate(table: Table<*>, callerIsSyncAdapter: Boolean): Builder =
+    ContentProviderOperation.newUpdate(
+        if (table is Table.ContactsContractTable) {
+            table.uri(callerIsSyncAdapter)
+        } else {
+            table.uri()
+        }
+    )
 
-internal fun newDelete(table: Table<*>): Builder = ContentProviderOperation.newDelete(table.uri)
+internal fun newDelete(table: Table<*>, callerIsSyncAdapter: Boolean): Builder =
+    ContentProviderOperation.newDelete(
+        if (table is Table.ContactsContractTable) {
+            table.uri(callerIsSyncAdapter)
+        } else {
+            table.uri()
+        }
+    )
 
 internal fun Builder.withSelection(where: Where<*>?): Builder =
     withSelection(where?.toString(), null)

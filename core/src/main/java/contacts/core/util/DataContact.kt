@@ -4,8 +4,6 @@ import contacts.core.*
 import contacts.core.entities.Contact
 import contacts.core.entities.ExistingDataEntity
 import contacts.core.entities.cursor.dataCursor
-import contacts.core.entities.table.ProfileUris
-import contacts.core.entities.table.Table
 
 /**
  * Returns the [Contact] with the [ExistingDataEntity.contactId].
@@ -39,7 +37,7 @@ fun ExistingDataEntity.contact(contacts: Contacts, cancel: () -> Boolean = { fal
     }
 
 private fun Contacts.getContactIdFromDataTable(dataId: Long): Long? = contentResolver.query(
-    if (dataId.isProfileId) ProfileUris.DATA.uri else Table.Data.uri,
+    dataUri(isProfile = dataId.isProfileId),
     Include(Fields.Contact.Id),
     Fields.DataId equalTo dataId
 ) {

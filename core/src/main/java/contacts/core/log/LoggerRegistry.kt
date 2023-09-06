@@ -1,7 +1,6 @@
 package contacts.core.log
 
 import contacts.core.CrudApi
-import contacts.core.Redactable
 import contacts.core.redactedCopyOrThis
 
 class LoggerRegistry(logger: Logger) {

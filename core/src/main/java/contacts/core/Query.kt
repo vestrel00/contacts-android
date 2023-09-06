@@ -604,7 +604,7 @@ private class QueryImpl(
             include(include.fields)
             where(where)
 
-            contentResolver.resolve(
+            contactsApi.resolve(
                 customDataRegistry,
                 include, includeRawContactsFields,
                 rawContactsWhere, where,
@@ -638,7 +638,7 @@ private class QueryImpl(
     }
 }
 
-private fun ContentResolver.resolve(
+private fun Contacts.resolve(
     customDataRegistry: CustomDataRegistry,
     include: Include<AbstractDataField>,
     includeRawContactsFields: Include<RawContactsField>,
@@ -717,7 +717,7 @@ private fun ContentResolver.resolve(
     )
 }
 
-internal fun ContentResolver.resolve(
+internal fun Contacts.resolve(
     customDataRegistry: CustomDataRegistry,
     contactIds: MutableSet<Long>?,
     include: Include<AbstractDataField>,

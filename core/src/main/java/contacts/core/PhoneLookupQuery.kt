@@ -613,7 +613,7 @@ private class PhoneLookupQueryImpl(
         var contacts = if (!permissions.canQuery()) {
             emptyList()
         } else {
-            contentResolver.resolve(
+            contactsApi.resolve(
                 customDataRegistry,
                 rawContactsWhere, groupMembershipWhere,
                 include, includeRawContactsFields,
@@ -650,7 +650,7 @@ private class PhoneLookupQueryImpl(
     }
 }
 
-private fun ContentResolver.resolve(
+private fun Contacts.resolve(
     customDataRegistry: CustomDataRegistry,
     rawContactsWhere: Where<RawContactsField>?,
     groupMembershipWhere: Where<GroupMembershipField>?,
@@ -727,9 +727,9 @@ private fun ContentResolver.resolve(
     )
 }
 
-private fun ContentResolver.findMatchingContactIds(
+private fun Contacts.findMatchingContactIds(
     match: Match, searchString: String, cancel: () -> Boolean
-): Set<Long> = query(
+): Set<Long> = contentResolver.query(
     ContactsContract.PhoneLookup.CONTENT_FILTER_URI
         .buildUpon()
         .appendEncodedPath(Uri.encode(searchString))
@@ -746,7 +746,10 @@ private fun ContentResolver.findMatchingContactIds(
                 it
             }
         }
-        .build(),
+        .build()
+        // Note that CALLER_IS_SYNCADAPTER probably does not really matter for queries but might as well
+        // be consistent...
+        .forSyncAdapter(callerIsSyncAdapter),
     Include(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             PhoneLookupFields.ContactId

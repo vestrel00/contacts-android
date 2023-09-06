@@ -9,7 +9,7 @@ import contacts.entities.custom.handlename.*
 
 class IntegrateHandleNameCustomDataActivity : Activity() {
 
-    val contacts = Contacts(this, CustomDataRegistry().register(HandleNameRegistration()))
+    val contacts = Contacts(this, false, CustomDataRegistry().register(HandleNameRegistration()))
 
     fun getContactsWithHandleNameCustomData(): List<Contact> = contacts
         .query()

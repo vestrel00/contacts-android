@@ -421,7 +421,7 @@ internal fun Contacts.insertRawContact(
     // using this library from inserting new Contacts using Samsung or Xiaomi accounts if the
     // calling app does not have access to the account via the system AccountManager.
     // FIXME? Perhaps we should fail the insert operation instead of defaulting to the local account?
-    val account = rawContact.account.nullIfNotInSystem(applicationContext)
+    val account = rawContact.account.nullIfNotInSystem(this)
 
     val operations = arrayListOf<ContentProviderOperation>()
 
@@ -432,29 +432,47 @@ internal fun Contacts.insertRawContact(
      * This needs to be the first operation in the batch as it will be used by all subsequent
      * Data table insert operations.
      */
-    operations.add(RawContactsOperation(isProfile).insert(account, rawContact.sourceId))
+    operations.add(
+        RawContactsOperation(
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile
+        ).insert(account, rawContact.sourceId)
+    )
 
     operations.addAll(
-        AddressOperation(isProfile, Fields.Address.intersect(includeFields)).insertForNewRawContact(
+        AddressOperation(
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
+            Fields.Address.intersect(includeFields)
+        ).insertForNewRawContact(
             rawContact.addresses
         )
     )
 
     operations.addAll(
-        EmailOperation(isProfile, Fields.Email.intersect(includeFields)).insertForNewRawContact(
+        EmailOperation(
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
+            Fields.Email.intersect(includeFields)
+        ).insertForNewRawContact(
             rawContact.emails
         )
     )
 
     operations.addAll(
-        EventOperation(isProfile, Fields.Event.intersect(includeFields)).insertForNewRawContact(
+        EventOperation(
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
+            Fields.Event.intersect(includeFields)
+        ).insertForNewRawContact(
             rawContact.events
         )
     )
 
     operations.addAll(
         GroupMembershipOperation(
-            isProfile,
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
             Fields.GroupMembership.intersect(includeFields),
             groups()
         ).insertForNewRawContact(rawContact.groupMemberships, account)
@@ -466,46 +484,62 @@ internal fun Contacts.insertRawContact(
     // membership to the favorites group (if exist). If starred is false, then the favorites group
     // membership will be removed.
     OptionsOperation().updateNewRawContactOptions(
+        callerIsSyncAdapter = callerIsSyncAdapter,
+        isProfile = isProfile,
         rawContact.options,
-        RawContactsFields.Options.all.intersect(includeRawContactsFields),
-        isProfile
+        RawContactsFields.Options.all.intersect(includeRawContactsFields)
     )?.let(operations::add)
 
     operations.addAll(
         ImOperation(
-            isProfile,
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
             Fields.Im.intersect(includeFields)
         ).insertForNewRawContact(rawContact.ims)
     )
 
     rawContact.name?.let {
-        NameOperation(isProfile, Fields.Name.intersect(includeFields)).insertForNewRawContact(it)
+        NameOperation(
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
+            Fields.Name.intersect(includeFields)
+        ).insertForNewRawContact(it)
             ?.let(operations::add)
     }
 
     rawContact.nickname?.let {
         NicknameOperation(
-            isProfile,
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
             Fields.Nickname.intersect(includeFields)
         ).insertForNewRawContact(it)
             ?.let(operations::add)
     }
 
     rawContact.note?.let {
-        NoteOperation(isProfile, Fields.Note.intersect(includeFields)).insertForNewRawContact(it)
+        NoteOperation(
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
+            Fields.Note.intersect(includeFields)
+        ).insertForNewRawContact(it)
             ?.let(operations::add)
     }
 
     rawContact.organization?.let {
         OrganizationOperation(
-            isProfile,
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
             Fields.Organization.intersect(includeFields)
         ).insertForNewRawContact(it)
             ?.let(operations::add)
     }
 
     operations.addAll(
-        PhoneOperation(isProfile, Fields.Phone.intersect(includeFields)).insertForNewRawContact(
+        PhoneOperation(
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
+            Fields.Phone.intersect(includeFields)
+        ).insertForNewRawContact(
             rawContact.phones
         )
     )
@@ -515,28 +549,39 @@ internal fun Contacts.insertRawContact(
 
     operations.addAll(
         RelationOperation(
-            isProfile,
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
             Fields.Relation.intersect(includeFields)
         ).insertForNewRawContact(rawContact.relations)
     )
 
     rawContact.sipAddress?.let {
         SipAddressOperation(
-            isProfile,
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
             Fields.SipAddress.intersect(includeFields)
         ).insertForNewRawContact(it)
             ?.let(operations::add)
     }
 
     operations.addAll(
-        WebsiteOperation(isProfile, Fields.Website.intersect(includeFields)).insertForNewRawContact(
+        WebsiteOperation(
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
+            Fields.Website.intersect(includeFields)
+        ).insertForNewRawContact(
             rawContact.websites
         )
     )
 
     // Process custom data
     operations.addAll(
-        rawContact.customDataInsertOperations(includeFields, customDataRegistry, isProfile)
+        rawContact.customDataInsertOperations(
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
+            includeFields = includeFields,
+            customDataRegistry = customDataRegistry
+        )
     )
 
     /*
@@ -571,17 +616,19 @@ internal fun Contacts.insertRawContact(
 }
 
 private fun NewRawContact.customDataInsertOperations(
+    callerIsSyncAdapter: Boolean,
+    isProfile: Boolean,
     includeFields: Set<AbstractDataField>,
-    customDataRegistry: CustomDataRegistry,
-    isProfile: Boolean
+    customDataRegistry: CustomDataRegistry
 ): List<ContentProviderOperation> = buildList {
     for ((mimeTypeValue, customDataEntityHolder) in customDataEntities) {
         val customDataEntry = customDataRegistry.entryOf(mimeTypeValue)
 
         val countRestriction = customDataEntry.countRestriction
         val customDataOperation = customDataEntry.operationFactory.create(
-            isProfile,
-            customDataEntry.fieldSet.intersect(includeFields)
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
+            includeFields = customDataEntry.fieldSet.intersect(includeFields)
         )
 
         when (countRestriction) {
