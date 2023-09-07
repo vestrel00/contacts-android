@@ -103,7 +103,7 @@ fun Activity.showPhotoPickerDialog(
  * This only provides a thumbnail version of the photo taken. To get full-sized photos, see
  * https://developer.android.com/training/camera/photobasics#TaskPath
  *
- * FIXME Implement full-sized photos version and deprecate this.
+ * FIXME Implement full-sized photos version and deprecate this?
  */
 fun Activity.takeNewPhoto() {
     val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -137,7 +137,10 @@ fun Activity.takeNewPhoto() {
  * ```
  */
 fun Activity.selectPhoto() {
-    val selectPhotoIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+    val selectPhotoIntent = Intent().also {
+        it.type = "image/*"
+        it.action = Intent.ACTION_GET_CONTENT
+    }
 
     @SuppressLint("QueryPermissionsNeeded")
     val component = selectPhotoIntent.resolveActivity(packageManager)
