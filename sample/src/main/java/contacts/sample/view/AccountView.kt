@@ -41,6 +41,8 @@ class AccountView @JvmOverloads constructor(
 
     private var rawContact: RawContactEntity? = null
 
+    private var onAccountSet: ((Account?) -> Unit)? = null
+
     private var onMoveExistingRawContactToAccount: ((Account?, ExistingRawContactEntity) -> Unit)? =
         null
 
@@ -52,9 +54,11 @@ class AccountView @JvmOverloads constructor(
     fun setRawContact(
         rawContact: RawContactEntity?,
         defaultAccount: Account?,
+        onAccountSet: ((Account?) -> Unit),
         onMoveExistingRawContactToAccount: (Account?, ExistingRawContactEntity) -> Unit
     ) {
         this.rawContact = rawContact
+        this.onAccountSet = onAccountSet
         this.onMoveExistingRawContactToAccount = onMoveExistingRawContactToAccount
         setAccount(rawContact?.account ?: defaultAccount)
     }
@@ -79,6 +83,8 @@ class AccountView @JvmOverloads constructor(
                 Account Type: ${accountToDisplay.type}
             """
         }.trimIndent()
+
+        onAccountSet?.invoke(accountToDisplay)
     }
 
     override fun onAttachedToWindow() {

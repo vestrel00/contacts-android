@@ -75,6 +75,10 @@ class GroupMembershipsView @JvmOverloads constructor(
         showMemberships(contacts)
     }
 
+    fun onAccountSet(account: Account?) {
+        this.account = account
+    }
+
     private fun showMemberships(contacts: Contacts) = launch {
         val groups = memberships.groupsWithContext(contacts)
             // Hide the default and favorites group, just like in the AOSP Contacts app.
