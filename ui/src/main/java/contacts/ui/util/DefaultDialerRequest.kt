@@ -50,28 +50,52 @@ fun Activity.requestToBeTheDefaultDialerAppIfNeeded(onBeingDefaultDialerApp: () 
  *
  * ## Manifest
  *
- * Your app must have an activity with following intent filters in your manifest. Otherwise, this
+ * As per https://developer.android.com/reference/androidx/core/role/RoleManagerCompat#ROLE_DIALER(),
+ * your app must have an activity with following intent filters in your manifest. Otherwise, this
  * will do nothing.
  *
  * ```
- * <intent-filter>
- *      <action android:name="android.intent.action.VIEW" />
- *      <action android:name="android.intent.action.DIAL" />
- *
- *      <category android:name="android.intent.category.DEFAULT" />
- *      <category android:name="android.intent.category.BROWSABLE" />
- *
- *      <data android:scheme="tel" />
- * </intent-filter>
- * <intent-filter>
- *      <action android:name="android.intent.action.DIAL" />
- *
- *      <category android:name="android.intent.category.DEFAULT" />
- * </intent-filter>
+ * <activity>
+ *      <intent-filter>
+ *          <action android:name="android.intent.action.DIAL" />
+ *          <category android:name="android.intent.category.DEFAULT"/>
+ *      </intent-filter>
+ *      <intent-filter>
+ *          <action android:name="android.intent.action.DIAL" />
+ *          <category android:name="android.intent.category.DEFAULT"/>
+ *          <data android:scheme="tel" />
+ *      </intent-filter>
+ * </activity>
  * ```
  *
  * The above intent filters does NOT need to be added to the activity where this function is called.
  * It can be placed in any activity within the application.
+ *
+ * Additionally, starting with API 33 (Tiramisu), to qualify for this role, an application needs to
+ * handle the intent to dial, and implement an [android.telecom.InCallService]...
+ *
+ * ```kotlin
+ * @TargetApi(Build.VERSION_CODES.M)
+ * class SampleInCallServiceForDialerRoleRequest: InCallService()
+ * ```
+ *
+ * ```
+ * <service
+ *      android:name=".SampleInCallServiceForDialerRoleRequest"
+ *      android:exported="true"
+ *      android:permission="android.permission.BIND_INCALL_SERVICE">
+ *      <meta-data
+ *          android:name="android.telecom.IN_CALL_SERVICE_UI"
+ *          android:value="true" />
+ *      <meta-data
+ *          android:name="android.telecom.IN_CALL_SERVICE_CAR_MODE_UI"
+ *          android:value="false" />
+ *
+ *      <intent-filter>
+ *          <action android:name="android.telecom.InCallService" />
+ *      </intent-filter>
+ * </service>
+```
  */
 // [ANDROID X] @RequiresApi (not using annotation to avoid dependency on androidx.annotation)
 fun Activity.requestToBeTheDefaultDialerApp() {
