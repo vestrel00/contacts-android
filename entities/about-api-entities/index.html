@@ -2209,7 +2209,12 @@ application usage and should really only be used by sync adapters. For example,<
 <p>Checking if an <code>ExistingDataEntity</code> is read-only requires a separate query. You can use extension
 functions defined in <code>DataIsReadOnly.kt</code> for this purpose.</p>
 <blockquote>
-<p>ℹ️ For more info, read <a href="../../other/convenience-functions/#check-if-data-is-read-only">Convenience functions | Check if Data is read-only</a>.</p>
+<p>ℹ️ For more info, read <a href="../../other/convenience-functions/#getset-data-read-only">Convenience functions | Check if Data is read-only</a>.</p>
+</blockquote>
+<p>Modifying read-only data locally as a sync adapter is possible by using an instance of 
+<code>contacts.core.Contacts</code> with the <code>callerIsSyncAdapter</code> flag set to true.</p>
+<blockquote>
+<p>ℹ️ For more info, read <a href="../../setup/setup-contacts-api/#sync-adapter-operations">Contacts API Setup | Sync adapter operations</a>.</p>
 </blockquote>
 <h2 id="data-integrity">Data integrity<a class="headerlink" href="#data-integrity" title="Permanent link">&para;</a></h2>
 <p>There is a section in the official Contacts Provider documentation about "Data Integrity";
