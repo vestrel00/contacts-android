@@ -2036,27 +2036,46 @@ allow you to prompt the user to set your app as the default dialer/phone app.</p
 <a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
 <a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="p">}</span><span class="w"></span>
 </code></pre></div>
-<p>Your app must have an activity with following intent filters in your manifest. Otherwise, this will
+<p>As per the official docs in <a href="https://developer.android.com/reference/androidx/core/role/RoleManagerCompat#ROLE_DIALER()"><code>RoleManagerCompat.ROLE_DIALER</code></a>,
+your app must have an activity with following intent filters in your manifest. Otherwise, this will
 do nothing.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>&lt;intent-filter&gt;
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>     &lt;action android:name=&quot;android.intent.action.VIEW&quot; /&gt;
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>     &lt;action android:name=&quot;android.intent.action.DIAL&quot; /&gt;
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>     &lt;category android:name=&quot;android.intent.category.DEFAULT&quot; /&gt;
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>     &lt;category android:name=&quot;android.intent.category.BROWSABLE&quot; /&gt;
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>     &lt;data android:scheme=&quot;tel&quot; /&gt;
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>&lt;/intent-filter&gt;
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>&lt;intent-filter&gt;
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>     &lt;action android:name=&quot;android.intent.action.DIAL&quot; /&gt;
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>     &lt;category android:name=&quot;android.intent.category.DEFAULT&quot; /&gt;
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>&lt;/intent-filter&gt;
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>&lt;activity&gt;
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    &lt;intent-filter&gt;
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>        &lt;action android:name=&quot;android.intent.action.DIAL&quot; /&gt;
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>        &lt;category android:name=&quot;android.intent.category.DEFAULT&quot;/&gt;
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    &lt;/intent-filter&gt;
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    &lt;intent-filter&gt;
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>        &lt;action android:name=&quot;android.intent.action.DIAL&quot; /&gt;
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>        &lt;category android:name=&quot;android.intent.category.DEFAULT&quot;/&gt;
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>        &lt;data android:scheme=&quot;tel&quot; /&gt;
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    &lt;/intent-filter&gt;
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>&lt;/activity&gt;
 </code></pre></div>
 <p>The above intent filters do NOT need to be added to the activity where the extension functions are
 invoked. It can be placed in any activity within the application.</p>
+<p>Additionally, starting with API 33 (Tiramisu), to qualify for this role, an application needs to 
+handle the intent to dial, and implement an <code>android.telecom.InCallService</code>...</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nd">@TargetApi</span><span class="p">(</span><span class="n">Build</span><span class="p">.</span><span class="na">VERSION_CODES</span><span class="p">.</span><span class="na">M</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kd">class</span><span class="w"> </span><span class="nc">SampleInCallServiceForDialerRoleRequest</span><span class="p">:</span><span class="w"> </span><span class="n">InCallService</span><span class="p">()</span><span class="w"></span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>&lt;service
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    android:name=&quot;.SampleInCallServiceForDialerRoleRequest&quot;
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    android:exported=&quot;true&quot;
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    android:permission=&quot;android.permission.BIND_INCALL_SERVICE&quot;&gt;
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    &lt;meta-data
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>        android:name=&quot;android.telecom.IN_CALL_SERVICE_UI&quot;
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>        android:value=&quot;true&quot; /&gt;
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    &lt;meta-data
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>        android:name=&quot;android.telecom.IN_CALL_SERVICE_CAR_MODE_UI&quot;
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>        android:value=&quot;false&quot; /&gt;
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>    &lt;intent-filter&gt;
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>        &lt;action android:name=&quot;android.telecom.InCallService&quot; /&gt;
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>    &lt;/intent-filter&gt;
+<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>&lt;/service&gt;
+</code></pre></div>
 <p>To check if your app is the default dialer/phone app,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">Context</span><span class="p">.</span><span class="na">isDefaultDialerApp</span><span class="p">()</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">Context</span><span class="p">.</span><span class="na">isDefaultDialerApp</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <p><strong>If your app is not a dialer/phone app</strong>, then you should not set it as the default dialer/phone
 app. Otherwise, users of your app may get confused as to why you are prompting them for this
