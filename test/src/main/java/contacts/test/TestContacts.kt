@@ -16,8 +16,9 @@ import contacts.test.entities.TestDataRegistration
 @Suppress("FunctionName")
 fun TestContacts(
     context: Context,
+    callerIsSyncAdapter: Boolean = false,
     customDataRegistry: CustomDataRegistry = CustomDataRegistry()
-): Contacts = TestContacts(Contacts(context, customDataRegistry = customDataRegistry)).also {
+): Contacts = TestContacts(Contacts(context, callerIsSyncAdapter, customDataRegistry)).also {
     customDataRegistry.register(TestDataRegistration())
 }
 
@@ -27,8 +28,9 @@ object TestContactsFactory {
     @JvmOverloads
     fun create(
         context: Context,
+        callerIsSyncAdapter: Boolean = false,
         customDataRegistry: CustomDataRegistry = CustomDataRegistry()
-    ): Contacts = TestContacts(context, customDataRegistry)
+    ): Contacts = TestContacts(context, callerIsSyncAdapter, customDataRegistry)
 }
 
 // Note that we cannot use "by" to delegate calls to the internal query because function calls will
@@ -99,6 +101,8 @@ private class TestContacts(private val contactsApi: Contacts) : Contacts {
     override val accountsPermissions = contactsApi.accountsPermissions
 
     override val applicationContext = contactsApi.applicationContext
+
+    override val callerIsSyncAdapter = contactsApi.callerIsSyncAdapter
 
     override var loggerRegistry = contactsApi.loggerRegistry
 
