@@ -2042,7 +2042,10 @@ Contacts Provider typically have the following system groups (for standard Googl
 <li>systemId: Family, title: Family</li>
 <li>systemId: Coworkers, title: Coworkers</li>
 </ul>
-<p>The above list may vary per account.</p>
+<p>The above list may vary per Account and/or flavor of Android.</p>
+<p>If you are implementing a sync adapter, you may be able to update read-only groups associated with
+the Account that your sync adapter works with. For more info, read
+<a href="../../setup/setup-contacts-api/#sync-adapter-operations">Contacts API Setup | Sync adapter operations</a>.</p>
 <h2 id="groups-and-duplicate-titles">Groups and duplicate titles<a class="headerlink" href="#groups-and-duplicate-titles" title="Permanent link">&para;</a></h2>
 <p>The Contacts Provider allows multiple groups with the same title (case-sensitive comparison) 
 belonging to the same (nullable) account to exist. In older versions of Android, the AOSP Contacts 

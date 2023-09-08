@@ -2082,9 +2082,10 @@ Contacts Provider typically have the following system groups (for standard Googl
 <li>systemId: Family, title: Family</li>
 <li>systemId: Coworkers, title: Coworkers</li>
 </ul>
-<p>The above list may vary per account.</p>
-<p>The <code>GroupsDelete</code> API will not attempt to delete a read-only group and will simply result in
-failure.</p>
+<p>The above list may vary per Account and/or flavor of Android.</p>
+<p>If you are implementing a sync adapter, you may be able to delete read-only groups associated with
+the Account that your sync adapter works with. For more info, read 
+<a href="../../setup/setup-contacts-api/#sync-adapter-operations">Contacts API Setup | Sync adapter operations</a>.</p>
 <h2 id="group-memberships-are-automatically-deleted">Group memberships are automatically deleted<a class="headerlink" href="#group-memberships-are-automatically-deleted" title="Permanent link">&para;</a></h2>
 <p>When a group is deleted, any memberships to that group are deleted automatically by the
 Contacts Provider.</p>
