@@ -168,7 +168,7 @@ interface Contacts {
      * insertion or updating its value afterwards is typically only done in the context of sync
      * adapters. This is not for general app use!
      *
-     * If you are using this API in your sync adapter implementation, then you should set this value
+     * If you are using this API in your sync adapter implementation, then you may set this value
      * to true. It will allow you to perform certain insert, update, and delete operations that
      * may otherwise fail. For example, attempting to update read-only rows
      * ([contacts.core.entities.NewDataEntity.isReadOnly]) in the Data table
@@ -176,6 +176,11 @@ interface Contacts {
      * unchanged (even if the API result indicates success). If this is set to true, updating
      * read-only data should result in actual changes to take effect. Updating read-only data is
      * just one of the many different behaviors/side-effects that this value affects.
+     *
+     * Obviously, ONLY MODIFY RAW CONTACT DATA THAT IS ASSOCIATED WITH THE
+     * [android.accounts.Account] THAT YOUR SYNC ADAPTER WORKS WITH! The APIs in this library does
+     * NOT prevent you from modifying data that your sync adapter does not own, which may cause
+     * sync issues (unsaved changes, data loss) to occur.
      *
      * This library is not responsible for documenting all of the different behaviors/side-effects
      * caused by setting this to true.

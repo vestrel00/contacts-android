@@ -46,7 +46,11 @@ Contacts Provider typically have the following system groups (for standard Googl
 - systemId: Family, title: Family
 - systemId: Coworkers, title: Coworkers
 
-The above list may vary per account.
+The above list may vary per Account and/or flavor of Android.
+
+If you are implementing a sync adapter, you may be able to update read-only groups associated with
+the Account that your sync adapter works with. For more info, read
+[Contacts API Setup | Sync adapter operations](./../setup/setup-contacts-api.md#sync-adapter-operations).
 
 ## Groups and duplicate titles
 

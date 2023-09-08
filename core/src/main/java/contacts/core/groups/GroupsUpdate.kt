@@ -48,9 +48,8 @@ interface GroupsUpdate : CrudApi {
     /**
      * Adds the given [groups] to the update queue, which will be updated on [commit].
      *
-     * ## Read-only [ExistingGroupEntity]s
-     *
-     * Read-only groups will be ignored and result in a failed operation.
+     * Read-only groups will be ignored and result in a failed operation unless
+     * [contacts.core.Contacts.callerIsSyncAdapter] is set to true.
      */
     fun groups(vararg groups: ExistingGroupEntity): GroupsUpdate
 
@@ -152,8 +151,9 @@ interface GroupsUpdate : CrudApi {
             TITLE_ALREADY_EXIST,
 
             /**
-             * The [ExistingGroupEntity.isReadOnly] is true. System, read-only groups cannot be
-             * modified, except perhaps by the owning sync adapter.
+             * The [ExistingGroupEntity.isReadOnly] is true and
+             * [contacts.core.Contacts.callerIsSyncAdapter] is false. System, read-only groups
+             * cannot be modified, except perhaps by the owning sync adapter.
              */
             GROUP_IS_READ_ONLY,
 
@@ -235,7 +235,7 @@ private class GroupsUpdateImpl(
                 // reason. Unlike other APIs in this library, this API will indicate success if there
                 // is no failure reason.
 
-                if (group.isReadOnly) {
+                if (group.isReadOnly && !contactsApi.callerIsSyncAdapter) {
                     failureReasons[group] = FailureReason.GROUP_IS_READ_ONLY
                     continue
                 }

@@ -74,7 +74,8 @@ interface GroupsDelete : CrudApi {
      * Adds the given [groups] to the delete queue, which will be deleted on [commit] or
      * [commitInOneTransaction].
      *
-     * Attempting to delete a read-only group will result in a failed operation.
+     * Read-only groups will be ignored and result in a failed operation unless
+     * [contacts.core.Contacts.callerIsSyncAdapter] is set to true.
      */
     fun groups(vararg groups: ExistingGroupEntity): GroupsDelete
 
@@ -260,28 +261,15 @@ private class GroupsDeleteImpl(
             val results = mutableMapOf<Long, Boolean>()
             for (groupId in groupsIds) {
                 results[groupId] = contactsApi.deleteGroupsWhere(
-                    // Attempting to delete a read-only group will result in a "successful" result
-                    // even though the group was not actually deleted. The group will be marked as
-                    // "deleted" in the local Contacts Provider database but will cause sync adapter
-                    // failures. Ultimately, deletion of read-only groups will not be propagated
-                    // to the remote sync servers.
-                    //
-                    // Thus, we manually add the check to match only non-read-only groups.
-                    (GroupsFields.Id equalTo groupId) and (GroupsFields.GroupIsReadOnly equalTo false)
+                    (GroupsFields.Id equalTo groupId)
+                        .forSyncAdapter(contactsApi.callerIsSyncAdapter)
                 )
             }
 
             val whereResultMap = mutableMapOf<String, Boolean>()
             groupsWhere?.let {
                 whereResultMap[it.toString()] = contactsApi.deleteGroupsWhere(
-                    // Attempting to delete a read-only group will result in a "successful" result
-                    // even though the group was not actually deleted. The group will be marked as
-                    // "deleted" in the local Contacts Provider database but will cause sync adapter
-                    // failures. Ultimately, deletion of read-only groups will not be propagated
-                    // to the remote sync servers.
-                    //
-                    // Thus, we manually add the check to match only non-read-only groups.
-                    it and (GroupsFields.GroupIsReadOnly equalTo false)
+                    it.forSyncAdapter(contactsApi.callerIsSyncAdapter)
                 )
             }
 
@@ -300,29 +288,18 @@ private class GroupsDeleteImpl(
             val operations = arrayListOf<ContentProviderOperation>()
 
             if (groupsIds.isNotEmpty()) {
-                contactsApi.deleteOperationFor(
-                    // Attempting to delete a read-only group will result in a "successful" result
-                    // even though the group was not actually deleted. The group will be marked as
-                    // "deleted" in the local Contacts Provider database but will cause sync adapter
-                    // failures. Ultimately, deletion of read-only groups will not be propagated
-                    // to the remote sync servers.
-                    //
-                    // Thus, we manually add the check to match only non-read-only groups.
-                    (GroupsFields.Id `in` groupsIds) and (GroupsFields.GroupIsReadOnly equalTo false)
-                ).let(operations::add)
+                contactsApi
+                    .deleteOperationFor(
+                        (GroupsFields.Id `in` groupsIds)
+                            .forSyncAdapter(contactsApi.callerIsSyncAdapter)
+                    )
+                    .let(operations::add)
             }
 
             groupsWhere?.let {
-                contactsApi.deleteOperationFor(
-                    // Attempting to delete a read-only group will result in a "successful" result
-                    // even though the group was not actually deleted. The group will be marked as
-                    // "deleted" in the local Contacts Provider database but will cause sync adapter
-                    // failures. Ultimately, deletion of read-only groups will not be propagated
-                    // to the remote sync servers.
-                    //
-                    // Thus, we manually add the check to match only non-read-only groups.
-                    it and (GroupsFields.GroupIsReadOnly equalTo false)
-                ).let(operations::add)
+                contactsApi
+                    .deleteOperationFor(it.forSyncAdapter(contactsApi.callerIsSyncAdapter))
+                    .let(operations::add)
             }
 
             GroupsDeleteAllResult(
@@ -333,6 +310,18 @@ private class GroupsDeleteImpl(
             .also { onPostExecute(contactsApi, it) }
     }
 }
+
+private fun Where<GroupsField>.forSyncAdapter(callerIsSyncAdapter: Boolean): Where<GroupsField> =
+    if (callerIsSyncAdapter) {
+        this
+    } else {
+        // Attempting to delete a read-only group will result in a "successful" result even though
+        // the group was not actually deleted. The group will be marked as deleted" in the local
+        // Contacts Provider database but will cause sync adapter failures. Ultimately, deletion of
+        // read-only groups will not be propagated to the remote sync servers. Thus, we manually
+        // add the check to match only non-read-only groups.
+        this and (GroupsFields.GroupIsReadOnly equalTo false)
+    }
 
 private fun Contacts.deleteGroupsWhere(where: Where<GroupsField>): Boolean =
     contentResolver.applyBatch(deleteOperationFor(where)).deleteSuccess
