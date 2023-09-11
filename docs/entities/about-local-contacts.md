@@ -110,6 +110,6 @@ query.accounts(null)
 When a null is provided, all query APIs will internally additionally add
 `Account("default", "com.android.contacts.default")`.
 
-> ⚠️ This internal fix is available as of [version 0.3.1](https://github.com/vestrel00/contacts-android/discussions/288).
+> ⚠️ This internal fix is available as of [version 0.3.1](https://github.com/vestrel00/contacts-android/releases/tag/0.3.1).
 > Prior versions will require you to pass in `Account("default", "com.android.contacts.default")`
 > in addition to `null` when using `accounts` for matching local contacts.
