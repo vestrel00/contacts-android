@@ -164,10 +164,6 @@ interface Contacts {
      *
      * Applications should NOT set this value to true!
      *
-     * As mentioned in the official docs, setting the value for this property at the time of
-     * insertion or updating its value afterwards is typically only done in the context of sync
-     * adapters. This is not for general app use!
-     *
      * If you are using this API in your sync adapter implementation, then you may set this value
      * to true. It will allow you to perform certain insert, update, and delete operations that
      * may otherwise fail. For example, attempting to update read-only rows
