@@ -165,8 +165,17 @@ interface Contacts {
      * Applications should NOT set this value to true!
      *
      * If you are using this API in your sync adapter implementation, then you may set this value
-     * to true. It will allow you to perform certain insert, update, and delete operations that
-     * may otherwise fail. For example, attempting to update read-only rows
+     * to true. As per the official documentation;
+     *
+     * > An optional URI parameter for insert, update, or delete queries that allows the caller
+     * > to specify that it is a sync adapter. The default value is false. If true
+     * > `android.provider.ContactsContract.RawContacts#DIRTY` is not automatically set and the
+     * > "syncToNetwork" parameter is set to false when calling
+     * > `ContentResolver#notifyChange(android.net.Uri, android.database.ContentObserver, boolean)}`
+     * > This prevents an unnecessary extra synchronization...
+     *
+     * Setting this to true may also allow you to perform certain insert, update, and delete
+     * operations that may otherwise fail. For example, attempting to update read-only rows
      * ([contacts.core.entities.NewDataEntity.isReadOnly]) in the Data table
      * (e.g. name, email, phone) will result in the actual value of the read-only data to remain
      * unchanged (even if the API result indicates success). If this is set to true, updating
