@@ -126,6 +126,10 @@ In other words, one account can have one profile RawContact. However, despite th
 "one profile RawContact per one Account", the Contacts Provider allows for multiple RawContacts per
 Account, including multiple local RawContacts (no Account). 
 
+> ℹ️ This may affect performance. When this is set to false, the API executes extra lines of code to
+> heck if a RawContact already exist in an Account, which may result in a slight performance hit. 
+> You can disable this internal check, perhaps increasing insertion speed, by setting this to true.
+
 ## Associating an Account
 
 New RawContacts can be associated with an Account in order to enable syncing,
@@ -146,6 +150,22 @@ newRawContact.account = Account("john.doe@gmail.com", "com.google")
 ```
 
 > ℹ️ For more info, read [Query for Accounts](./../accounts/query-accounts.md).
+
+### Account validation
+
+By default, all Accounts in the system are queried in order to ensure that each
+`NewRawContact.account` is in the system. For Accounts that are not in the system, null is used
+instead. This guards against invalid accounts.
+
+You may explicitly enable or disable this,
+
+```kotlin
+.validateRawContactAccounts(true|false)
+```
+
+> ℹ️ This may affect performance. When this is set to true, the API executes extra lines of code to
+> if each `NewRawContact.account` is in the system, which may result in a slight performance hit.
+> You can disable this internal check, perhaps increasing insertion speed, by setting this to false.
 
 ### Local RawContacts
 

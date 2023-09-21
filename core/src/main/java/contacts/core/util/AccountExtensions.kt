@@ -67,8 +67,9 @@ internal fun Account.nullIfSamsungOrXiaomiLocalAccount(): Account? = if (
  * Verifies that [this] given [Account] is in the list of given [accounts] and returns itself.
  * Otherwise, returns null.
  */
-private fun Account.nullIfNotIn(accounts: List<Account>): Account? =
+internal fun Account?.nullIfNotIn(accounts: Collection<Account>): Account? = this?.let {
     if (accounts.contains(this)) this else null
+}
 
 /*
  * A note about toRawContactsWhere and toGroupsWhere.

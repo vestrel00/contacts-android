@@ -1,7 +1,6 @@
 package contacts.core.profile
 
 import android.accounts.Account
-import android.content.ContentResolver
 import android.provider.ContactsContract
 import contacts.core.*
 import contacts.core.entities.NewRawContact
@@ -104,7 +103,9 @@ interface ProfileInsert : CrudApi {
     /**
      * If [allowBlanks] is set to true, then blank RawContacts ([NewRawContact.isBlank]) will
      * will be inserted. Otherwise, blanks will not be inserted and will result in a failed
-     * operation. This flag is set to false by default.
+     * operation.
+     *
+     * This flag is set to false by default.
      *
      * The Contacts Providers allows for RawContacts that have no rows in the Data table (let's call
      * them "blanks") to exist. The AOSP Contacts app does not allow insertion of new RawContacts
@@ -127,7 +128,9 @@ interface ProfileInsert : CrudApi {
     /**
      * If [allowMultipleRawContactsPerAccount] is set to true, then inserting a profile RawContact
      * with an Account that already has a profile RawContact is allowed. Otherwise, this will result
-     * in a failed operation. This flag is set to false by default.
+     * in a failed operation.
+     *
+     * This flag is set to false by default.
      *
      * According to the `ContactsContract.Profile` documentation; "... each account (including data
      * set, if applicable) on the device may contribute a single raw contact representing the user's
@@ -137,10 +140,31 @@ interface ProfileInsert : CrudApi {
      * Despite the documentation of "one profile RawContact per one Account", the Contacts Provider
      * allows for multiple RawContacts per Account, including multiple local RawContacts (no
      * Account).
+     *
+     * ## Performance
+     *
+     * When this is set to false, the API executes extra lines of code to check if a RawContact
+     * already exist in an Account, which may result in a slight performance hit. You can disable
+     * this internal check, perhaps increasing insertion speed, by setting this to true.
      */
     fun allowMultipleRawContactsPerAccount(
         allowMultipleRawContactsPerAccount: Boolean
     ): ProfileInsert
+
+    /**
+     * If [validateAccounts] is set to true, then all Accounts in the system are queried to ensure
+     * that each [NewRawContact.account] is in the system. For Accounts that are not in the system,
+     * null is used instead. This guards against invalid accounts.
+     *
+     * This flag is set to true by default.
+     *
+     * ## Performance
+     *
+     * When this is set to true, the API executes extra lines of code to check if each
+     * [NewRawContact.account] is in the system, which may result in a slight performance hit. You
+     * can disable this internal check, perhaps increasing insertion speed, by setting this to false.
+     */
+    fun validateRawContactAccounts(validateAccounts: Boolean): ProfileInsert
 
     /**
      * Specifies that only the given set of [fields] (data) will be inserted.
@@ -296,6 +320,7 @@ private class ProfileInsertImpl(
 
     private var allowBlanks: Boolean = false,
     private var allowMultipleRawContactsPerAccount: Boolean = false,
+    private var validateAccounts: Boolean = true,
     private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
     private var includeRawContactsFields: Include<RawContactsField> = DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS,
     private var rawContact: NewRawContact? = null,
@@ -308,6 +333,7 @@ private class ProfileInsertImpl(
             ProfileInsert {
                 allowBlanks: $allowBlanks
                 allowMultipleRawContactsPerAccount: $allowMultipleRawContactsPerAccount
+                validateAccounts: $validateAccounts
                 include: $include
                 includeRawContactsFields: $includeRawContactsFields
                 rawContact: $rawContact
@@ -319,12 +345,12 @@ private class ProfileInsertImpl(
     override fun redactedCopy(): ProfileInsert = ProfileInsertImpl(
         contactsApi,
 
-        allowBlanks,
-        allowMultipleRawContactsPerAccount,
-        include,
-        includeRawContactsFields,
+        allowBlanks = allowBlanks,
+        allowMultipleRawContactsPerAccount = allowMultipleRawContactsPerAccount,
+        include = include,
+        includeRawContactsFields = includeRawContactsFields,
         // Redact contact data.
-        rawContact?.redactedCopy(),
+        rawContact = rawContact?.redactedCopy(),
 
         isRedacted = true
     )
@@ -337,6 +363,10 @@ private class ProfileInsertImpl(
         allowMultipleRawContactsPerAccount: Boolean
     ): ProfileInsert = apply {
         this.allowMultipleRawContactsPerAccount = allowMultipleRawContactsPerAccount
+    }
+
+    override fun validateRawContactAccounts(validateAccounts: Boolean): ProfileInsert = apply {
+        this.validateAccounts = validateAccounts
     }
 
     override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
@@ -393,25 +423,26 @@ private class ProfileInsertImpl(
         ) {
             ProfileInsertFailed()
         } else {
-            // This ensures that a valid and (visible) account is used. Otherwise, null is used. For Samsung
-            // and Xiaomi devices, RawContacts with null accounts will later be set to a local non-null
-            // account that may not returned by the system AccountManager. This disallows 3rd party apps
-            // using this library from inserting new Contacts using Samsung or Xiaomi accounts if the
-            // calling app does not have access to the account via the system AccountManager.
-            // FIXME? Perhaps we should fail the insert operation instead of defaulting to the local account?
-            val account = rawContact.account.nullIfNotInSystem(contactsApi)
-
             if (
                 (!allowMultipleRawContactsPerAccount
-                        && contactsApi.profileRawContactExistFor(account))
+                        && contactsApi.profileRawContactExistFor(rawContact.account))
                 || cancel()
             ) {
                 ProfileInsertFailed()
             } else {
+                val accountsInSystem: Collection<Account>? = if (validateAccounts) {
+                    contactsApi.accounts().query().find()
+                } else {
+                    null
+                }
+
                 // No need to propagate the cancel function to within insertRawContact as that
                 // operation should be fast and CPU time should be trivial.
                 val rawContactId = contactsApi.insertRawContact(
-                    include.fields, includeRawContactsFields.fields, rawContact, IS_PROFILE
+                    accountsInSystem,
+                    include.fields, includeRawContactsFields.fields,
+                    rawContact,
+                    IS_PROFILE
                 )
 
                 return ProfileInsertResult(rawContactId)

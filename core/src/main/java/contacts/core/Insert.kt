@@ -1,5 +1,6 @@
 package contacts.core
 
+import android.accounts.Account
 import android.content.ContentProviderOperation
 import contacts.core.entities.NewRawContact
 import contacts.core.entities.custom.CustomDataCountRestriction
@@ -95,7 +96,9 @@ interface Insert : CrudApi {
     /**
      * If [allowBlanks] is set to true, then blank RawContacts ([NewRawContact.isBlank]) will
      * will be inserted. Otherwise, blanks will not be inserted and will result in a failed
-     * operation. This flag is set to false by default.
+     * operation.
+     *
+     * This flag is set to false by default.
      *
      * The Contacts Providers allows for RawContacts that have no rows in the Data table (let's call
      * them "blanks") to exist. The AOSP Contacts app does not allow insertion of new RawContacts
@@ -114,6 +117,21 @@ interface Insert : CrudApi {
      * check, perhaps increasing insertion speed, by setting this to true.
      */
     fun allowBlanks(allowBlanks: Boolean): Insert
+
+    /**
+     * If [validateAccounts] is set to true, then all Accounts in the system are queried to ensure
+     * that each [NewRawContact.account] is in the system. For Accounts that are not in the system,
+     * null is used instead. This guards against invalid accounts.
+     *
+     * This flag is set to true by default.
+     *
+     * ## Performance
+     *
+     * When this is set to true, the API executes extra lines of code to check if each
+     * [NewRawContact.account] is in the system, which may result in a slight performance hit. You
+     * can disable this internal check, perhaps increasing insertion speed, by setting this to false.
+     */
+    fun validateRawContactAccounts(validateAccounts: Boolean): Insert
 
     /**
      * Specifies that only the given set of [fields] (data) will be inserted.
@@ -281,6 +299,7 @@ private class InsertImpl(
     override val contactsApi: Contacts,
 
     private var allowBlanks: Boolean = false,
+    private var validateAccounts: Boolean = true,
     private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
     private var includeRawContactsFields: Include<RawContactsField> = DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS,
     private val rawContacts: MutableSet<NewRawContact> = mutableSetOf(),
@@ -292,6 +311,7 @@ private class InsertImpl(
         """
             Insert {
                 allowBlanks: $allowBlanks
+                validateAccounts: $validateAccounts
                 include: $include
                 includeRawContactsFields: $includeRawContactsFields
                 rawContacts: $rawContacts
@@ -303,17 +323,22 @@ private class InsertImpl(
     override fun redactedCopy(): Insert = InsertImpl(
         contactsApi,
 
-        allowBlanks,
-        include,
-        includeRawContactsFields,
+        allowBlanks = allowBlanks,
+        validateAccounts = validateAccounts,
+        include = include,
+        includeRawContactsFields = includeRawContactsFields,
         // Redact contact data.
-        rawContacts.asSequence().redactedCopies().toMutableSet(),
+        rawContacts = rawContacts.asSequence().redactedCopies().toMutableSet(),
 
         isRedacted = true
     )
 
     override fun allowBlanks(allowBlanks: Boolean): Insert = apply {
         this.allowBlanks = allowBlanks
+    }
+
+    override fun validateRawContactAccounts(validateAccounts: Boolean): Insert = apply {
+        this.validateAccounts = validateAccounts
     }
 
     override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
@@ -370,6 +395,12 @@ private class InsertImpl(
         return if (rawContacts.isEmpty() || !permissions.canInsert() || cancel()) {
             InsertFailed()
         } else {
+            // Query all accounts outside of the for-loop to minimize performance hit!
+            val accountsInSystem: Collection<Account>? = if (validateAccounts) {
+                contactsApi.accounts().query().find()
+            } else {
+                null
+            }
 
             val results = mutableMapOf<NewRawContact, Long?>()
             for (rawContact in rawContacts) {
@@ -383,6 +414,7 @@ private class InsertImpl(
                     // No need to propagate the cancel function to within insertRawContact as that
                     // operation should be fast and CPU time should be trivial.
                     contactsApi.insertRawContact(
+                        accountsInSystem,
                         include.fields, includeRawContactsFields.fields,
                         rawContact,
                         IS_PROFILE
@@ -416,6 +448,7 @@ private class InsertImpl(
  * Returns the inserted RawContact's ID. Or null, if insert failed.
  */
 internal fun Contacts.insertRawContact(
+    accountsInSystem: Collection<Account>?,
     includeFields: Set<AbstractDataField>,
     includeRawContactsFields: Set<RawContactsField>,
     rawContact: NewRawContact,
@@ -427,7 +460,12 @@ internal fun Contacts.insertRawContact(
     // using this library from inserting new Contacts using Samsung or Xiaomi accounts if the
     // calling app does not have access to the account via the system AccountManager.
     // FIXME? Perhaps we should fail the insert operation instead of defaulting to the local account?
-    val account = rawContact.account.nullIfNotInSystem(this)
+    val account: Account? = if (accountsInSystem != null) {
+        // Only validate account and coerce to null if accounts in system is provided.
+        rawContact.account.nullIfNotIn(accountsInSystem)
+    } else {
+        rawContact.account
+    }
 
     val operations = arrayListOf<ContentProviderOperation>()
 

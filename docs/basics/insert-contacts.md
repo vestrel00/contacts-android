@@ -123,6 +123,22 @@ newRawContact.account = Account("john.doe@gmail.com", "com.google")
 
 > ℹ️ For more info, read [Query for Accounts](./../accounts/query-accounts.md).
 
+### Account validation
+
+By default, all Accounts in the system are queried in order to ensure that each 
+`NewRawContact.account` is in the system. For Accounts that are not in the system, null is used 
+instead. This guards against invalid accounts.
+
+You may explicitly enable or disable this,
+
+```kotlin
+.validateRawContactAccounts(true|false)
+```
+
+> ℹ️ This may affect performance. When this is set to true, the API executes extra lines of code to
+> if each `NewRawContact.account` is in the system, which may result in a slight performance hit. 
+> You can disable this internal check, perhaps increasing insertion speed, by setting this to false.
+
 ### Local RawContacts
 
 If no Account is provided, or null is provided, or if an incorrect account is provided, the
