@@ -453,7 +453,7 @@ private class MoveRawContactsAcrossAccountsImpl(
         } else {
             // Query all accounts outside of the for-loop to minimize performance hit!
             val accountsInSystem: Collection<Account>? = if (validateAccounts) {
-                contactsApi.accounts().query().find()
+                contactsApi.accounts().query().find(cancel)
             } else {
                 null
             }
@@ -506,10 +506,12 @@ private class MoveRawContactsAcrossAccountsImpl(
                 // Insert a copy of the original RawContact.
                 val rawContactCopyId = contactsApi.insert().rawContacts()
                     .allowBlanks(true)
+                    .validateAccounts(false) // already validated here
+                    .validateGroupMemberships(false) // already validated here
                     .rawContacts(
                         originalRawContact.newCopy {
                             // Set the Account.
-                            account = entry.targetAccount
+                            account = targetAccount
                             // Intentionally not copying the source ID because that should only be
                             // set by the Account's sync adapter, which should occur automatically
                             // some time after insertion.

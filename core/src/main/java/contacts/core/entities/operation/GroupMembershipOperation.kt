@@ -28,8 +28,7 @@ import contacts.core.util.rawContactsUri
 internal class GroupMembershipOperation(
     callerIsSyncAdapter: Boolean,
     isProfile: Boolean,
-    includeFields: Set<GroupMembershipField>,
-    private val groups: Groups
+    includeFields: Set<GroupMembershipField>
 ) : AbstractDataOperation<GroupMembershipField, GroupMembershipEntity>(
     callerIsSyncAdapter = callerIsSyncAdapter,
     isProfile = isProfile,
@@ -50,24 +49,23 @@ internal class GroupMembershipOperation(
      */
     fun insertForNewRawContact(
         groupMemberships: Collection<GroupMembershipEntity>,
-        account: Account?
+        groupsMap: Map<Long, Group>? // Map of Group.id -> Group
     ): List<ContentProviderOperation> = buildList {
         if (includeFields.isEmpty()) {
             // No-op when entity is blank or no fields are included.
             return@buildList
         }
 
-        // Map of Group.id -> Group
-        val accountGroups: MutableMap<Long, Group> = groups.query().accounts(account).find()
-            .associateBy { it.id }
-            .toMutableMap()
-
         // Ensure no duplicate group memberships by only comparing the groupId and that they belong
         // to the same account.
         groupMemberships
             .asSequence()
             .distinctBy { it.groupId }
-            .filter { accountGroups[it.groupId] != null }
+            .filter {
+                // Do not filter if groups map is not provided. If it is provided, then filter out
+                // memberships that are not in it.
+                groupsMap == null || groupsMap[it.groupId] != null
+            }
             .forEach { insertForNewRawContact(it)?.let(::add) }
     }
 
@@ -87,7 +85,8 @@ internal class GroupMembershipOperation(
     fun updateInsertOrDelete(
         groupMemberships: Collection<GroupMembershipEntity>,
         rawContactId: Long,
-        contactsApi: Contacts
+        contactsApi: Contacts,
+        cancel: () -> Boolean,
     ): List<ContentProviderOperation> = buildList {
         if (includeFields.isEmpty()) {
             // No-op when no fields are included.
@@ -98,7 +97,7 @@ internal class GroupMembershipOperation(
 
         // A map of Group.id -> Group
         val accountGroups: Map<Long, Group> =
-            groups.query().accounts(account).find().associateBy { it.id }
+            contactsApi.groups().query().accounts(account).find(cancel).associateBy { it.id }
 
         // A map of Group.id -> GroupMembership
         val groupMembershipsInDB: MutableMap<Long, GroupMembership> =

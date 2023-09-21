@@ -2,7 +2,9 @@ package contacts.core
 
 import android.accounts.Account
 import android.content.ContentProviderOperation
+import contacts.core.entities.Group
 import contacts.core.entities.NewRawContact
+import contacts.core.entities.RawContactEntity
 import contacts.core.entities.custom.CustomDataCountRestriction
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.entities.operation.*
@@ -132,6 +134,22 @@ interface Insert : CrudApi {
      * increasing insertion speed, by setting this to false.
      */
     fun validateAccounts(validateAccounts: Boolean): Insert
+
+    /**
+     * If [validateGroupMemberships] is set to true, then all Groups belonging to the
+     * [NewRawContact.account] are queried to ensure that each [NewRawContact.groupMemberships]
+     * points to a Group in that list. Group memberships that are not pointing to a group that
+     * belong to the [NewRawContact.account] are not inserted. This guards against invalid accounts.
+     *
+     * This flag is set to true by default.
+     *
+     * ## Performance
+     *
+     * When this is set to true, the API executes extra lines of code to perform the validation,
+     * which may result in a slight performance hit. You can disable this internal check, perhaps
+     * increasing insertion speed, by setting this to false.
+     */
+    fun validateGroupMemberships(validateGroupMemberships: Boolean): Insert
 
     /**
      * Specifies that only the given set of [fields] (data) will be inserted.
@@ -300,6 +318,7 @@ private class InsertImpl(
 
     private var allowBlanks: Boolean = false,
     private var validateAccounts: Boolean = true,
+    private var validateGroupMemberships: Boolean = true,
     private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
     private var includeRawContactsFields: Include<RawContactsField> = DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS,
     private val rawContacts: MutableSet<NewRawContact> = mutableSetOf(),
@@ -312,6 +331,7 @@ private class InsertImpl(
             Insert {
                 allowBlanks: $allowBlanks
                 validateAccounts: $validateAccounts
+                validateGroupMemberships: $validateGroupMemberships
                 include: $include
                 includeRawContactsFields: $includeRawContactsFields
                 rawContacts: $rawContacts
@@ -325,6 +345,7 @@ private class InsertImpl(
 
         allowBlanks = allowBlanks,
         validateAccounts = validateAccounts,
+        validateGroupMemberships = validateGroupMemberships,
         include = include,
         includeRawContactsFields = includeRawContactsFields,
         // Redact contact data.
@@ -339,6 +360,10 @@ private class InsertImpl(
 
     override fun validateAccounts(validateAccounts: Boolean): Insert = apply {
         this.validateAccounts = validateAccounts
+    }
+
+    override fun validateGroupMemberships(validateGroupMemberships: Boolean): Insert = apply {
+        this.validateGroupMemberships = validateGroupMemberships
     }
 
     override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
@@ -397,10 +422,19 @@ private class InsertImpl(
         } else {
             // Query all accounts outside of the for-loop to minimize performance hit!
             val accountsInSystem: Collection<Account>? = if (validateAccounts) {
-                contactsApi.accounts().query().find()
+                contactsApi.accounts().query().find(cancel)
             } else {
                 null
             }
+
+            // Query groups for all of the NewRawContacts' Accounts outside of the for-loop to
+            // minimize performance hit!
+            val accountsGroupsMap: Map<Account?, Map<Long, Group>>? =
+                if (validateGroupMemberships) {
+                    contactsApi.accountsGroupsMapFor(rawContacts, cancel)
+                } else {
+                    null
+                }
 
             val results = mutableMapOf<NewRawContact, Long?>()
             for (rawContact in rawContacts) {
@@ -415,6 +449,7 @@ private class InsertImpl(
                     // operation should be fast and CPU time should be trivial.
                     contactsApi.insertRawContact(
                         accountsInSystem,
+                        accountsGroupsMap?.get(rawContact.account),
                         include.fields, includeRawContactsFields.fields,
                         rawContact,
                         IS_PROFILE
@@ -437,6 +472,23 @@ private class InsertImpl(
     }
 }
 
+internal fun Contacts.accountsGroupsMapFor(
+    rawContacts: Collection<RawContactEntity>,
+    cancel: () -> Boolean
+): Map<Account?, Map<Long, Group>> = buildMap {
+    val rawContactsAccounts = rawContacts.map { it.account }
+    val groups = groups().query()
+        .accounts(rawContactsAccounts)
+        .find(cancel)
+
+    for (account in rawContactsAccounts) {
+        put(
+            account,
+            groups.from(account).associateBy { it.id }
+        )
+    }
+}
+
 /**
  * Inserts a new RawContacts row and any non-null Data rows. A Contacts row is automatically
  * created by the Contacts Provider and is associated with the new RawContacts and Data rows.
@@ -449,6 +501,8 @@ private class InsertImpl(
  */
 internal fun Contacts.insertRawContact(
     accountsInSystem: Collection<Account>?,
+    // Map of Group IDs to Groups for Groups that belong to the RawContact's Account
+    accountGroupsMap: Map<Long, Group>?,
     includeFields: Set<AbstractDataField>,
     includeRawContactsFields: Set<RawContactsField>,
     rawContact: NewRawContact,
@@ -517,9 +571,8 @@ internal fun Contacts.insertRawContact(
         GroupMembershipOperation(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
-            Fields.GroupMembership.intersect(includeFields),
-            groups()
-        ).insertForNewRawContact(rawContact.groupMemberships, account)
+            Fields.GroupMembership.intersect(includeFields)
+        ).insertForNewRawContact(rawContact.groupMemberships, accountGroupsMap)
     )
 
     // Apply the options operations after the group memberships operation.

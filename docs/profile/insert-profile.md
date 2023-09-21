@@ -167,6 +167,23 @@ You may explicitly enable or disable this,
 > perform the validation, which may result in a slight performance hit. You can disable this
 > internal check, perhaps increasing insertion speed, by setting this to false.
 
+### Group memberships validation
+
+By default, all Groups belonging to the `NewRawContact.account` are queried to ensure that each
+`NewRawContact.groupMemberships` points to a Group in that list. Group memberships that are not
+pointing to a group that belong to the `NewRawContact.account` are not inserted. This guards
+against invalid accounts.
+
+You may explicitly enable or disable this,
+
+```kotlin
+.validateGroupMemberships(true|false)
+```
+
+> ℹ️ This may affect performance. When this is set to true, the API executes extra lines of code to
+> perform the validation, which may result in a slight performance hit. You can disable this
+> internal check, perhaps increasing insertion speed, by setting this to false.
+
 ### Local RawContacts
 
 If no Account is provided, or null is provided, or if an incorrect account is provided, the

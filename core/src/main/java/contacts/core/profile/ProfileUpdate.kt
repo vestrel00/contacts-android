@@ -396,7 +396,8 @@ private class ProfileUpdateImpl(
                     contactsApi.updateContact(
                         include.fields,
                         includeRawContactsFields.fields,
-                        it
+                        it,
+                        cancel
                     )
                 }
             }
@@ -417,7 +418,8 @@ private class ProfileUpdateImpl(
                     contactsApi.updateRawContact(
                         include.fields,
                         includeRawContactsFields.fields,
-                        rawContact
+                        rawContact,
+                        cancel
                     )
                 }
             }

@@ -403,7 +403,8 @@ private class UpdateImpl(
                     contactsApi.updateContact(
                         include.fields,
                         includeRawContactsFields.fields,
-                        contact
+                        contact,
+                        cancel
                     )
                 }
             }
@@ -424,7 +425,8 @@ private class UpdateImpl(
                     contactsApi.updateRawContact(
                         include.fields,
                         includeRawContactsFields.fields,
-                        rawContact
+                        rawContact,
+                        cancel
                     )
                 }
             }
@@ -452,7 +454,8 @@ private class UpdateImpl(
 internal fun Contacts.updateContact(
     includeFields: Set<AbstractDataField>,
     includeRawContactsFields: Set<RawContactsField>,
-    contact: ExistingContactEntity
+    contact: ExistingContactEntity,
+    cancel: () -> Boolean
 ): Boolean {
 
     val operations = arrayListOf<ContentProviderOperation>()
@@ -460,7 +463,7 @@ internal fun Contacts.updateContact(
     for (rawContact in contact.rawContacts) {
         operations.addAll(
             updateOperationsForRawContact(
-                includeFields, includeRawContactsFields, rawContact
+                includeFields, includeRawContactsFields, rawContact, cancel
             )
         )
     }
@@ -504,11 +507,12 @@ internal fun Contacts.updateContact(
 internal fun Contacts.updateRawContact(
     includeFields: Set<AbstractDataField>,
     includeRawContactsFields: Set<RawContactsField>,
-    rawContact: ExistingRawContactEntity
+    rawContact: ExistingRawContactEntity,
+    cancel: () -> Boolean
 ): Boolean {
 
     val operations = updateOperationsForRawContact(
-        includeFields, includeRawContactsFields, rawContact
+        includeFields, includeRawContactsFields, rawContact, cancel
     )
 
     /*
@@ -545,7 +549,8 @@ private fun Contacts.executePendingPhotoDataOperationFor(rawContact: ExistingRaw
 private fun Contacts.updateOperationsForRawContact(
     includeFields: Set<AbstractDataField>,
     includeRawContactsFields: Set<RawContactsField>,
-    rawContact: ExistingRawContactEntity
+    rawContact: ExistingRawContactEntity,
+    cancel: () -> Boolean
 ): ArrayList<ContentProviderOperation> {
     val isProfile = rawContact.isProfile
 
@@ -591,10 +596,9 @@ private fun Contacts.updateOperationsForRawContact(
         GroupMembershipOperation(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
-            Fields.GroupMembership.intersect(includeFields),
-            groups()
+            Fields.GroupMembership.intersect(includeFields)
         ).updateInsertOrDelete(
-            rawContact.groupMemberships, rawContact.id, this
+            rawContact.groupMemberships, rawContact.id, this, cancel
         )
     )
 

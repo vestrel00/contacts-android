@@ -3,6 +3,7 @@ package contacts.core.profile
 import android.accounts.Account
 import android.provider.ContactsContract
 import contacts.core.*
+import contacts.core.entities.Group
 import contacts.core.entities.NewRawContact
 import contacts.core.entities.cursor.rawContactsCursor
 import contacts.core.entities.table.ProfileUris
@@ -167,6 +168,22 @@ interface ProfileInsert : CrudApi {
     fun validateAccounts(validateAccounts: Boolean): ProfileInsert
 
     /**
+     * If [validateGroupMemberships] is set to true, then all Groups belonging to the
+     * [NewRawContact.account] are queried to ensure that each [NewRawContact.groupMemberships]
+     * points to a Group in that list. Group memberships that are not pointing to a group that
+     * belong to the [NewRawContact.account] are not inserted. This guards against invalid accounts.
+     *
+     * This flag is set to true by default.
+     *
+     * ## Performance
+     *
+     * When this is set to true, the API executes extra lines of code to perform the validation,
+     * which may result in a slight performance hit. You can disable this internal check, perhaps
+     * increasing insertion speed, by setting this to false.
+     */
+    fun validateGroupMemberships(validateGroupMemberships: Boolean): ProfileInsert
+
+    /**
      * Specifies that only the given set of [fields] (data) will be inserted.
      *
      * If no fields are specified, then all fields will be inserted. Otherwise, only the specified
@@ -321,6 +338,7 @@ private class ProfileInsertImpl(
     private var allowBlanks: Boolean = false,
     private var allowMultipleRawContactsPerAccount: Boolean = false,
     private var validateAccounts: Boolean = true,
+    private var validateGroupMemberships: Boolean = true,
     private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
     private var includeRawContactsFields: Include<RawContactsField> = DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS,
     private var rawContact: NewRawContact? = null,
@@ -334,6 +352,7 @@ private class ProfileInsertImpl(
                 allowBlanks: $allowBlanks
                 allowMultipleRawContactsPerAccount: $allowMultipleRawContactsPerAccount
                 validateAccounts: $validateAccounts
+                validateGroupMemberships: $validateGroupMemberships
                 include: $include
                 includeRawContactsFields: $includeRawContactsFields
                 rawContact: $rawContact
@@ -348,6 +367,7 @@ private class ProfileInsertImpl(
         allowBlanks = allowBlanks,
         allowMultipleRawContactsPerAccount = allowMultipleRawContactsPerAccount,
         validateAccounts = validateAccounts,
+        validateGroupMemberships = validateGroupMemberships,
         include = include,
         includeRawContactsFields = includeRawContactsFields,
         // Redact contact data.
@@ -369,6 +389,11 @@ private class ProfileInsertImpl(
     override fun validateAccounts(validateAccounts: Boolean): ProfileInsert = apply {
         this.validateAccounts = validateAccounts
     }
+
+    override fun validateGroupMemberships(validateGroupMemberships: Boolean): ProfileInsert =
+        apply {
+            this.validateGroupMemberships = validateGroupMemberships
+        }
 
     override fun include(vararg fields: AbstractDataField) = include(fields.asSequence())
 
@@ -431,16 +456,27 @@ private class ProfileInsertImpl(
             ) {
                 ProfileInsertFailed()
             } else {
+                // Query all accounts outside of the for-loop to minimize performance hit!
                 val accountsInSystem: Collection<Account>? = if (validateAccounts) {
-                    contactsApi.accounts().query().find()
+                    contactsApi.accounts().query().find(cancel)
                 } else {
                     null
                 }
+
+                // Query groups for all of the NewRawContacts' Accounts outside of the for-loop to
+                // minimize performance hit!
+                val accountsGroupsMap: Map<Account?, Map<Long, Group>>? =
+                    if (validateGroupMemberships) {
+                        contactsApi.accountsGroupsMapFor(listOf(rawContact), cancel)
+                    } else {
+                        null
+                    }
 
                 // No need to propagate the cancel function to within insertRawContact as that
                 // operation should be fast and CPU time should be trivial.
                 val rawContactId = contactsApi.insertRawContact(
                     accountsInSystem,
+                    accountsGroupsMap?.get(rawContact.account),
                     include.fields, includeRawContactsFields.fields,
                     rawContact,
                     IS_PROFILE
