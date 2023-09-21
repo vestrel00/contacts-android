@@ -84,6 +84,21 @@ import contacts.core.util.*
 interface MoveRawContactsAcrossAccounts : CrudApi {
 
     /**
+     * If [validateAccounts] is set to true, then all Accounts in the system are queried to ensure
+     * that each [Entry.targetAccount] is in the system. For Accounts that are not in the system,
+     * null is used instead. This guards against invalid accounts.
+     *
+     * This flag is set to true by default.
+     *
+     * ## Performance
+     *
+     * When this is set to true, the API executes extra lines of code to check if the provided
+     * [Entry.targetAccount] is in the system, which may result in a slight performance hit. You
+     * can disable this internal check, perhaps increasing insertion speed, by setting this to false.
+     */
+    fun validateTargetAccounts(validateAccounts: Boolean): MoveRawContactsAcrossAccounts
+
+            /**
      * Adds an [Entry], which consists of [Entry.rawContactId] and [Entry.targetAccount], to the
      * queue. On [commit], each existing RawContact with [Entry.rawContactId] will be moved to the
      * [Entry.targetAccount].
@@ -300,6 +315,9 @@ interface MoveRawContactsAcrossAccounts : CrudApi {
              * and Xiaomi accounts in Samsung and Xiaomi devices respectively are not returned by
              * [android.accounts.AccountManager.getAccounts] if the calling app is a 3rd party app
              * (does not come pre-installed with the OS).
+             *
+             * Another thing to note is that this failure reason will not be possible if
+             * [validateTargetAccounts] is set to false.
              */
             INVALID_ACCOUNT,
 
@@ -352,6 +370,7 @@ internal fun MoveRawContactsAcrossAccounts(contacts: Contacts): MoveRawContactsA
 
 private class MoveRawContactsAcrossAccountsImpl(
     override val contactsApi: Contacts,
+    private var validateAccounts: Boolean = true,
     private val entries: MutableSet<Entry> = mutableSetOf(),
     override val isRedacted: Boolean = false
 ) : MoveRawContactsAcrossAccounts {
@@ -359,6 +378,7 @@ private class MoveRawContactsAcrossAccountsImpl(
     override fun toString(): String =
         """
             MoveRawContactsAcrossAccounts {
+                validateAccounts: $validateAccounts
                 entries: $entries
                 hasPermission: ${accountsPermissions.canMoveRawContactsAcrossAccounts()}
                 isRedacted: $isRedacted
@@ -369,11 +389,16 @@ private class MoveRawContactsAcrossAccountsImpl(
         MoveRawContactsAcrossAccountsImpl(
             contactsApi,
 
+            validateAccounts = validateAccounts,
             // Redact account info
-            entries.redactedCopies().toMutableSet(),
+            entries = entries.redactedCopies().toMutableSet(),
 
             isRedacted = true
         )
+
+    override fun validateTargetAccounts(validateAccounts: Boolean) = apply {
+        this.validateAccounts = validateAccounts
+    }
 
     override fun rawContacts(vararg entries: Entry) = rawContacts(entries.asSequence())
 
@@ -426,6 +451,13 @@ private class MoveRawContactsAcrossAccountsImpl(
         ) {
             MoveRawContactsAcrossAccountsResultFailed(FailureReason.UNKNOWN)
         } else {
+            // Query all accounts outside of the for-loop to minimize performance hit!
+            val accountsInSystem: Collection<Account>? = if (validateAccounts) {
+                contactsApi.accounts().query().find()
+            } else {
+                null
+            }
+
             val originalToNewRawContacts = mutableMapOf<Long, Long>()
             val failureReasons = mutableMapOf<Long, FailureReason>()
 
@@ -437,7 +469,11 @@ private class MoveRawContactsAcrossAccountsImpl(
                 // Ensure that the target Account is in system or is referencing the local "null"
                 // system Account.
                 val targetAccount = entry.targetAccount?.nullIfSamsungOrXiaomiLocalAccount()
-                if (targetAccount != null && targetAccount.isNotInSystem(contactsApi)) {
+                if (
+                    targetAccount != null &&
+                    accountsInSystem != null &&
+                    !accountsInSystem.contains(targetAccount)
+                ) {
                     failureReasons[entry.rawContactId] = FailureReason.INVALID_ACCOUNT
                     break
                 }

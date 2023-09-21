@@ -39,6 +39,23 @@ If you only have the RawContact's ID,
 val moveResult = move.rawContactsWithIdsTo(account, rawContactId).commit()
 ```
 
+## Account validation
+
+By default, all Accounts in the system are queried in order to ensure that each`Entry.targetAccount`
+is in the system. For Accounts that are not in the system, null is used instead. This guards 
+against invalid accounts.
+
+You may explicitly enable or disable this,
+
+```kotlin
+.validateTargetAccounts(true|false)
+```
+
+> ℹ️ This may affect performance. When this is set to true, the API executes extra lines of code to
+> check if the provided [Entry.targetAccount] is in the system, which may result in a slight 
+> performance hit. You can disable this internal check, perhaps increasing insertion speed, by 
+> setting this to false.
+
 ## Executing the move
 
 To execute the move,
