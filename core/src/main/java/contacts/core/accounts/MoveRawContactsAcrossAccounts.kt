@@ -92,13 +92,13 @@ interface MoveRawContactsAcrossAccounts : CrudApi {
      *
      * ## Performance
      *
-     * When this is set to true, the API executes extra lines of code to check if the provided
-     * [Entry.targetAccount] is in the system, which may result in a slight performance hit. You
-     * can disable this internal check, perhaps increasing insertion speed, by setting this to false.
+     * When this is set to true, the API executes extra lines of code to perform the validation,
+     * which may result in a slight performance hit. You can disable this internal check, perhaps
+     * increasing insertion speed, by setting this to false.
      */
     fun validateTargetAccounts(validateAccounts: Boolean): MoveRawContactsAcrossAccounts
 
-            /**
+    /**
      * Adds an [Entry], which consists of [Entry.rawContactId] and [Entry.targetAccount], to the
      * queue. On [commit], each existing RawContact with [Entry.rawContactId] will be moved to the
      * [Entry.targetAccount].

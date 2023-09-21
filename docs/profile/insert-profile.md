@@ -97,9 +97,9 @@ The API allows you to specify if you want to be able to insert blank contacts or
 
 For more info, read about [Blank contacts](./../entities/about-blank-contacts.md).
 
-> ℹ️ This may affect performance. When this is set to false, the API executes extra lines of code to
-> check if RawContacts are blank or not, which may result in a slight performance hit. You can
-> disable this internal check, perhaps increasing insertion speed, by setting this to true.
+> ℹ️ This may affect performance. When this is set to false, the API executes extra lines of code
+> to perform the validation, which may result in a slight performance hit. You can disable this
+> internal check, perhaps increasing insertion speed, by setting this to true.
 
 ## Blank data are not inserted
 
@@ -126,9 +126,9 @@ In other words, one account can have one profile RawContact. However, despite th
 "one profile RawContact per one Account", the Contacts Provider allows for multiple RawContacts per
 Account, including multiple local RawContacts (no Account). 
 
-> ℹ️ This may affect performance. When this is set to false, the API executes extra lines of code to
-> heck if a RawContact already exist in an Account, which may result in a slight performance hit. 
-> You can disable this internal check, perhaps increasing insertion speed, by setting this to true.
+> ℹ️ This may affect performance. When this is set to false, the API executes extra lines of code
+> to perform the validation, which may result in a slight performance hit. You can disable this
+> internal check, perhaps increasing insertion speed, by setting this to true.
 
 ## Associating an Account
 
@@ -160,12 +160,12 @@ instead. This guards against invalid accounts.
 You may explicitly enable or disable this,
 
 ```kotlin
-.validateRawContactAccounts(true|false)
+.validateAccounts(true|false)
 ```
 
 > ℹ️ This may affect performance. When this is set to true, the API executes extra lines of code to
-> if each `NewRawContact.account` is in the system, which may result in a slight performance hit.
-> You can disable this internal check, perhaps increasing insertion speed, by setting this to false.
+> perform the validation, which may result in a slight performance hit. You can disable this
+> internal check, perhaps increasing insertion speed, by setting this to false.
 
 ### Local RawContacts
 

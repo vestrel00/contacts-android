@@ -119,9 +119,9 @@ interface ProfileInsert : CrudApi {
      *
      * ## Performance
      *
-     * When this is set to false, the API executes extra lines of code to check if RawContacts are
-     * blank or not, which may result in a slight performance hit. You can disable this internal
-     * check, perhaps increasing insertion speed, by setting this to true.
+     * When this is set to false, the API executes extra lines of code to perform the validation,
+     * which may result in a slight performance hit. You can disable this internal check, perhaps
+     * increasing insertion speed, by setting this to true.
      */
     fun allowBlanks(allowBlanks: Boolean): ProfileInsert
 
@@ -143,9 +143,9 @@ interface ProfileInsert : CrudApi {
      *
      * ## Performance
      *
-     * When this is set to false, the API executes extra lines of code to check if a RawContact
-     * already exist in an Account, which may result in a slight performance hit. You can disable
-     * this internal check, perhaps increasing insertion speed, by setting this to true.
+     * When this is set to false, the API executes extra lines of code to perform the validation,
+     * which may result in a slight performance hit. You can disable this internal check, perhaps
+     * increasing insertion speed, by setting this to true.
      */
     fun allowMultipleRawContactsPerAccount(
         allowMultipleRawContactsPerAccount: Boolean
@@ -160,11 +160,11 @@ interface ProfileInsert : CrudApi {
      *
      * ## Performance
      *
-     * When this is set to true, the API executes extra lines of code to check if each
-     * [NewRawContact.account] is in the system, which may result in a slight performance hit. You
-     * can disable this internal check, perhaps increasing insertion speed, by setting this to false.
+     * When this is set to true, the API executes extra lines of code to perform the validation,
+     * which may result in a slight performance hit. You can disable this internal check, perhaps
+     * increasing insertion speed, by setting this to false.
      */
-    fun validateRawContactAccounts(validateAccounts: Boolean): ProfileInsert
+    fun validateAccounts(validateAccounts: Boolean): ProfileInsert
 
     /**
      * Specifies that only the given set of [fields] (data) will be inserted.
@@ -347,6 +347,7 @@ private class ProfileInsertImpl(
 
         allowBlanks = allowBlanks,
         allowMultipleRawContactsPerAccount = allowMultipleRawContactsPerAccount,
+        validateAccounts = validateAccounts,
         include = include,
         includeRawContactsFields = includeRawContactsFields,
         // Redact contact data.
@@ -365,7 +366,7 @@ private class ProfileInsertImpl(
         this.allowMultipleRawContactsPerAccount = allowMultipleRawContactsPerAccount
     }
 
-    override fun validateRawContactAccounts(validateAccounts: Boolean): ProfileInsert = apply {
+    override fun validateAccounts(validateAccounts: Boolean): ProfileInsert = apply {
         this.validateAccounts = validateAccounts
     }
 

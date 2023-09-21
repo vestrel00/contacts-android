@@ -112,9 +112,9 @@ interface Insert : CrudApi {
      *
      * ## Performance
      *
-     * When this is set to false, the API executes extra lines of code to check if RawContacts are
-     * blank or not, which may result in a slight performance hit. You can disable this internal
-     * check, perhaps increasing insertion speed, by setting this to true.
+     * When this is set to false, the API executes extra lines of code to perform the validation,
+     * which may result in a slight performance hit. You can disable this internal check, perhaps
+     * increasing insertion speed, by setting this to true.
      */
     fun allowBlanks(allowBlanks: Boolean): Insert
 
@@ -127,11 +127,11 @@ interface Insert : CrudApi {
      *
      * ## Performance
      *
-     * When this is set to true, the API executes extra lines of code to check if each
-     * [NewRawContact.account] is in the system, which may result in a slight performance hit. You
-     * can disable this internal check, perhaps increasing insertion speed, by setting this to false.
+     * When this is set to true, the API executes extra lines of code to perform the validation,
+     * which may result in a slight performance hit. You can disable this internal check, perhaps
+     * increasing insertion speed, by setting this to false.
      */
-    fun validateRawContactAccounts(validateAccounts: Boolean): Insert
+    fun validateAccounts(validateAccounts: Boolean): Insert
 
     /**
      * Specifies that only the given set of [fields] (data) will be inserted.
@@ -337,7 +337,7 @@ private class InsertImpl(
         this.allowBlanks = allowBlanks
     }
 
-    override fun validateRawContactAccounts(validateAccounts: Boolean): Insert = apply {
+    override fun validateAccounts(validateAccounts: Boolean): Insert = apply {
         this.validateAccounts = validateAccounts
     }
 

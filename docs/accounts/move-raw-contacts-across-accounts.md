@@ -52,9 +52,8 @@ You may explicitly enable or disable this,
 ```
 
 > ℹ️ This may affect performance. When this is set to true, the API executes extra lines of code to
-> check if the provided [Entry.targetAccount] is in the system, which may result in a slight 
-> performance hit. You can disable this internal check, perhaps increasing insertion speed, by 
-> setting this to false.
+> perform the validation, which may result in a slight performance hit. You can disable this
+> internal check, perhaps increasing insertion speed, by setting this to false.
 
 ## Executing the move
 
