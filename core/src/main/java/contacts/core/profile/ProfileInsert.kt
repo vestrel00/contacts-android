@@ -115,6 +115,12 @@ interface ProfileInsert : CrudApi {
      * empty, or blank, then the email is not inserted. This is the same behavior as the AOSP
      * Contacts app. This is the same behavior as the AOSP Contacts app. This behavior cannot be
      * modified.
+     *
+     * ## Performance
+     *
+     * When this is set to false, the API executes extra lines of code to check if RawContacts are
+     * blank or not, which may result in a slight performance hit. You can disable this internal
+     * check, perhaps increasing insertion speed, by setting this to true.
      */
     fun allowBlanks(allowBlanks: Boolean): ProfileInsert
 

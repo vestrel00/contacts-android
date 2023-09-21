@@ -97,6 +97,10 @@ The API allows you to specify if you want to be able to insert blank contacts or
 
 For more info, read about [Blank contacts](./../entities/about-blank-contacts.md).
 
+> ℹ️ This may affect performance. When this is set to false, the API executes extra lines of code to
+> check if RawContacts are blank or not, which may result in a slight performance hit. You can
+> disable this internal check, perhaps increasing insertion speed, by setting this to true.
+
 ## Blank data are not inserted
 
 Blank data are data entities that have only null, empty, or blank primary value(s). Blanks are 
