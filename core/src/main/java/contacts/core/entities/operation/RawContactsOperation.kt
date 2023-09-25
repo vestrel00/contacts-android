@@ -26,19 +26,24 @@ internal class RawContactsOperation(
         isProfile = isProfile
     )
 
-    // TODO add includeFields: Set<RawContactsField>? as a parameter
-    fun insert(rawContactAccount: Account?, sourceId: String?): ContentProviderOperation =
-        newInsert(contentUri)
-            /*
-             * Passing in null account name and type is valid. It is the same behavior as the AOSP
-             * Contacts app when creating contacts when there are no available accounts. When an account
-             * becomes available (or is already available), Android will automatically update the
-             * RawContact name and type to an existing Account.
-             */
-            .withValue(RawContactsFields.AccountName, rawContactAccount?.name)
-            .withValue(RawContactsFields.AccountType, rawContactAccount?.type)
-            .withValue(RawContactsFields.SourceId, sourceId)
-            .build()
+    fun insert(
+        rawContactAccount: Account?,
+        sourceId: String?,
+        includeFields: Set<RawContactsField>?
+    ): ContentProviderOperation = newInsert(contentUri)
+        /*
+         * Passing in null account name and type is valid. It is the same behavior as the AOSP
+         * Contacts app when creating contacts when there are no available accounts. When an account
+         * becomes available (or is already available), Android will automatically update the
+         * RawContact name and type to an existing Account.
+         *
+         * Also note that a new insert operation should still be created even if none of the
+         * following fields are included.
+         */
+        .withIncludedValue(includeFields, RawContactsFields.AccountName, rawContactAccount?.name)
+        .withIncludedValue(includeFields, RawContactsFields.AccountType, rawContactAccount?.type)
+        .withIncludedValue(includeFields, RawContactsFields.SourceId, sourceId)
+        .build()
 
     fun update(
         rawContact: ExistingRawContactEntity, includeFields: Set<RawContactsField>?

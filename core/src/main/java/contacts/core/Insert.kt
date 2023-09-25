@@ -571,7 +571,7 @@ internal fun Contacts.insertRawContact(
         RawContactsOperation(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile
-        ).insert(account, rawContact.sourceId)
+        ).insert(account, rawContact.sourceId, includeRawContactsFields)
     )
 
     operations.addAll(

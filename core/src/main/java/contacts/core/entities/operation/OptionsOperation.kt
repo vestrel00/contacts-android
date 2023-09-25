@@ -39,20 +39,18 @@ internal class OptionsOperation {
             .withIncludedValue(
                 includeFields,
                 Fields.Contact.Options.Starred,
-                options?.starred
-            ) {
-                it.toSqlValue()
-            }
+                options?.starred.toSqlValue()
+            )
             .withIncludedValue(
-                includeFields, Fields.Contact.Options.CustomRingtone, options?.customRingtone
-            ) {
-                it.toString()
-            }
+                includeFields,
+                Fields.Contact.Options.CustomRingtone,
+                options?.customRingtone.toString()
+            )
             .withIncludedValue(
-                includeFields, Fields.Contact.Options.SendToVoicemail, options?.sendToVoicemail
-            ) {
-                it.toSqlValue()
-            }
+                includeFields,
+                Fields.Contact.Options.SendToVoicemail,
+                options?.sendToVoicemail.toSqlValue()
+            )
             .build()
     }
 
@@ -107,17 +105,13 @@ private fun ContentProviderOperation.Builder.withRawContactOptions(
     .withIncludedValue(
         includeFields,
         RawContactsFields.Options.Starred,
-        options?.starred
-    ) {
-        it.toSqlValue()
-    }
+        options?.starred.toSqlValue()
+    )
     .withIncludedValue(
-        includeFields, RawContactsFields.Options.CustomRingtone, options?.customRingtone
-    ) {
-        it.toString()
-    }
+        includeFields, RawContactsFields.Options.CustomRingtone, options?.customRingtone.toString()
+    )
     .withIncludedValue(
-        includeFields, RawContactsFields.Options.SendToVoicemail, options?.sendToVoicemail
-    ) {
-        it.toSqlValue()
-    }
+        includeFields,
+        RawContactsFields.Options.SendToVoicemail,
+        options?.sendToVoicemail.toSqlValue()
+    )

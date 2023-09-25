@@ -39,13 +39,16 @@ internal fun Builder.withSelection(where: Where<*>?): Builder =
 internal fun Builder.withValue(field: Field, value: Any?): Builder =
     withValue(field.columnName, value)
 
+/**
+ * Invokes [withValue] with the given [field] and [value] if the [field] is in [includeFields] or
+ * if [includeFields] is null.
+ */
 internal fun <F : Field, V : Any> Builder.withIncludedValue(
     includeFields: Set<F>?,
     field: F,
-    value: V?,
-    sqlValue: (V?) -> Any?
+    value: V?
 ): Builder = if (includeFields == null || includeFields.contains(field)) {
-    withValue(field, sqlValue(value))
+    withValue(field, value)
 } else {
     this
 }
