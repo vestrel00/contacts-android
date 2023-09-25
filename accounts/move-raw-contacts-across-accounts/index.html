@@ -1160,6 +1160,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#account-validation" class="md-nav__link">
+    Account validation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#executing-the-move" class="md-nav__link">
     Executing the move
   </a>
@@ -1963,6 +1970,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#account-validation" class="md-nav__link">
+    Account validation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#executing-the-move" class="md-nav__link">
     Executing the move
   </a>
@@ -2105,83 +2119,95 @@ and below, only supported moving local RawContacts to an Account,
 <p>If you only have the RawContact's ID,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">moveResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">move</span><span class="p">.</span><span class="na">rawContactsWithIdsTo</span><span class="p">(</span><span class="n">account</span><span class="p">,</span><span class="w"> </span><span class="n">rawContactId</span><span class="p">).</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
+<h2 id="account-validation">Account validation<a class="headerlink" href="#account-validation" title="Permanent link">&para;</a></h2>
+<p>By default, all Accounts in the system are queried in order to ensure that each<code>Entry.targetAccount</code>
+is in the system. For Accounts that are not in the system, null is used instead. This guards 
+against invalid accounts.</p>
+<p>You may explicitly enable or disable this,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">.</span><span class="na">validateTargetAccounts</span><span class="p">(</span><span class="kc">true</span><span class="o">|</span><span class="kc">false</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+<blockquote>
+<p>ℹ️ This may affect performance. When this is set to true, the API executes extra lines of code to
+perform the validation, which may result in a slight performance hit. You can disable this
+internal check, perhaps increasing insertion speed, by setting this to false.</p>
+</blockquote>
 <h2 id="executing-the-move">Executing the move<a class="headerlink" href="#executing-the-move" title="Permanent link">&para;</a></h2>
 <p>To execute the move,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <h3 id="handling-the-move-result">Handling the move result<a class="headerlink" href="#handling-the-move-result" title="Permanent link">&para;</a></h3>
 <p>The <code>commit</code> function returns a <code>Result</code>,</p>
 <p>To check if all moves succeeded,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">allUMovesSuccessful</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">moveResult</span><span class="p">.</span><span class="na">isSuccessful</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">allUMovesSuccessful</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">moveResult</span><span class="p">.</span><span class="na">isSuccessful</span><span class="w"></span>
 </code></pre></div>
 <p>To check if a particular move succeeded,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">firstMoveSuccessful</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">moveResult</span><span class="p">.</span><span class="na">isSuccessful</span><span class="p">(</span><span class="n">rawContact1</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">firstMoveSuccessful</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">moveResult</span><span class="p">.</span><span class="na">isSuccessful</span><span class="p">(</span><span class="n">rawContact1</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>To get the RawContact IDs of all the newly created RawContact copies,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">rawContactCopiesIds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">moveResult</span><span class="p">.</span><span class="na">rawContactIds</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">rawContactCopiesIds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">moveResult</span><span class="p">.</span><span class="na">rawContactIds</span><span class="w"></span>
 </code></pre></div>
 <p>To get the ID of the RawContact copy of a particular original RawContact,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">firstRawContactCopyId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">moveResult</span><span class="p">.</span><span class="na">rawContactId</span><span class="p">(</span><span class="n">originalRawContact2</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">firstRawContactCopyId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">moveResult</span><span class="p">.</span><span class="na">rawContactId</span><span class="p">(</span><span class="n">originalRawContact2</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>Once you have the RawContact IDs, you can retrieve the newly created aggregated Contacts via the 
 <code>Query</code> API,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">contactsApi</span><span class="w"></span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">    </span><span class="p">.</span><span class="na">query</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">    </span><span class="p">.</span><span class="na">where</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">RawContact</span><span class="p">.</span><span class="na">Id</span><span class="w"> </span><span class="n">`in`</span><span class="w"> </span><span class="n">rawContactCopiesIds</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">    </span><span class="p">.</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">contactsApi</span><span class="w"></span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">    </span><span class="p">.</span><span class="na">query</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="p">.</span><span class="na">where</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">RawContact</span><span class="p">.</span><span class="na">Id</span><span class="w"> </span><span class="n">`in`</span><span class="w"> </span><span class="n">rawContactCopiesIds</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">    </span><span class="p">.</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <blockquote>
 <p>ℹ️ For more info, read <a href="../../basics/query-contacts-advanced/">Query contacts (advanced)</a>.</p>
 </blockquote>
 <p>Or, retrieve the RawContacts directly via the <code>RawContactsQuery</code> API,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">contactsApi</span><span class="w"></span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">    </span><span class="p">.</span><span class="na">rawContactsQuery</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="p">.</span><span class="na">where</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">RawContact</span><span class="p">.</span><span class="na">Id</span><span class="w"> </span><span class="n">`in`</span><span class="w"> </span><span class="n">rawContactCopiesIds</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">    </span><span class="p">.</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">contactsApi</span><span class="w"></span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">    </span><span class="p">.</span><span class="na">rawContactsQuery</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">    </span><span class="p">.</span><span class="na">where</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">RawContact</span><span class="p">.</span><span class="na">Id</span><span class="w"> </span><span class="n">`in`</span><span class="w"> </span><span class="n">rawContactCopiesIds</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">    </span><span class="p">.</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <blockquote>
 <p>ℹ️ For more info, read <a href="../../basics/query-raw-contacts/">Query RawContacts</a>.</p>
 </blockquote>
 <p>Alternatively, you may use the extensions provided in <code>MoveRawContactsAcrossAccountsResult</code>. 
 To get all newly created Contacts,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">moveResult</span><span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">moveResult</span><span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>To get a particular contact,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contact</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">moveResult</span><span class="p">.</span><span class="na">contact</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">originalRawContactId</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contact</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">moveResult</span><span class="p">.</span><span class="na">contact</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">originalRawContactId</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>To instead get the RawContacts directly,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">rawContacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">moveResult</span><span class="p">.</span><span class="na">rawContacts</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">rawContacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">moveResult</span><span class="p">.</span><span class="na">rawContacts</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>To get a particular RawContact,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">rawContact</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">moveResult</span><span class="p">.</span><span class="na">rawContact</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">originalRawContactId</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">rawContact</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">moveResult</span><span class="p">.</span><span class="na">rawContact</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">originalRawContactId</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <h3 id="handling-move-failure">Handling move failure<a class="headerlink" href="#handling-move-failure" title="Permanent link">&para;</a></h3>
 <p>The move may fail for a RawContact for various reasons,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">moveResult</span><span class="p">.</span><span class="na">failureReason</span><span class="p">(</span><span class="n">originalRawContactId</span><span class="p">)</span><span class="o">?.</span><span class="na">let</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">    </span><span class="k">when</span><span class="w"> </span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">        </span><span class="n">INVALID_ACCOUNT</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">showInvalidAccountError</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">        </span><span class="n">ALREADY_IN_ACCOUNT</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">promptUserToPickDifferentAccount</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">        </span><span class="n">RAW_CONTACT_NOT_FOUND</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">showRawContactNotFoundError</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">        </span><span class="n">INSERT_RAW_CONTACT_COPY_FAILED</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">promptUserToTryAgain</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">        </span><span class="n">DELETE_ORIGINAL_RAW_CONTACT_FAILED</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">showOriginalRawContactNotDeletedError</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="w">        </span><span class="n">UNKNOWN</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">showGenericErrorMessage</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">    </span><span class="p">}</span><span class="w">   </span>
-<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">moveResult</span><span class="p">.</span><span class="na">failureReason</span><span class="p">(</span><span class="n">originalRawContactId</span><span class="p">)</span><span class="o">?.</span><span class="na">let</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">    </span><span class="k">when</span><span class="w"> </span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">        </span><span class="n">INVALID_ACCOUNT</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">showInvalidAccountError</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">        </span><span class="n">ALREADY_IN_ACCOUNT</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">promptUserToPickDifferentAccount</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">        </span><span class="n">RAW_CONTACT_NOT_FOUND</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">showRawContactNotFoundError</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">        </span><span class="n">INSERT_RAW_CONTACT_COPY_FAILED</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">promptUserToTryAgain</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="w">        </span><span class="n">DELETE_ORIGINAL_RAW_CONTACT_FAILED</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">showOriginalRawContactNotDeletedError</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="w">        </span><span class="n">UNKNOWN</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">showGenericErrorMessage</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="w">    </span><span class="p">}</span><span class="w">   </span>
+<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <h2 id="cancelling-the-move">Cancelling the move<a class="headerlink" href="#cancelling-the-move" title="Permanent link">&para;</a></h2>
 <p>To cancel a move amid execution,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="p">.</span><span class="na">commit</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">returnTrueIfMoveShouldBeCancelled</span><span class="p">()</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="p">.</span><span class="na">commit</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">returnTrueIfMoveShouldBeCancelled</span><span class="p">()</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <p>The <code>commit</code> function optionally takes in a function that, if it returns true, will cancel move
 processing as soon as possible. The function is called numerous times during move processing to
 check if processing should stop or continue. This gives you the option to cancel the move.</p>
 <p>For example, to automatically cancel the move inside a Kotlin coroutine when the coroutine is
 cancelled,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">launch</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">    </span><span class="n">withContext</span><span class="p">(</span><span class="n">coroutineContext</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">moveResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">move</span><span class="p">.</span><span class="na">commit</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">!</span><span class="n">isActive</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">launch</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">    </span><span class="n">withContext</span><span class="p">(</span><span class="n">coroutineContext</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">moveResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">move</span><span class="p">.</span><span class="na">commit</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">!</span><span class="n">isActive</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <h2 id="performing-the-move-and-result-processing-asynchronously">Performing the move and result processing asynchronously<a class="headerlink" href="#performing-the-move-and-result-processing-asynchronously" title="Permanent link">&para;</a></h2>
 <p>Moves are executed when the <code>commit</code> function is invoked. The work is done in the same thread as

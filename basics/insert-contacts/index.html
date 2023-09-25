@@ -606,6 +606,20 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#account-validation" class="md-nav__link">
+    Account validation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#group-memberships-validation" class="md-nav__link">
+    Group memberships validation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#local-rawcontacts" class="md-nav__link">
     Local RawContacts
   </a>
@@ -1998,6 +2012,20 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#account-validation" class="md-nav__link">
+    Account validation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#group-memberships-validation" class="md-nav__link">
+    Group memberships validation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#local-rawcontacts" class="md-nav__link">
     Local RawContacts
   </a>
@@ -2176,6 +2204,11 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">.</span><span class="na">allowBlanks</span><span class="p">(</span><span class="kc">true</span><span class="o">|</span><span class="kc">false</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>For more info, read about <a href="../../entities/about-blank-contacts/">Blank contacts</a>.</p>
+<blockquote>
+<p>ℹ️ This may affect performance. When this is set to false, the API executes extra lines of code 
+to perform the validation, which may result in a slight performance hit. You can disable this
+internal check, perhaps increasing insertion speed, by setting this to true.</p>
+</blockquote>
 <h2 id="blank-data-are-not-inserted">Blank data are not inserted<a class="headerlink" href="#blank-data-are-not-inserted" title="Permanent link">&para;</a></h2>
 <p>Blank data are data entities that have only null, empty, or blank primary value(s). Blanks are
 ignored and are not inserted by insert APIs.</p>
@@ -2196,6 +2229,31 @@ setting the account is done via the <code>Insert.forAccount</code> function.</p>
 <blockquote>
 <p>ℹ️ For more info, read <a href="../../accounts/query-accounts/">Query for Accounts</a>.</p>
 </blockquote>
+<h3 id="account-validation">Account validation<a class="headerlink" href="#account-validation" title="Permanent link">&para;</a></h3>
+<p>By default, all Accounts in the system are queried in order to ensure that each 
+<code>NewRawContact.account</code> is in the system. For Accounts that are not in the system, null is used 
+instead. This guards against invalid accounts.</p>
+<p>You may explicitly enable or disable this,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">.</span><span class="na">validateAccounts</span><span class="p">(</span><span class="kc">true</span><span class="o">|</span><span class="kc">false</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+<blockquote>
+<p>ℹ️ This may affect performance. When this is set to true, the API executes extra lines of code to 
+perform the validation, which may result in a slight performance hit. You can disable this 
+internal check, perhaps increasing insertion speed, by setting this to false.</p>
+</blockquote>
+<h3 id="group-memberships-validation">Group memberships validation<a class="headerlink" href="#group-memberships-validation" title="Permanent link">&para;</a></h3>
+<p>By default, all Groups belonging to the <code>NewRawContact.account</code> are queried to ensure that each 
+<code>NewRawContact.groupMemberships</code> points to a Group in that list. Group memberships that are not 
+pointing to a group that belong to the <code>NewRawContact.account</code> are not inserted. This guards 
+against invalid accounts.</p>
+<p>You may explicitly enable or disable this,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="p">.</span><span class="na">validateGroupMemberships</span><span class="p">(</span><span class="kc">true</span><span class="o">|</span><span class="kc">false</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+<blockquote>
+<p>ℹ️ This may affect performance. When this is set to true, the API executes extra lines of code to
+perform the validation, which may result in a slight performance hit. You can disable this
+internal check, perhaps increasing insertion speed, by setting this to false.</p>
+</blockquote>
 <h3 id="local-rawcontacts">Local RawContacts<a class="headerlink" href="#local-rawcontacts" title="Permanent link">&para;</a></h3>
 <p>If no Account is provided, or null is provided, or if an incorrect account is provided, the
 RawContacts inserted will not be associated with an Account. RawContacts inserted without an
@@ -2205,75 +2263,75 @@ associated account are considered local or device-only contacts, which are not s
 </blockquote>
 <h2 id="including-only-specific-data">Including only specific data<a class="headerlink" href="#including-only-specific-data" title="Permanent link">&para;</a></h2>
 <p>To include only the given set of fields (data) in each of the insert operation,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>For example, to only include email and name fields,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="p">.</span><span class="na">include</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Email</span><span class="p">.</span><span class="na">all</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Name</span><span class="p">.</span><span class="na">all</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="p">.</span><span class="na">include</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Email</span><span class="p">.</span><span class="na">all</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Name</span><span class="p">.</span><span class="na">all</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <p>For more info, read <a href="../include-only-desired-data/">Include only certain fields for read and write operations</a>.</p>
 <h2 id="executing-the-insert">Executing the insert<a class="headerlink" href="#executing-the-insert" title="Permanent link">&para;</a></h2>
 <p>To execute the insert,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <h3 id="handling-the-insert-result">Handling the insert result<a class="headerlink" href="#handling-the-insert-result" title="Permanent link">&para;</a></h3>
 <p>The <code>commit</code> function returns a <code>Result</code>,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contactsApi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="kd">val</span><span class="w"> </span><span class="nv">newRawContact1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NewRawContact</span><span class="p">(...)</span><span class="w"></span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="kd">val</span><span class="w"> </span><span class="nv">newRawContact2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NewRawContact</span><span class="p">(...)</span><span class="w"></span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="kd">val</span><span class="w"> </span><span class="nv">insertResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">contactsApi</span><span class="w"></span>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">    </span><span class="p">.</span><span class="na">insert</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">    </span><span class="p">.</span><span class="na">rawContacts</span><span class="p">(</span><span class="n">newRawContact1</span><span class="p">,</span><span class="w"> </span><span class="n">newRawContact2</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="w">    </span><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contactsApi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="kd">val</span><span class="w"> </span><span class="nv">newRawContact1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NewRawContact</span><span class="p">(...)</span><span class="w"></span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="kd">val</span><span class="w"> </span><span class="nv">newRawContact2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NewRawContact</span><span class="p">(...)</span><span class="w"></span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="kd">val</span><span class="w"> </span><span class="nv">insertResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">contactsApi</span><span class="w"></span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">    </span><span class="p">.</span><span class="na">insert</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="w">    </span><span class="p">.</span><span class="na">rawContacts</span><span class="p">(</span><span class="n">newRawContact1</span><span class="p">,</span><span class="w"> </span><span class="n">newRawContact2</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="w">    </span><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <p>To check if all inserts succeeded,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">allInsertsSuccessful</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insertResult</span><span class="p">.</span><span class="na">isSuccessful</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">allInsertsSuccessful</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insertResult</span><span class="p">.</span><span class="na">isSuccessful</span><span class="w"></span>
 </code></pre></div>
 <p>To check if a particular insert succeeded,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">firstInsertSuccessful</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insertResult</span><span class="p">.</span><span class="na">isSuccessful</span><span class="p">(</span><span class="n">newRawContact1</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">firstInsertSuccessful</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insertResult</span><span class="p">.</span><span class="na">isSuccessful</span><span class="p">(</span><span class="n">newRawContact1</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>To get the RawContact IDs of all the newly created RawContacts,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">allRawContactIds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insertResult</span><span class="p">.</span><span class="na">rawContactIds</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">allRawContactIds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insertResult</span><span class="p">.</span><span class="na">rawContactIds</span><span class="w"></span>
 </code></pre></div>
 <p>To get the RawContact ID of a particular RawContact,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">secondRawContactId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insertResult</span><span class="p">.</span><span class="na">rawContactId</span><span class="p">(</span><span class="n">newRawContact2</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">secondRawContactId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insertResult</span><span class="p">.</span><span class="na">rawContactId</span><span class="p">(</span><span class="n">newRawContact2</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>Once you have the RawContact IDs, you can retrieve the newly created Contacts via the <code>Query</code> API,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">contactsApi</span><span class="w"></span>
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">    </span><span class="p">.</span><span class="na">query</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">    </span><span class="p">.</span><span class="na">where</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">RawContact</span><span class="p">.</span><span class="na">Id</span><span class="w"> </span><span class="n">`in`</span><span class="w"> </span><span class="n">allRawContactIds</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">    </span><span class="p">.</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">contactsApi</span><span class="w"></span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">    </span><span class="p">.</span><span class="na">query</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">    </span><span class="p">.</span><span class="na">where</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">RawContact</span><span class="p">.</span><span class="na">Id</span><span class="w"> </span><span class="n">`in`</span><span class="w"> </span><span class="n">allRawContactIds</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">    </span><span class="p">.</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <blockquote>
 <p>ℹ️ For more info, read <a href="../query-contacts-advanced/">Query contacts (advanced)</a>.</p>
 </blockquote>
 <p>Alternatively, you may use the extensions provided in <code>InsertResult</code>. To get all newly created
 Contacts,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insertResult</span><span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insertResult</span><span class="p">.</span><span class="na">contacts</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>To get a particular contact,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contact</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insertResult</span><span class="p">.</span><span class="na">contact</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">newRawContact1</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contact</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insertResult</span><span class="p">.</span><span class="na">contact</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">newRawContact1</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>To instead get the RawContacts directly,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">rawContacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insertResult</span><span class="p">.</span><span class="na">rawContacts</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">rawContacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insertResult</span><span class="p">.</span><span class="na">rawContacts</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>To get a particular RawContact,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">rawContact</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insertResult</span><span class="p">.</span><span class="na">rawContact</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">newRawContact2</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">rawContact</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insertResult</span><span class="p">.</span><span class="na">rawContact</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">,</span><span class="w"> </span><span class="n">newRawContact2</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <h2 id="cancelling-the-insert">Cancelling the insert<a class="headerlink" href="#cancelling-the-insert" title="Permanent link">&para;</a></h2>
 <p>To cancel an insert amid execution,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="p">.</span><span class="na">commit</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">returnTrueIfInsertShouldBeCancelled</span><span class="p">()</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="p">.</span><span class="na">commit</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">returnTrueIfInsertShouldBeCancelled</span><span class="p">()</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <p>The <code>commit</code> function optionally takes in a function that, if it returns true, will cancel insert
 processing as soon as possible. The function is called numerous times during insert processing to
 check if processing should stop or continue. This gives you the option to cancel the insert.</p>
 <p>For example, to automatically cancel the insert inside a Kotlin coroutine when the coroutine is
 cancelled,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="n">launch</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="w">    </span><span class="n">withContext</span><span class="p">(</span><span class="n">coroutineContext</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">insertResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insert</span><span class="p">.</span><span class="na">commit</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">!</span><span class="n">isActive</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="n">launch</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="w">    </span><span class="n">withContext</span><span class="p">(</span><span class="n">coroutineContext</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">insertResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insert</span><span class="p">.</span><span class="na">commit</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">!</span><span class="n">isActive</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <h2 id="performing-the-insert-and-result-processing-asynchronously">Performing the insert and result processing asynchronously<a class="headerlink" href="#performing-the-insert-and-result-processing-asynchronously" title="Permanent link">&para;</a></h2>
 <p>Inserts are executed when the <code>commit</code> function is invoked. The work is done in the same thread as
@@ -2307,76 +2365,76 @@ RawContacts#CONTACT_ID column of the newly inserted raw contact.</p>
 contact in order for the operation to succeed.</p>
 <p>If you want to provide data of every kind, which is useful when implementing a contact creation
 screen,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">accountToAddContactTo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Account</span><span class="p">(</span><span class="s">&quot;vestrel00@pixar.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;com.pixar&quot;</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>
-<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="kd">val</span><span class="w"> </span><span class="nv">insertResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="w">    </span><span class="p">.</span><span class="na">insert</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="w">    </span><span class="p">.</span><span class="na">rawContact</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a><span class="w">        </span><span class="n">setAccount</span><span class="p">(</span><span class="n">accountToAddContactTo</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a><span class="w">        </span><span class="n">setName</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a><span class="w">            </span><span class="n">givenName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Buzz&quot;</span><span class="w"></span>
-<a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a><span class="w">            </span><span class="n">familyName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Lightyear&quot;</span><span class="w"></span>
-<a id="__codelineno-22-10" name="__codelineno-22-10" href="#__codelineno-22-10"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-22-11" name="__codelineno-22-11" href="#__codelineno-22-11"></a><span class="w">        </span><span class="n">setNickname</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-22-12" name="__codelineno-22-12" href="#__codelineno-22-12"></a><span class="w">            </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Buzz&quot;</span><span class="w"></span>
-<a id="__codelineno-22-13" name="__codelineno-22-13" href="#__codelineno-22-13"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-22-14" name="__codelineno-22-14" href="#__codelineno-22-14"></a><span class="w">        </span><span class="n">setOrganization</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-22-15" name="__codelineno-22-15" href="#__codelineno-22-15"></a><span class="w">            </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Space Toy&quot;</span><span class="w"></span>
-<a id="__codelineno-22-16" name="__codelineno-22-16" href="#__codelineno-22-16"></a><span class="w">            </span><span class="n">company</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Pixar&quot;</span><span class="w"></span>
-<a id="__codelineno-22-17" name="__codelineno-22-17" href="#__codelineno-22-17"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-22-18" name="__codelineno-22-18" href="#__codelineno-22-18"></a><span class="w">        </span><span class="n">addPhone</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-22-19" name="__codelineno-22-19" href="#__codelineno-22-19"></a><span class="w">            </span><span class="n">number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;(555) 555-5555&quot;</span><span class="w"></span>
-<a id="__codelineno-22-20" name="__codelineno-22-20" href="#__codelineno-22-20"></a><span class="w">            </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PhoneEntity</span><span class="p">.</span><span class="na">Type</span><span class="p">.</span><span class="na">CUSTOM</span><span class="w"></span>
-<a id="__codelineno-22-21" name="__codelineno-22-21" href="#__codelineno-22-21"></a><span class="w">            </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Fake Number&quot;</span><span class="w"></span>
-<a id="__codelineno-22-22" name="__codelineno-22-22" href="#__codelineno-22-22"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-22-23" name="__codelineno-22-23" href="#__codelineno-22-23"></a><span class="w">        </span><span class="n">setSipAddress</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-22-24" name="__codelineno-22-24" href="#__codelineno-22-24"></a><span class="w">            </span><span class="n">sipAddress</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;sip:buzz.lightyear@pixar.com&quot;</span><span class="w"></span>
-<a id="__codelineno-22-25" name="__codelineno-22-25" href="#__codelineno-22-25"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-22-26" name="__codelineno-22-26" href="#__codelineno-22-26"></a><span class="w">        </span><span class="n">addEmail</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-22-27" name="__codelineno-22-27" href="#__codelineno-22-27"></a><span class="w">            </span><span class="n">address</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;buzz.lightyear@pixar.com&quot;</span><span class="w"></span>
-<a id="__codelineno-22-28" name="__codelineno-22-28" href="#__codelineno-22-28"></a><span class="w">            </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmailEntity</span><span class="p">.</span><span class="na">Type</span><span class="p">.</span><span class="na">WORK</span><span class="w"></span>
-<a id="__codelineno-22-29" name="__codelineno-22-29" href="#__codelineno-22-29"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-22-30" name="__codelineno-22-30" href="#__codelineno-22-30"></a><span class="w">        </span><span class="n">addEmail</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-22-31" name="__codelineno-22-31" href="#__codelineno-22-31"></a><span class="w">            </span><span class="n">address</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;buzz@lightyear.net&quot;</span><span class="w"></span>
-<a id="__codelineno-22-32" name="__codelineno-22-32" href="#__codelineno-22-32"></a><span class="w">            </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmailEntity</span><span class="p">.</span><span class="na">Type</span><span class="p">.</span><span class="na">HOME</span><span class="w"></span>
-<a id="__codelineno-22-33" name="__codelineno-22-33" href="#__codelineno-22-33"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-22-34" name="__codelineno-22-34" href="#__codelineno-22-34"></a><span class="w">        </span><span class="n">addAddress</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-22-35" name="__codelineno-22-35" href="#__codelineno-22-35"></a><span class="w">            </span><span class="n">formattedAddress</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;1200 Park Ave&quot;</span><span class="w"></span>
-<a id="__codelineno-22-36" name="__codelineno-22-36" href="#__codelineno-22-36"></a><span class="w">            </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AddressEntity</span><span class="p">.</span><span class="na">Type</span><span class="p">.</span><span class="na">WORK</span><span class="w"></span>
-<a id="__codelineno-22-37" name="__codelineno-22-37" href="#__codelineno-22-37"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-22-38" name="__codelineno-22-38" href="#__codelineno-22-38"></a><span class="w">        </span><span class="n">addIm</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-22-39" name="__codelineno-22-39" href="#__codelineno-22-39"></a><span class="w">            </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;buzzlightyear@skype.com&quot;</span><span class="w"></span>
-<a id="__codelineno-22-40" name="__codelineno-22-40" href="#__codelineno-22-40"></a><span class="w">            </span><span class="n">protocol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ImEntity</span><span class="p">.</span><span class="na">Protocol</span><span class="p">.</span><span class="na">SKYPE</span><span class="w"></span>
-<a id="__codelineno-22-41" name="__codelineno-22-41" href="#__codelineno-22-41"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-22-42" name="__codelineno-22-42" href="#__codelineno-22-42"></a><span class="w">        </span><span class="n">addWebsite</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-22-43" name="__codelineno-22-43" href="#__codelineno-22-43"></a><span class="w">            </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://www.pixar.com&quot;</span><span class="w"></span>
-<a id="__codelineno-22-44" name="__codelineno-22-44" href="#__codelineno-22-44"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-22-45" name="__codelineno-22-45" href="#__codelineno-22-45"></a><span class="w">        </span><span class="n">addWebsite</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-22-46" name="__codelineno-22-46" href="#__codelineno-22-46"></a><span class="w">            </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://www.disney.com&quot;</span><span class="w"></span>
-<a id="__codelineno-22-47" name="__codelineno-22-47" href="#__codelineno-22-47"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-22-48" name="__codelineno-22-48" href="#__codelineno-22-48"></a><span class="w">        </span><span class="n">addEvent</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-22-49" name="__codelineno-22-49" href="#__codelineno-22-49"></a><span class="w">            </span><span class="n">date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EventDate</span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">year</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1995</span><span class="p">,</span><span class="w"> </span><span class="n">month</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="n">dayOfMonth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">22</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-22-50" name="__codelineno-22-50" href="#__codelineno-22-50"></a><span class="w">            </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EventEntity</span><span class="p">.</span><span class="na">Type</span><span class="p">.</span><span class="na">BIRTHDAY</span><span class="w"></span>
-<a id="__codelineno-22-51" name="__codelineno-22-51" href="#__codelineno-22-51"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-22-52" name="__codelineno-22-52" href="#__codelineno-22-52"></a><span class="w">        </span><span class="n">addRelation</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-22-53" name="__codelineno-22-53" href="#__codelineno-22-53"></a><span class="w">            </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Childhood friend&quot;</span><span class="w"></span>
-<a id="__codelineno-22-54" name="__codelineno-22-54" href="#__codelineno-22-54"></a><span class="w">            </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RelationEntity</span><span class="p">.</span><span class="na">Type</span><span class="p">.</span><span class="na">CUSTOM</span><span class="w"></span>
-<a id="__codelineno-22-55" name="__codelineno-22-55" href="#__codelineno-22-55"></a><span class="w">            </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Imaginary Friend&quot;</span><span class="w"></span>
-<a id="__codelineno-22-56" name="__codelineno-22-56" href="#__codelineno-22-56"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-22-57" name="__codelineno-22-57" href="#__codelineno-22-57"></a><span class="w">        </span><span class="n">groupMemberships</span><span class="p">.</span><span class="na">addAll</span><span class="p">(</span><span class="w"></span>
-<a id="__codelineno-22-58" name="__codelineno-22-58" href="#__codelineno-22-58"></a><span class="w">            </span><span class="n">contactsApi</span><span class="w"></span>
-<a id="__codelineno-22-59" name="__codelineno-22-59" href="#__codelineno-22-59"></a><span class="w">                </span><span class="p">.</span><span class="na">groups</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-22-60" name="__codelineno-22-60" href="#__codelineno-22-60"></a><span class="w">                </span><span class="p">.</span><span class="na">query</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-22-61" name="__codelineno-22-61" href="#__codelineno-22-61"></a><span class="w">                </span><span class="p">.</span><span class="na">accounts</span><span class="p">(</span><span class="n">accountToAddContactTo</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-22-62" name="__codelineno-22-62" href="#__codelineno-22-62"></a><span class="w">                </span><span class="p">.</span><span class="na">where</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Title</span><span class="w"> </span><span class="n">contains</span><span class="w"> </span><span class="s">&quot;friend&quot;</span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-22-63" name="__codelineno-22-63" href="#__codelineno-22-63"></a><span class="w">                </span><span class="p">.</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-22-64" name="__codelineno-22-64" href="#__codelineno-22-64"></a><span class="w">                </span><span class="p">.</span><span class="na">newMemberships</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-22-65" name="__codelineno-22-65" href="#__codelineno-22-65"></a><span class="w">        </span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-22-66" name="__codelineno-22-66" href="#__codelineno-22-66"></a><span class="w">        </span><span class="n">setNote</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-22-67" name="__codelineno-22-67" href="#__codelineno-22-67"></a><span class="w">            </span><span class="n">note</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;The best toy in the world!&quot;</span><span class="w"></span>
-<a id="__codelineno-22-68" name="__codelineno-22-68" href="#__codelineno-22-68"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-22-69" name="__codelineno-22-69" href="#__codelineno-22-69"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-22-70" name="__codelineno-22-70" href="#__codelineno-22-70"></a><span class="w">    </span><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">accountToAddContactTo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Account</span><span class="p">(</span><span class="s">&quot;vestrel00@pixar.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;com.pixar&quot;</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>
+<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="kd">val</span><span class="w"> </span><span class="nv">insertResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="w">    </span><span class="p">.</span><span class="na">insert</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="w">    </span><span class="p">.</span><span class="na">rawContact</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a><span class="w">        </span><span class="n">setAccount</span><span class="p">(</span><span class="n">accountToAddContactTo</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a><span class="w">        </span><span class="n">setName</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a><span class="w">            </span><span class="n">givenName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Buzz&quot;</span><span class="w"></span>
+<a id="__codelineno-24-9" name="__codelineno-24-9" href="#__codelineno-24-9"></a><span class="w">            </span><span class="n">familyName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Lightyear&quot;</span><span class="w"></span>
+<a id="__codelineno-24-10" name="__codelineno-24-10" href="#__codelineno-24-10"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-24-11" name="__codelineno-24-11" href="#__codelineno-24-11"></a><span class="w">        </span><span class="n">setNickname</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-24-12" name="__codelineno-24-12" href="#__codelineno-24-12"></a><span class="w">            </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Buzz&quot;</span><span class="w"></span>
+<a id="__codelineno-24-13" name="__codelineno-24-13" href="#__codelineno-24-13"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-24-14" name="__codelineno-24-14" href="#__codelineno-24-14"></a><span class="w">        </span><span class="n">setOrganization</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-24-15" name="__codelineno-24-15" href="#__codelineno-24-15"></a><span class="w">            </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Space Toy&quot;</span><span class="w"></span>
+<a id="__codelineno-24-16" name="__codelineno-24-16" href="#__codelineno-24-16"></a><span class="w">            </span><span class="n">company</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Pixar&quot;</span><span class="w"></span>
+<a id="__codelineno-24-17" name="__codelineno-24-17" href="#__codelineno-24-17"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-24-18" name="__codelineno-24-18" href="#__codelineno-24-18"></a><span class="w">        </span><span class="n">addPhone</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-24-19" name="__codelineno-24-19" href="#__codelineno-24-19"></a><span class="w">            </span><span class="n">number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;(555) 555-5555&quot;</span><span class="w"></span>
+<a id="__codelineno-24-20" name="__codelineno-24-20" href="#__codelineno-24-20"></a><span class="w">            </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PhoneEntity</span><span class="p">.</span><span class="na">Type</span><span class="p">.</span><span class="na">CUSTOM</span><span class="w"></span>
+<a id="__codelineno-24-21" name="__codelineno-24-21" href="#__codelineno-24-21"></a><span class="w">            </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Fake Number&quot;</span><span class="w"></span>
+<a id="__codelineno-24-22" name="__codelineno-24-22" href="#__codelineno-24-22"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-24-23" name="__codelineno-24-23" href="#__codelineno-24-23"></a><span class="w">        </span><span class="n">setSipAddress</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-24-24" name="__codelineno-24-24" href="#__codelineno-24-24"></a><span class="w">            </span><span class="n">sipAddress</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;sip:buzz.lightyear@pixar.com&quot;</span><span class="w"></span>
+<a id="__codelineno-24-25" name="__codelineno-24-25" href="#__codelineno-24-25"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-24-26" name="__codelineno-24-26" href="#__codelineno-24-26"></a><span class="w">        </span><span class="n">addEmail</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-24-27" name="__codelineno-24-27" href="#__codelineno-24-27"></a><span class="w">            </span><span class="n">address</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;buzz.lightyear@pixar.com&quot;</span><span class="w"></span>
+<a id="__codelineno-24-28" name="__codelineno-24-28" href="#__codelineno-24-28"></a><span class="w">            </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmailEntity</span><span class="p">.</span><span class="na">Type</span><span class="p">.</span><span class="na">WORK</span><span class="w"></span>
+<a id="__codelineno-24-29" name="__codelineno-24-29" href="#__codelineno-24-29"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-24-30" name="__codelineno-24-30" href="#__codelineno-24-30"></a><span class="w">        </span><span class="n">addEmail</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-24-31" name="__codelineno-24-31" href="#__codelineno-24-31"></a><span class="w">            </span><span class="n">address</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;buzz@lightyear.net&quot;</span><span class="w"></span>
+<a id="__codelineno-24-32" name="__codelineno-24-32" href="#__codelineno-24-32"></a><span class="w">            </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmailEntity</span><span class="p">.</span><span class="na">Type</span><span class="p">.</span><span class="na">HOME</span><span class="w"></span>
+<a id="__codelineno-24-33" name="__codelineno-24-33" href="#__codelineno-24-33"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-24-34" name="__codelineno-24-34" href="#__codelineno-24-34"></a><span class="w">        </span><span class="n">addAddress</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-24-35" name="__codelineno-24-35" href="#__codelineno-24-35"></a><span class="w">            </span><span class="n">formattedAddress</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;1200 Park Ave&quot;</span><span class="w"></span>
+<a id="__codelineno-24-36" name="__codelineno-24-36" href="#__codelineno-24-36"></a><span class="w">            </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AddressEntity</span><span class="p">.</span><span class="na">Type</span><span class="p">.</span><span class="na">WORK</span><span class="w"></span>
+<a id="__codelineno-24-37" name="__codelineno-24-37" href="#__codelineno-24-37"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-24-38" name="__codelineno-24-38" href="#__codelineno-24-38"></a><span class="w">        </span><span class="n">addIm</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-24-39" name="__codelineno-24-39" href="#__codelineno-24-39"></a><span class="w">            </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;buzzlightyear@skype.com&quot;</span><span class="w"></span>
+<a id="__codelineno-24-40" name="__codelineno-24-40" href="#__codelineno-24-40"></a><span class="w">            </span><span class="n">protocol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ImEntity</span><span class="p">.</span><span class="na">Protocol</span><span class="p">.</span><span class="na">SKYPE</span><span class="w"></span>
+<a id="__codelineno-24-41" name="__codelineno-24-41" href="#__codelineno-24-41"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-24-42" name="__codelineno-24-42" href="#__codelineno-24-42"></a><span class="w">        </span><span class="n">addWebsite</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-24-43" name="__codelineno-24-43" href="#__codelineno-24-43"></a><span class="w">            </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://www.pixar.com&quot;</span><span class="w"></span>
+<a id="__codelineno-24-44" name="__codelineno-24-44" href="#__codelineno-24-44"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-24-45" name="__codelineno-24-45" href="#__codelineno-24-45"></a><span class="w">        </span><span class="n">addWebsite</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-24-46" name="__codelineno-24-46" href="#__codelineno-24-46"></a><span class="w">            </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://www.disney.com&quot;</span><span class="w"></span>
+<a id="__codelineno-24-47" name="__codelineno-24-47" href="#__codelineno-24-47"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-24-48" name="__codelineno-24-48" href="#__codelineno-24-48"></a><span class="w">        </span><span class="n">addEvent</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-24-49" name="__codelineno-24-49" href="#__codelineno-24-49"></a><span class="w">            </span><span class="n">date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EventDate</span><span class="p">.</span><span class="na">from</span><span class="p">(</span><span class="n">year</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1995</span><span class="p">,</span><span class="w"> </span><span class="n">month</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="n">dayOfMonth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">22</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-24-50" name="__codelineno-24-50" href="#__codelineno-24-50"></a><span class="w">            </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EventEntity</span><span class="p">.</span><span class="na">Type</span><span class="p">.</span><span class="na">BIRTHDAY</span><span class="w"></span>
+<a id="__codelineno-24-51" name="__codelineno-24-51" href="#__codelineno-24-51"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-24-52" name="__codelineno-24-52" href="#__codelineno-24-52"></a><span class="w">        </span><span class="n">addRelation</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-24-53" name="__codelineno-24-53" href="#__codelineno-24-53"></a><span class="w">            </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Childhood friend&quot;</span><span class="w"></span>
+<a id="__codelineno-24-54" name="__codelineno-24-54" href="#__codelineno-24-54"></a><span class="w">            </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RelationEntity</span><span class="p">.</span><span class="na">Type</span><span class="p">.</span><span class="na">CUSTOM</span><span class="w"></span>
+<a id="__codelineno-24-55" name="__codelineno-24-55" href="#__codelineno-24-55"></a><span class="w">            </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Imaginary Friend&quot;</span><span class="w"></span>
+<a id="__codelineno-24-56" name="__codelineno-24-56" href="#__codelineno-24-56"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-24-57" name="__codelineno-24-57" href="#__codelineno-24-57"></a><span class="w">        </span><span class="n">groupMemberships</span><span class="p">.</span><span class="na">addAll</span><span class="p">(</span><span class="w"></span>
+<a id="__codelineno-24-58" name="__codelineno-24-58" href="#__codelineno-24-58"></a><span class="w">            </span><span class="n">contactsApi</span><span class="w"></span>
+<a id="__codelineno-24-59" name="__codelineno-24-59" href="#__codelineno-24-59"></a><span class="w">                </span><span class="p">.</span><span class="na">groups</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-24-60" name="__codelineno-24-60" href="#__codelineno-24-60"></a><span class="w">                </span><span class="p">.</span><span class="na">query</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-24-61" name="__codelineno-24-61" href="#__codelineno-24-61"></a><span class="w">                </span><span class="p">.</span><span class="na">accounts</span><span class="p">(</span><span class="n">accountToAddContactTo</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-24-62" name="__codelineno-24-62" href="#__codelineno-24-62"></a><span class="w">                </span><span class="p">.</span><span class="na">where</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Title</span><span class="w"> </span><span class="n">contains</span><span class="w"> </span><span class="s">&quot;friend&quot;</span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-24-63" name="__codelineno-24-63" href="#__codelineno-24-63"></a><span class="w">                </span><span class="p">.</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-24-64" name="__codelineno-24-64" href="#__codelineno-24-64"></a><span class="w">                </span><span class="p">.</span><span class="na">newMemberships</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-24-65" name="__codelineno-24-65" href="#__codelineno-24-65"></a><span class="w">        </span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-24-66" name="__codelineno-24-66" href="#__codelineno-24-66"></a><span class="w">        </span><span class="n">setNote</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-24-67" name="__codelineno-24-67" href="#__codelineno-24-67"></a><span class="w">            </span><span class="n">note</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;The best toy in the world!&quot;</span><span class="w"></span>
+<a id="__codelineno-24-68" name="__codelineno-24-68" href="#__codelineno-24-68"></a><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-24-69" name="__codelineno-24-69" href="#__codelineno-24-69"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-24-70" name="__codelineno-24-70" href="#__codelineno-24-70"></a><span class="w">    </span><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <h2 id="inserting-photos-and-thumbnails">Inserting photos and thumbnails<a class="headerlink" href="#inserting-photos-and-thumbnails" title="Permanent link">&para;</a></h2>
 <p>To set full-sized photos (and by API design thumbnails), 

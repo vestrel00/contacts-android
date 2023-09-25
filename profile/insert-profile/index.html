@@ -1099,6 +1099,20 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#account-validation" class="md-nav__link">
+    Account validation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#group-memberships-validation" class="md-nav__link">
+    Group memberships validation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#local-rawcontacts" class="md-nav__link">
     Local RawContacts
   </a>
@@ -2005,6 +2019,20 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#account-validation" class="md-nav__link">
+    Account validation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#group-memberships-validation" class="md-nav__link">
+    Group memberships validation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#local-rawcontacts" class="md-nav__link">
     Local RawContacts
   </a>
@@ -2184,6 +2212,11 @@ RawContacts.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">.</span><span class="na">allowBlanks</span><span class="p">(</span><span class="kc">true</span><span class="o">|</span><span class="kc">false</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>For more info, read about <a href="../../entities/about-blank-contacts/">Blank contacts</a>.</p>
+<blockquote>
+<p>ℹ️ This may affect performance. When this is set to false, the API executes extra lines of code
+to perform the validation, which may result in a slight performance hit. You can disable this
+internal check, perhaps increasing insertion speed, by setting this to true.</p>
+</blockquote>
 <h2 id="blank-data-are-not-inserted">Blank data are not inserted<a class="headerlink" href="#blank-data-are-not-inserted" title="Permanent link">&para;</a></h2>
 <p>Blank data are data entities that have only null, empty, or blank primary value(s). Blanks are 
 ignored and are not inserted by insert APIs.</p>
@@ -2201,6 +2234,11 @@ contact representing the user's personal profile data from that source.</p>
 <p>In other words, one account can have one profile RawContact. However, despite the documentation of 
 "one profile RawContact per one Account", the Contacts Provider allows for multiple RawContacts per
 Account, including multiple local RawContacts (no Account). </p>
+<blockquote>
+<p>ℹ️ This may affect performance. When this is set to false, the API executes extra lines of code
+to perform the validation, which may result in a slight performance hit. You can disable this
+internal check, perhaps increasing insertion speed, by setting this to true.</p>
+</blockquote>
 <h2 id="associating-an-account">Associating an Account<a class="headerlink" href="#associating-an-account" title="Permanent link">&para;</a></h2>
 <p>New RawContacts can be associated with an Account in order to enable syncing,</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">newRawContact</span><span class="p">.</span><span class="na">account</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">account</span><span class="w"></span>
@@ -2217,6 +2255,31 @@ setting the account is done via the <code>ProfileInsert.forAccount</code> functi
 <blockquote>
 <p>ℹ️ For more info, read <a href="../../accounts/query-accounts/">Query for Accounts</a>.</p>
 </blockquote>
+<h3 id="account-validation">Account validation<a class="headerlink" href="#account-validation" title="Permanent link">&para;</a></h3>
+<p>By default, all Accounts in the system are queried in order to ensure that each
+<code>NewRawContact.account</code> is in the system. For Accounts that are not in the system, null is used
+instead. This guards against invalid accounts.</p>
+<p>You may explicitly enable or disable this,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="p">.</span><span class="na">validateAccounts</span><span class="p">(</span><span class="kc">true</span><span class="o">|</span><span class="kc">false</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+<blockquote>
+<p>ℹ️ This may affect performance. When this is set to true, the API executes extra lines of code to
+perform the validation, which may result in a slight performance hit. You can disable this
+internal check, perhaps increasing insertion speed, by setting this to false.</p>
+</blockquote>
+<h3 id="group-memberships-validation">Group memberships validation<a class="headerlink" href="#group-memberships-validation" title="Permanent link">&para;</a></h3>
+<p>By default, all Groups belonging to the <code>NewRawContact.account</code> are queried to ensure that each
+<code>NewRawContact.groupMemberships</code> points to a Group in that list. Group memberships that are not
+pointing to a group that belong to the <code>NewRawContact.account</code> are not inserted. This guards
+against invalid accounts.</p>
+<p>You may explicitly enable or disable this,</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p">.</span><span class="na">validateGroupMemberships</span><span class="p">(</span><span class="kc">true</span><span class="o">|</span><span class="kc">false</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+<blockquote>
+<p>ℹ️ This may affect performance. When this is set to true, the API executes extra lines of code to
+perform the validation, which may result in a slight performance hit. You can disable this
+internal check, perhaps increasing insertion speed, by setting this to false.</p>
+</blockquote>
 <h3 id="local-rawcontacts">Local RawContacts<a class="headerlink" href="#local-rawcontacts" title="Permanent link">&para;</a></h3>
 <p>If no Account is provided, or null is provided, or if an incorrect account is provided, the
 RawContacts inserted will not be associated with an Account. RawContacts inserted without an
@@ -2226,62 +2289,62 @@ associated account are considered local or device-only contacts, which are not s
 </blockquote>
 <h2 id="including-only-specific-data">Including only specific data<a class="headerlink" href="#including-only-specific-data" title="Permanent link">&para;</a></h2>
 <p>To include only the given set of fields (data) in each of the insert operation,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="p">.</span><span class="na">include</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>For example, to only include email and name fields,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p">.</span><span class="na">include</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Email</span><span class="p">.</span><span class="na">all</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Name</span><span class="p">.</span><span class="na">all</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="p">.</span><span class="na">include</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Email</span><span class="p">.</span><span class="na">all</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Name</span><span class="p">.</span><span class="na">all</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <p>For more info, read <a href="../../basics/include-only-desired-data/">Include only certain fields for read and write operations</a>.</p>
 <h2 id="executing-the-insert">Executing the insert<a class="headerlink" href="#executing-the-insert" title="Permanent link">&para;</a></h2>
 <p>To execute the insert,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <h3 id="handling-the-insert-result">Handling the insert result<a class="headerlink" href="#handling-the-insert-result" title="Permanent link">&para;</a></h3>
 <p>The <code>commit</code> function returns a <code>Result</code>,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contactsApi</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="kd">val</span><span class="w"> </span><span class="nv">newRawContact</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NewRawContact</span><span class="p">(...)</span><span class="w"></span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="kd">val</span><span class="w"> </span><span class="nv">insertResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">contactsApi</span><span class="w"></span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">    </span><span class="p">.</span><span class="na">profile</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">    </span><span class="p">.</span><span class="na">insert</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">    </span><span class="p">.</span><span class="na">rawContact</span><span class="p">(</span><span class="n">newRawContact</span><span class="p">)</span><span class="w"></span>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">    </span><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contactsApi</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="n">Contacts</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="kd">val</span><span class="w"> </span><span class="nv">newRawContact</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NewRawContact</span><span class="p">(...)</span><span class="w"></span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="kd">val</span><span class="w"> </span><span class="nv">insertResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">contactsApi</span><span class="w"></span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">    </span><span class="p">.</span><span class="na">profile</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">    </span><span class="p">.</span><span class="na">insert</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">    </span><span class="p">.</span><span class="na">rawContact</span><span class="p">(</span><span class="n">newRawContact</span><span class="p">)</span><span class="w"></span>
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="w">    </span><span class="p">.</span><span class="na">commit</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <p>To check if the insert succeeded,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">insertSucess</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insertResult</span><span class="p">.</span><span class="na">isSuccessful</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">insertSucess</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insertResult</span><span class="p">.</span><span class="na">isSuccessful</span><span class="w"></span>
 </code></pre></div>
 <p>To get the RawContact IDs of the newly created RawContact,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">rawContactId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insertResult</span><span class="p">.</span><span class="na">rawContactId</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">rawContactId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insertResult</span><span class="p">.</span><span class="na">rawContactId</span><span class="w"></span>
 </code></pre></div>
 <p>Once you have the RawContact ID, you can retrieve the newly created Contact via the <code>Query</code> API,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">contactsApi</span><span class="w"></span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">    </span><span class="p">.</span><span class="na">query</span><span class="p">()</span><span class="w"></span>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span><span class="p">.</span><span class="na">where</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">RawContact</span><span class="p">.</span><span class="na">Id</span><span class="w"> </span><span class="n">equalTo</span><span class="w"> </span><span class="n">rawContactId</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">    </span><span class="p">.</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">contactsApi</span><span class="w"></span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">    </span><span class="p">.</span><span class="na">query</span><span class="p">()</span><span class="w"></span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">    </span><span class="p">.</span><span class="na">where</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">RawContact</span><span class="p">.</span><span class="na">Id</span><span class="w"> </span><span class="n">equalTo</span><span class="w"> </span><span class="n">rawContactId</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">    </span><span class="p">.</span><span class="na">find</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 <blockquote>
 <p>ℹ️ For more info, read <a href="../../basics/query-contacts-advanced/">Query contacts (advanced)</a>.</p>
 </blockquote>
 <p>Alternatively, you may use the extensions provided in <code>ProfileInsertResult</code>. To get the newly created
 Contact,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contact</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insertResult</span><span class="p">.</span><span class="na">contact</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contact</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insertResult</span><span class="p">.</span><span class="na">contact</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <p>To instead get the RawContact directly,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">rawContacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insertResult</span><span class="p">.</span><span class="na">rawContact</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">rawContacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insertResult</span><span class="p">.</span><span class="na">rawContact</span><span class="p">(</span><span class="n">contactsApi</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 <h2 id="cancelling-the-insert">Cancelling the insert<a class="headerlink" href="#cancelling-the-insert" title="Permanent link">&para;</a></h2>
 <p>To cancel an insert amid execution,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="p">.</span><span class="na">commit</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">returnTrueIfInsertShouldBeCancelled</span><span class="p">()</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="p">.</span><span class="na">commit</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">returnTrueIfInsertShouldBeCancelled</span><span class="p">()</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <p>The <code>commit</code> function optionally takes in a function that, if it returns true, will cancel insert
 processing as soon as possible. The function is called numerous times during insert processing to
 check if processing should stop or continue. This gives you the option to cancel the insert.</p>
 <p>For example, to automatically cancel the insert inside a Kotlin coroutine when the coroutine is cancelled,</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="n">launch</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">    </span><span class="n">withContext</span><span class="p">(</span><span class="n">coroutineContext</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">insertResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insert</span><span class="p">.</span><span class="na">commit</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">!</span><span class="n">isActive</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
-<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="n">launch</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="w">    </span><span class="n">withContext</span><span class="p">(</span><span class="n">coroutineContext</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">insertResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">insert</span><span class="p">.</span><span class="na">commit</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">!</span><span class="n">isActive</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">    </span><span class="p">}</span><span class="w"></span>
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <h2 id="performing-the-insert-and-result-processing-asynchronously">Performing the insert and result processing asynchronously<a class="headerlink" href="#performing-the-insert-and-result-processing-asynchronously" title="Permanent link">&para;</a></h2>
 <p>Inserts are executed when the <code>commit</code> function is invoked. The work is done in the same thread as
