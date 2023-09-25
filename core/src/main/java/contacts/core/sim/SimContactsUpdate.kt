@@ -315,9 +315,9 @@ private class SimContactsUpdateImpl(
                 val maxCharacterLimits = simCardInfo.maxCharacterLimits()
                 failureReasons[entry.current.id] = if (entry.modified.isBlank) {
                     FailureReason.NAME_AND_NUMBER_ARE_BLANK
-                } else if (entry.modified.name.length > maxCharacterLimits.nameMaxLength()) {
+                } else if (entry.modified.name.length > maxCharacterLimits.nameMaxLength(cancel)) {
                     FailureReason.NAME_EXCEEDED_MAX_CHAR_LIMIT
-                } else if (entry.modified.number.length > maxCharacterLimits.numberMaxLength()) {
+                } else if (entry.modified.number.length > maxCharacterLimits.numberMaxLength(cancel)) {
                     FailureReason.NUMBER_EXCEEDED_MAX_CHAR_LIMIT
                 } else if (
                     !contactsApi.updateSimContact(

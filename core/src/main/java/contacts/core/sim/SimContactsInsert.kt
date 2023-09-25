@@ -263,9 +263,9 @@ private class SimContactsInsertImpl(
                 val maxCharacterLimits = simCardInfo.maxCharacterLimits()
                 failureReasons[simContact] = if (simContact.isBlank) {
                     FailureReason.NAME_AND_NUMBER_ARE_BLANK
-                } else if (simContact.name.length > maxCharacterLimits.nameMaxLength()) {
+                } else if (simContact.name.length > maxCharacterLimits.nameMaxLength(cancel)) {
                     FailureReason.NAME_EXCEEDED_MAX_CHAR_LIMIT
-                } else if (simContact.number.length > maxCharacterLimits.numberMaxLength()) {
+                } else if (simContact.number.length > maxCharacterLimits.numberMaxLength(cancel)) {
                     FailureReason.NUMBER_EXCEEDED_MAX_CHAR_LIMIT
                 } else if (!contactsApi.insertSimContact(simContact, cancel)) {
                     FailureReason.UNKNOWN
