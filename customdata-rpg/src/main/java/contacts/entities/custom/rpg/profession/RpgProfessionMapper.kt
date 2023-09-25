@@ -8,7 +8,7 @@ internal class RpgProfessionMapperFactory :
     AbstractCustomDataEntityMapper.Factory<RpgProfessionField, RpgProfessionDataCursor, RpgProfession> {
 
     override fun create(
-        cursor: Cursor, includeFields: Set<RpgProfessionField>
+        cursor: Cursor, includeFields: Set<RpgProfessionField>?
     ): AbstractCustomDataEntityMapper<RpgProfessionField, RpgProfessionDataCursor, RpgProfession> =
         RpgProfessionMapper(RpgProfessionDataCursor(cursor, includeFields))
 }

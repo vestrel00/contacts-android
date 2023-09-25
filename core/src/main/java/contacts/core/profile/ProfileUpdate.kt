@@ -106,14 +106,31 @@ interface ProfileUpdate : CrudApi {
     /**
      * Specifies that only the given set of [fields] (data) will be updated.
      *
-     * If no fields are specified, then all fields will be updated. Otherwise, only the specified
-     * fields will be updating in addition to required API fields [Fields.Required] (e.g. IDs),
-     * which are always included.
+     * If no fields are specified (empty list), then all fields will be updated. Otherwise, only
+     * the specified fields will be updated.
      *
      * Blank data are deleted on update, unless the corresponding fields are NOT included.
      *
-     * Note that this may affect performance. It is recommended to only include fields that will be
-     * used to save CPU and memory.
+     * ## Including all fields
+     *
+     * If you want to include all fields, including custom data fields, then passing in an empty
+     * list or not invoking this function is the most performant way to do it because internal
+     * checks will be disabled (less lines of code executed).
+     *
+     * ## Developer notes
+     *
+     * Passing in an empty list here should set the reference to the internal field set to null to
+     * indicate that include field checks should be disabled. Implementations of
+     * [contacts.core.entities.operation.AbstractDataOperation] and other similar operations classes
+     * treat empty list vs null field sets differently. If the included field set is...
+     *
+     * - null, then the included field checks are disabled. This means that any non-blank data will
+     *   be processed. This is a more optimal, recommended way of including all fields.
+     * - not null but empty, then data will be skipped (no-op).
+     *
+     * Note that internal operations class instances may receive an empty list of fields instead of
+     * null when the **intersection** of the corresponding set of all fields and the
+     * non-null&non-empty set of included fields... is empty.
      */
     fun include(vararg fields: AbstractDataField): ProfileUpdate
 
@@ -133,14 +150,33 @@ interface ProfileUpdate : CrudApi {
     fun include(fields: Fields.() -> Collection<AbstractDataField>): ProfileUpdate
 
     /**
-     * Similar to [include] except this is used to specify
-     * [contacts.core.entities.RawContact.sourceId] and
-     * [contacts.core.entities.RawContact.options] fields. All other RawContact table fields are
-     * ignored.
+     * Similar to [include] except this is used to specify fields that are specific to the
+     * RawContacts table.
      *
-     * If no fields are specified, then all RawContacts fields ([RawContactsFields.all]) are
-     * included. Otherwise, only the specified fields will be included in addition to required API
-     * fields [RawContactsFields.Required].
+     * If no fields are specified (empty list), then all RawContacts fields are included. Otherwise,
+     * only the specified fields will be included.
+     *
+     * ## Including all fields
+     *
+     * If you want to include all RawContacts fields, then passing in an empty list or not invoking
+     * this function is the most performant way to do it because internal checks will be disabled
+     * (less lines of code executed).
+     *
+     * ## Developer notes
+     *
+     * Passing in an empty list here should set the reference to the internal RawContacts field set
+     * to null to indicate that include RawContacts field checks should be disabled. Operations
+     * such as [contacts.core.entities.operation.RawContactsOperation] and
+     * [contacts.core.entities.operation.OptionsOperation] treat empty list vs null field sets
+     * differently. If the included field set is...
+     *
+     * - null, then the included field checks are disabled. This means that any non-blank data will
+     *   be processed. This is a more optimal, recommended way of including all fields.
+     * - not null but empty, then data will be skipped (no-op).
+     *
+     * Note that internal operations class instances may receive an empty list of fields instead of
+     * null when the **intersection** of the corresponding set of all fields and the
+     * non-null&non-empty set of included fields... is empty.
      */
     fun includeRawContactsFields(vararg fields: RawContactsField): ProfileUpdate
 
@@ -283,8 +319,8 @@ private class ProfileUpdateImpl(
     override val contactsApi: Contacts,
 
     private var deleteBlanks: Boolean = true,
-    private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
-    private var includeRawContactsFields: Include<RawContactsField> = DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS,
+    private var include: Include<AbstractDataField>? = null,
+    private var includeRawContactsFields: Include<RawContactsField>? = null,
     private var contact: ExistingContactEntity? = null,
     private val rawContacts: MutableSet<ExistingRawContactEntity> = mutableSetOf(),
 
@@ -327,7 +363,7 @@ private class ProfileUpdateImpl(
 
     override fun include(fields: Sequence<AbstractDataField>): ProfileUpdate = apply {
         include = if (fields.isEmpty()) {
-            contactsApi.includeAllFields()
+            null // Set to null to disable include field checks, for optimization purposes.
         } else {
             Include(fields + Fields.Required.all.asSequence())
         }
@@ -345,9 +381,9 @@ private class ProfileUpdateImpl(
     override fun includeRawContactsFields(fields: Sequence<RawContactsField>): ProfileUpdate =
         apply {
             includeRawContactsFields = if (fields.isEmpty()) {
-                DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS
+                null // Set to null to disable include field checks, for optimization purposes.
             } else {
-                Include(fields + REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS)
+                Include(fields + RawContactsFields.Required.all.asSequence())
             }
         }
 
@@ -394,8 +430,8 @@ private class ProfileUpdateImpl(
                     contactsApi.deleteRawContactsWhere(RawContactsFields.ContactId equalTo it.id)
                 } else {
                     contactsApi.updateContact(
-                        include.fields,
-                        includeRawContactsFields.fields,
+                        include?.fields,
+                        includeRawContactsFields?.fields,
                         it,
                         cancel
                     )
@@ -416,8 +452,8 @@ private class ProfileUpdateImpl(
                     contactsApi.deleteProfileContact()
                 } else {
                     contactsApi.updateRawContact(
-                        include.fields,
-                        includeRawContactsFields.fields,
+                        include?.fields,
+                        includeRawContactsFields?.fields,
                         rawContact,
                         cancel
                     )
@@ -428,13 +464,6 @@ private class ProfileUpdateImpl(
         }
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
-    }
-
-    private companion object {
-        val DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS by lazy { Include(RawContactsFields.all) }
-        val REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS by lazy {
-            RawContactsFields.Required.all.asSequence()
-        }
     }
 }
 

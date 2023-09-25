@@ -10,7 +10,7 @@ internal class RpgStatsOperationFactory :
     AbstractCustomDataOperation.Factory<RpgStatsField, RpgStatsEntity> {
 
     override fun create(
-        callerIsSyncAdapter: Boolean, isProfile: Boolean, includeFields: Set<RpgStatsField>
+        callerIsSyncAdapter: Boolean, isProfile: Boolean, includeFields: Set<RpgStatsField>?
     ): AbstractCustomDataOperation<RpgStatsField, RpgStatsEntity> = RpgStatsOperation(
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,
@@ -21,7 +21,7 @@ internal class RpgStatsOperationFactory :
 private class RpgStatsOperation(
     callerIsSyncAdapter: Boolean,
     isProfile: Boolean,
-    includeFields: Set<RpgStatsField>
+    includeFields: Set<RpgStatsField>?
 ) : AbstractCustomDataOperation<RpgStatsField, RpgStatsEntity>(
     callerIsSyncAdapter = callerIsSyncAdapter,
     isProfile = isProfile,

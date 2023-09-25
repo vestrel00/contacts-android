@@ -154,8 +154,29 @@ interface Insert : CrudApi {
     /**
      * Specifies that only the given set of [fields] (data) will be inserted.
      *
-     * If no fields are specified, then all fields will be inserted. Otherwise, only the specified
-     * fields will be inserted.
+     * If no fields are specified (empty list), then all fields will be inserted. Otherwise, only
+     * the specified fields will be inserted.
+     *
+     * ## Including all fields
+     *
+     * If you want to include all fields, including custom data fields, then passing in an empty
+     * list or not invoking this function is the most performant way to do it because internal
+     * checks will be disabled (less lines of code executed).
+     *
+     * ## Developer notes
+     *
+     * Passing in an empty list here should set the reference to the internal field set to null to
+     * indicate that include field checks should be disabled. Implementations of
+     * [contacts.core.entities.operation.AbstractDataOperation] and other similar operations classes
+     * treat empty list vs null field sets differently. If the included field set is...
+     *
+     * - null, then the included field checks are disabled. This means that any non-blank data will
+     *   be processed. This is a more optimal, recommended way of including all fields.
+     * - not null but empty, then data will be skipped (no-op).
+     *
+     * Note that internal operations class instances may receive an empty list of fields instead of
+     * null when the **intersection** of the corresponding set of all fields and the
+     * non-null&non-empty set of included fields... is empty.
      */
     fun include(vararg fields: AbstractDataField): Insert
 
@@ -175,14 +196,33 @@ interface Insert : CrudApi {
     fun include(fields: Fields.() -> Collection<AbstractDataField>): Insert
 
     /**
-     * Similar to [include] except this is used to specify
-     * [contacts.core.entities.RawContact.sourceId] and
-     * [contacts.core.entities.RawContact.options] fields. All other RawContact table fields are
-     * ignored.
+     * Similar to [include] except this is used to specify fields that are specific to the
+     * RawContacts table.
      *
-     * If no fields are specified, then all RawContacts fields ([RawContactsFields.all]) are
-     * included. Otherwise, only the specified fields will be included in addition to required API
-     * fields [RawContactsFields.Required].
+     * If no fields are specified (empty list), then all RawContacts fields are included. Otherwise,
+     * only the specified fields will be included.
+     *
+     * ## Including all fields
+     *
+     * If you want to include all RawContacts fields, then passing in an empty list or not invoking
+     * this function is the most performant way to do it because internal checks will be disabled
+     * (less lines of code executed).
+     *
+     * ## Developer notes
+     *
+     * Passing in an empty list here should set the reference to the internal RawContacts field set
+     * to null to indicate that include RawContacts field checks should be disabled. Operations
+     * such as [contacts.core.entities.operation.RawContactsOperation] and
+     * [contacts.core.entities.operation.OptionsOperation] treat empty list vs null field sets
+     * differently. If the included field set is...
+     *
+     * - null, then the included field checks are disabled. This means that any non-blank data will
+     *   be processed. This is a more optimal, recommended way of including all fields.
+     * - not null but empty, then data will be skipped (no-op).
+     *
+     * Note that internal operations class instances may receive an empty list of fields instead of
+     * null when the **intersection** of the corresponding set of all fields and the
+     * non-null&non-empty set of included fields... is empty.
      */
     fun includeRawContactsFields(vararg fields: RawContactsField): Insert
 
@@ -319,8 +359,8 @@ private class InsertImpl(
     private var allowBlanks: Boolean = false,
     private var validateAccounts: Boolean = true,
     private var validateGroupMemberships: Boolean = true,
-    private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
-    private var includeRawContactsFields: Include<RawContactsField> = DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS,
+    private var include: Include<AbstractDataField>? = null,
+    private var includeRawContactsFields: Include<RawContactsField>? = null,
     private val rawContacts: MutableSet<NewRawContact> = mutableSetOf(),
 
     override val isRedacted: Boolean = false
@@ -372,7 +412,7 @@ private class InsertImpl(
 
     override fun include(fields: Sequence<AbstractDataField>): Insert = apply {
         include = if (fields.isEmpty()) {
-            contactsApi.includeAllFields()
+            null // Set to null to disable include field checks, for optimization purposes.
         } else {
             Include(fields + Fields.Required.all.asSequence())
         }
@@ -389,9 +429,9 @@ private class InsertImpl(
 
     override fun includeRawContactsFields(fields: Sequence<RawContactsField>): Insert = apply {
         includeRawContactsFields = if (fields.isEmpty()) {
-            DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS
+            null // Set to null to disable include field checks, for optimization purposes.
         } else {
-            Include(fields + REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS)
+            Include(fields + RawContactsFields.Required.all.asSequence())
         }
     }
 
@@ -450,7 +490,7 @@ private class InsertImpl(
                     contactsApi.insertRawContact(
                         accountsInSystem,
                         accountsGroupsMap?.get(rawContact.account),
-                        include.fields, includeRawContactsFields.fields,
+                        include?.fields, includeRawContactsFields?.fields,
                         rawContact,
                         IS_PROFILE
                     )
@@ -464,11 +504,6 @@ private class InsertImpl(
 
     private companion object {
         const val IS_PROFILE = false
-
-        val DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS by lazy { Include(RawContactsFields.all) }
-        val REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS by lazy {
-            RawContactsFields.Required.all.asSequence()
-        }
     }
 }
 
@@ -501,10 +536,12 @@ internal fun Contacts.accountsGroupsMapFor(
  */
 internal fun Contacts.insertRawContact(
     accountsInSystem: Collection<Account>?,
-    // Map of Group IDs to Groups for Groups that belong to the RawContact's Account
+    // Map of Group IDs to Groups for Groups that belong to the RawContact's Account.
     accountGroupsMap: Map<Long, Group>?,
-    includeFields: Set<AbstractDataField>,
-    includeRawContactsFields: Set<RawContactsField>,
+    // Disable include checks when field set is null.
+    includeFields: Set<AbstractDataField>?,
+    // Disable include checks when field set is null.
+    includeRawContactsFields: Set<RawContactsField>?,
     rawContact: NewRawContact,
     isProfile: Boolean
 ): Long? {
@@ -541,7 +578,7 @@ internal fun Contacts.insertRawContact(
         AddressOperation(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
-            Fields.Address.intersect(includeFields)
+            includeFields?.let(Fields.Address::intersect)
         ).insertForNewRawContact(
             rawContact.addresses
         )
@@ -551,7 +588,7 @@ internal fun Contacts.insertRawContact(
         EmailOperation(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
-            Fields.Email.intersect(includeFields)
+            includeFields?.let(Fields.Email::intersect)
         ).insertForNewRawContact(
             rawContact.emails
         )
@@ -561,7 +598,7 @@ internal fun Contacts.insertRawContact(
         EventOperation(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
-            Fields.Event.intersect(includeFields)
+            includeFields?.let(Fields.Event::intersect)
         ).insertForNewRawContact(
             rawContact.events
         )
@@ -571,9 +608,44 @@ internal fun Contacts.insertRawContact(
         GroupMembershipOperation(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
-            Fields.GroupMembership.intersect(includeFields)
+            includeFields?.let(Fields.GroupMembership::intersect)
         ).insertForNewRawContact(rawContact.groupMemberships, accountGroupsMap)
     )
+
+    operations.addAll(
+        ImOperation(
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
+            includeFields?.let(Fields.Im::intersect)
+        ).insertForNewRawContact(rawContact.ims)
+    )
+
+    rawContact.name?.let {
+        NameOperation(
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
+            includeFields?.let(Fields.Name::intersect)
+        ).insertForNewRawContact(it)
+            ?.let(operations::add)
+    }
+
+    rawContact.nickname?.let {
+        NicknameOperation(
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
+            includeFields?.let(Fields.Nickname::intersect)
+        ).insertForNewRawContact(it)
+            ?.let(operations::add)
+    }
+
+    rawContact.note?.let {
+        NoteOperation(
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
+            includeFields?.let(Fields.Note::intersect)
+        ).insertForNewRawContact(it)
+            ?.let(operations::add)
+    }
 
     // Apply the options operations after the group memberships operation.
     // Any add membership operation to the favorites group will be overshadowed by the value of
@@ -584,49 +656,14 @@ internal fun Contacts.insertRawContact(
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,
         rawContact.options,
-        RawContactsFields.Options.all.intersect(includeRawContactsFields)
+        includeRawContactsFields?.let(RawContactsFields.Options.all::intersect)
     )?.let(operations::add)
-
-    operations.addAll(
-        ImOperation(
-            callerIsSyncAdapter = callerIsSyncAdapter,
-            isProfile = isProfile,
-            Fields.Im.intersect(includeFields)
-        ).insertForNewRawContact(rawContact.ims)
-    )
-
-    rawContact.name?.let {
-        NameOperation(
-            callerIsSyncAdapter = callerIsSyncAdapter,
-            isProfile = isProfile,
-            Fields.Name.intersect(includeFields)
-        ).insertForNewRawContact(it)
-            ?.let(operations::add)
-    }
-
-    rawContact.nickname?.let {
-        NicknameOperation(
-            callerIsSyncAdapter = callerIsSyncAdapter,
-            isProfile = isProfile,
-            Fields.Nickname.intersect(includeFields)
-        ).insertForNewRawContact(it)
-            ?.let(operations::add)
-    }
-
-    rawContact.note?.let {
-        NoteOperation(
-            callerIsSyncAdapter = callerIsSyncAdapter,
-            isProfile = isProfile,
-            Fields.Note.intersect(includeFields)
-        ).insertForNewRawContact(it)
-            ?.let(operations::add)
-    }
 
     rawContact.organization?.let {
         OrganizationOperation(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
-            Fields.Organization.intersect(includeFields)
+            includeFields?.let(Fields.Organization::intersect)
         ).insertForNewRawContact(it)
             ?.let(operations::add)
     }
@@ -635,7 +672,7 @@ internal fun Contacts.insertRawContact(
         PhoneOperation(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
-            Fields.Phone.intersect(includeFields)
+            includeFields?.let(Fields.Phone::intersect)
         ).insertForNewRawContact(
             rawContact.phones
         )
@@ -648,7 +685,7 @@ internal fun Contacts.insertRawContact(
         RelationOperation(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
-            Fields.Relation.intersect(includeFields)
+            includeFields?.let(Fields.Relation::intersect)
         ).insertForNewRawContact(rawContact.relations)
     )
 
@@ -656,7 +693,7 @@ internal fun Contacts.insertRawContact(
         SipAddressOperation(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
-            Fields.SipAddress.intersect(includeFields)
+            includeFields?.let(Fields.SipAddress::intersect)
         ).insertForNewRawContact(it)
             ?.let(operations::add)
     }
@@ -665,7 +702,7 @@ internal fun Contacts.insertRawContact(
         WebsiteOperation(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
-            Fields.Website.intersect(includeFields)
+            includeFields?.let(Fields.Website::intersect)
         ).insertForNewRawContact(
             rawContact.websites
         )
@@ -715,7 +752,8 @@ internal fun Contacts.insertRawContact(
 private fun NewRawContact.customDataInsertOperations(
     callerIsSyncAdapter: Boolean,
     isProfile: Boolean,
-    includeFields: Set<AbstractDataField>,
+    // Disable include checks when field set is null.
+    includeFields: Set<AbstractDataField>?,
     customDataRegistry: CustomDataRegistry
 ): List<ContentProviderOperation> = buildList {
     for ((mimeTypeValue, customDataEntityHolder) in customDataEntities) {
@@ -725,7 +763,7 @@ private fun NewRawContact.customDataInsertOperations(
         val customDataOperation = customDataEntry.operationFactory.create(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
-            includeFields = customDataEntry.fieldSet.intersect(includeFields)
+            includeFields = includeFields?.let(customDataEntry.fieldSet::intersect)
         )
 
         when (countRestriction) {
@@ -734,6 +772,7 @@ private fun NewRawContact.customDataInsertOperations(
                     customDataOperation.insertForNewRawContact(it)?.let(::add)
                 }
             }
+
             CustomDataCountRestriction.NO_LIMIT -> {
                 customDataOperation.insertForNewRawContact(customDataEntityHolder.entities)
                     .let(::addAll)

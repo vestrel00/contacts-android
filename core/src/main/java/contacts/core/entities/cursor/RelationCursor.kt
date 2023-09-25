@@ -7,11 +7,8 @@ import contacts.core.entities.RelationEntity
 
 /**
  * Retrieves [Fields.Relation] data from the given [cursor].
- *
- * This does not modify the [cursor] position. Moving the cursor may result in different attribute
- * values.
  */
-internal class RelationCursor(cursor: Cursor, includeFields: Set<RelationField>) :
+internal class RelationCursor(cursor: Cursor, includeFields: Set<RelationField>?) :
     AbstractDataCursor<RelationField>(cursor, includeFields) {
 
     val type: RelationEntity.Type? by type(

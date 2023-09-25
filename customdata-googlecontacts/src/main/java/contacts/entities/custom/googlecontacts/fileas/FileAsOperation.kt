@@ -12,7 +12,7 @@ internal class FileAsOperationFactory :
     override fun create(
         callerIsSyncAdapter: Boolean,
         isProfile: Boolean,
-        includeFields: Set<FileAsField>
+        includeFields: Set<FileAsField>?
     ): AbstractCustomDataOperation<FileAsField, FileAsEntity> = FileAsOperation(
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,
@@ -23,7 +23,7 @@ internal class FileAsOperationFactory :
 private class FileAsOperation(
     callerIsSyncAdapter: Boolean,
     isProfile: Boolean,
-    includeFields: Set<FileAsField>
+    includeFields: Set<FileAsField>?
 ) : AbstractCustomDataOperation<FileAsField, FileAsEntity>(
     callerIsSyncAdapter = callerIsSyncAdapter,
     isProfile = isProfile,

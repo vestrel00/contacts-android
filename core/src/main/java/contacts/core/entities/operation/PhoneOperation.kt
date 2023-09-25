@@ -8,7 +8,7 @@ import contacts.core.entities.PhoneEntity
 internal class PhoneOperation(
     callerIsSyncAdapter: Boolean,
     isProfile: Boolean,
-    includeFields: Set<PhoneField>
+    includeFields: Set<PhoneField>?
 ) : AbstractDataOperation<PhoneField, PhoneEntity>(
     callerIsSyncAdapter = callerIsSyncAdapter,
     isProfile = isProfile,

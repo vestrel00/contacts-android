@@ -7,7 +7,7 @@ internal class PokemonMapperFactory :
     AbstractCustomDataEntityMapper.Factory<PokemonField, PokemonDataCursor, Pokemon> {
 
     override fun create(
-        cursor: Cursor, includeFields: Set<PokemonField>
+        cursor: Cursor, includeFields: Set<PokemonField>?
     ): AbstractCustomDataEntityMapper<PokemonField, PokemonDataCursor, Pokemon> =
         PokemonMapper(PokemonDataCursor(cursor, includeFields))
 }

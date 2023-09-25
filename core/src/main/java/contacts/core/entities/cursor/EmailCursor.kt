@@ -7,11 +7,8 @@ import contacts.core.entities.EmailEntity
 
 /**
  * Retrieves [Fields.Email] data from the given [cursor].
- *
- * This does not modify the [cursor] position. Moving the cursor may result in different attribute
- * values.
  */
-internal class EmailCursor(cursor: Cursor, includeFields: Set<EmailField>) :
+internal class EmailCursor(cursor: Cursor, includeFields: Set<EmailField>?) :
     AbstractDataCursor<EmailField>(cursor, includeFields) {
 
     val type: EmailEntity.Type? by type(

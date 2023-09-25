@@ -81,9 +81,10 @@ internal fun <T : ExistingDataEntity> CursorHolder<AbstractDataField>.dataEntity
             .create(
                 cursor,
                 // Only include custom data fields assigned by this entry.
-                customDataEntry.fieldSet.intersect(includeFields)
+                includeFields?.let(customDataEntry.fieldSet::intersect)
             )
     }
+
     MimeType.Unknown -> throw ContactsException(
         "No entity mapper for mime type ${mimeType.value}"
     )

@@ -7,7 +7,7 @@ internal class HandleNameMapperFactory :
     AbstractCustomDataEntityMapper.Factory<HandleNameField, HandleNameDataCursor, HandleName> {
 
     override fun create(
-        cursor: Cursor, includeFields: Set<HandleNameField>
+        cursor: Cursor, includeFields: Set<HandleNameField>?
     ): AbstractCustomDataEntityMapper<HandleNameField, HandleNameDataCursor, HandleName> =
         HandleNameMapper(HandleNameDataCursor(cursor, includeFields))
 }

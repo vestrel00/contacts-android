@@ -6,7 +6,7 @@ import contacts.core.entities.AddressEntity
 import contacts.core.entities.MimeType
 
 internal class AddressOperation(
-    callerIsSyncAdapter: Boolean, isProfile: Boolean, includeFields: Set<AddressField>
+    callerIsSyncAdapter: Boolean, isProfile: Boolean, includeFields: Set<AddressField>?
 ) : AbstractDataOperation<AddressField, AddressEntity>(
     callerIsSyncAdapter = callerIsSyncAdapter,
     isProfile = isProfile,

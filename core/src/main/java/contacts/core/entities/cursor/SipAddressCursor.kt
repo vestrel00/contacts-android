@@ -6,11 +6,8 @@ import contacts.core.SipAddressField
 
 /**
  * Retrieves [Fields.SipAddress] data from the given [cursor].
- *
- * This does not modify the [cursor] position. Moving the cursor may result in different attribute
- * values.
  */
-internal class SipAddressCursor(cursor: Cursor, includeFields: Set<SipAddressField>) :
+internal class SipAddressCursor(cursor: Cursor, includeFields: Set<SipAddressField>?) :
     AbstractDataCursor<SipAddressField>(cursor, includeFields) {
 
     val sipAddress: String? by string(Fields.SipAddress.SipAddress)

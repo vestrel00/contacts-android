@@ -7,11 +7,8 @@ import contacts.core.entities.PhoneEntity
 
 /**
  * Retrieves [Fields.Phone] data from the given [cursor].
- *
- * This does not modify the [cursor] position. Moving the cursor may result in different attribute
- * values.
  */
-internal class PhoneCursor(cursor: Cursor, includeFields: Set<PhoneField>) :
+internal class PhoneCursor(cursor: Cursor, includeFields: Set<PhoneField>?) :
     AbstractDataCursor<PhoneField>(cursor, includeFields) {
 
     val type: PhoneEntity.Type? by type(

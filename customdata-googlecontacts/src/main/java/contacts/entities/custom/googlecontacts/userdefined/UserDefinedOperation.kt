@@ -10,7 +10,7 @@ internal class UserDefinedOperationFactory :
     AbstractCustomDataOperation.Factory<UserDefinedField, UserDefinedEntity> {
 
     override fun create(
-        callerIsSyncAdapter: Boolean, isProfile: Boolean, includeFields: Set<UserDefinedField>
+        callerIsSyncAdapter: Boolean, isProfile: Boolean, includeFields: Set<UserDefinedField>?
     ): AbstractCustomDataOperation<UserDefinedField, UserDefinedEntity> = UserDefinedOperation(
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,
@@ -21,7 +21,7 @@ internal class UserDefinedOperationFactory :
 private class UserDefinedOperation(
     callerIsSyncAdapter: Boolean,
     isProfile: Boolean,
-    includeFields: Set<UserDefinedField>
+    includeFields: Set<UserDefinedField>?
 ) : AbstractCustomDataOperation<UserDefinedField, UserDefinedEntity>(
     callerIsSyncAdapter = callerIsSyncAdapter,
     isProfile = isProfile,
@@ -45,7 +45,8 @@ private class UserDefinedOperation(
          */
         if (
             !data.field.isNullOrBlank() && !data.label.isNullOrBlank() &&
-            includeFields.containsAll(GoogleContactsFields.UserDefined.all)
+            (includeFields == null ||
+                    includeFields.containsAll(GoogleContactsFields.UserDefined.all))
         ) {
             // Note that if `setValue` is not invoked at least once, then no insert or update
             // operation will be performed for this instance.

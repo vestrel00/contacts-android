@@ -2,8 +2,13 @@ package contacts.core.entities.operation
 
 import android.content.ContentProviderOperation
 import android.content.ContentProviderOperation.newUpdate
-import contacts.core.*
+import contacts.core.ContactsFields
+import contacts.core.DataContactsField
+import contacts.core.Fields
+import contacts.core.RawContactsField
+import contacts.core.RawContactsFields
 import contacts.core.entities.OptionsEntity
+import contacts.core.equalTo
 import contacts.core.util.contactsUri
 import contacts.core.util.isProfileId
 import contacts.core.util.rawContactsUri
@@ -20,8 +25,8 @@ internal class OptionsOperation {
         callerIsSyncAdapter: Boolean,
         contactId: Long,
         options: OptionsEntity?,
-        includeFields: Set<DataContactsField>
-    ): ContentProviderOperation? = if (includeFields.isEmpty()) {
+        includeFields: Set<DataContactsField>?
+    ): ContentProviderOperation? = if (includeFields != null && includeFields.isEmpty()) {
         null
     } else {
         newUpdate(
@@ -55,8 +60,8 @@ internal class OptionsOperation {
         callerIsSyncAdapter: Boolean,
         options: OptionsEntity?,
         rawContactId: Long,
-        includeFields: Set<RawContactsField>
-    ): ContentProviderOperation? = if (includeFields.isEmpty()) {
+        includeFields: Set<RawContactsField>?
+    ): ContentProviderOperation? = if (includeFields != null && includeFields.isEmpty()) {
         null
     } else {
         newUpdate(
@@ -74,8 +79,8 @@ internal class OptionsOperation {
         callerIsSyncAdapter: Boolean,
         isProfile: Boolean,
         options: OptionsEntity?,
-        includeFields: Set<RawContactsField>
-    ): ContentProviderOperation? = if (includeFields.isEmpty()) {
+        includeFields: Set<RawContactsField>?
+    ): ContentProviderOperation? = if (includeFields != null && includeFields.isEmpty()) {
         null
     } else {
         newUpdate(
@@ -97,7 +102,7 @@ internal class OptionsOperation {
 
 private fun ContentProviderOperation.Builder.withRawContactOptions(
     options: OptionsEntity?,
-    includeFields: Set<RawContactsField>
+    includeFields: Set<RawContactsField>?
 ): ContentProviderOperation.Builder = this // this not needed but makes formatting look nice
     .withIncludedValue(
         includeFields,

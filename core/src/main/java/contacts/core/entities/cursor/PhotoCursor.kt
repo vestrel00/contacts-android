@@ -6,11 +6,8 @@ import contacts.core.PhotoField
 
 /**
  * Retrieves [Fields.Photo] data from the given [cursor].
- *
- * This does not modify the [cursor] position. Moving the cursor may result in different attribute
- * values.
  */
-internal class PhotoCursor(cursor: Cursor, includeFields: Set<PhotoField>) :
+internal class PhotoCursor(cursor: Cursor, includeFields: Set<PhotoField>?) :
     AbstractDataCursor<PhotoField>(cursor, includeFields) {
 
     val photoFileId: Long?

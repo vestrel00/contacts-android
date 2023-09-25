@@ -7,11 +7,8 @@ import contacts.core.entities.Entity
 
 /**
  * Retrieves Contact or RawContact options data from the given [cursor].
- *
- * This does not modify the [cursor] position. Moving the cursor may result in different attribute
- * values.
  */
-internal sealed class OptionsCursor<T : Field>(cursor: Cursor, includeFields: Set<T>) :
+internal sealed class OptionsCursor<T : Field>(cursor: Cursor, includeFields: Set<T>?) :
     AbstractEntityCursor<T>(cursor, includeFields) {
 
     abstract val id: Long
@@ -34,7 +31,7 @@ internal sealed class OptionsCursor<T : Field>(cursor: Cursor, includeFields: Se
 /**
  * The [OptionsCursor] for the Data table. Options data are specific to Contacts.
  */
-internal class DataContactsOptionsCursor(cursor: Cursor, includeFields: Set<AbstractDataField>) :
+internal class DataContactsOptionsCursor(cursor: Cursor, includeFields: Set<AbstractDataField>?) :
     OptionsCursor<AbstractDataField>(cursor, includeFields) {
 
     override val id: Long by nonNullLong(Fields.Contact.Options.Id, Entity.INVALID_ID)
@@ -49,7 +46,7 @@ internal class DataContactsOptionsCursor(cursor: Cursor, includeFields: Set<Abst
 /**
  * The [OptionsCursor] for the RawContacts table. Options data are specific to RawContacts.
  */
-internal class RawContactsOptionsCursor(cursor: Cursor, includeFields: Set<RawContactsField>) :
+internal class RawContactsOptionsCursor(cursor: Cursor, includeFields: Set<RawContactsField>?) :
     OptionsCursor<RawContactsField>(cursor, includeFields) {
 
     override val id: Long by nonNullLong(RawContactsFields.Options.Id, Entity.INVALID_ID)
@@ -64,7 +61,7 @@ internal class RawContactsOptionsCursor(cursor: Cursor, includeFields: Set<RawCo
 /**
  * The [OptionsCursor] for the Contacts table. Options data are specific to Contacts.
  */
-internal class ContactsOptionsCursor(cursor: Cursor, includeFields: Set<ContactsField>) :
+internal class ContactsOptionsCursor(cursor: Cursor, includeFields: Set<ContactsField>?) :
     OptionsCursor<ContactsField>(cursor, includeFields) {
 
     override val id: Long by nonNullLong(ContactsFields.Options.Id, Entity.INVALID_ID)

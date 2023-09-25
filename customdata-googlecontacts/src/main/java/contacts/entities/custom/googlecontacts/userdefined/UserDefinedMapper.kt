@@ -8,7 +8,7 @@ internal class UserDefinedMapperFactory :
     AbstractCustomDataEntityMapper.Factory<UserDefinedField, UserDefinedDataCursor, UserDefined> {
 
     override fun create(
-        cursor: Cursor, includeFields: Set<UserDefinedField>
+        cursor: Cursor, includeFields: Set<UserDefinedField>?
     ): AbstractCustomDataEntityMapper<UserDefinedField, UserDefinedDataCursor, UserDefined> =
         UserDefinedMapper(UserDefinedDataCursor(cursor, includeFields))
 }

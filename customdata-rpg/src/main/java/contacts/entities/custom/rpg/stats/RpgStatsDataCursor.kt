@@ -5,7 +5,7 @@ import contacts.core.entities.custom.AbstractCustomDataCursor
 import contacts.entities.custom.rpg.RpgFields
 import contacts.entities.custom.rpg.RpgStatsField
 
-internal class RpgStatsDataCursor(cursor: Cursor, includeFields: Set<RpgStatsField>) :
+internal class RpgStatsDataCursor(cursor: Cursor, includeFields: Set<RpgStatsField>?) :
     AbstractCustomDataCursor<RpgStatsField>(cursor, includeFields) {
 
     val level: Int? by int(RpgFields.Stats.Level)

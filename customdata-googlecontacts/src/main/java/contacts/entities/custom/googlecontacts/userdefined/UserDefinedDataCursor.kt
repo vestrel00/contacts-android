@@ -5,7 +5,7 @@ import contacts.core.entities.custom.AbstractCustomDataCursor
 import contacts.entities.custom.googlecontacts.GoogleContactsFields
 import contacts.entities.custom.googlecontacts.UserDefinedField
 
-internal class UserDefinedDataCursor(cursor: Cursor, includeFields: Set<UserDefinedField>) :
+internal class UserDefinedDataCursor(cursor: Cursor, includeFields: Set<UserDefinedField>?) :
     AbstractCustomDataCursor<UserDefinedField>(cursor, includeFields) {
 
     val field: String? by string(GoogleContactsFields.UserDefined.Field)

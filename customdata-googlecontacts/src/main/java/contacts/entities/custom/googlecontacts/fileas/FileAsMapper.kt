@@ -8,7 +8,7 @@ internal class FileAsMapperFactory :
     AbstractCustomDataEntityMapper.Factory<FileAsField, FileAsDataCursor, FileAs> {
 
     override fun create(
-        cursor: Cursor, includeFields: Set<FileAsField>
+        cursor: Cursor, includeFields: Set<FileAsField>?
     ): AbstractCustomDataEntityMapper<FileAsField, FileAsDataCursor, FileAs> =
         FileAsMapper(FileAsDataCursor(cursor, includeFields))
 }

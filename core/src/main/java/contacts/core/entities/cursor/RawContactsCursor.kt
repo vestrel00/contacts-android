@@ -7,11 +7,8 @@ import contacts.core.entities.Entity
 
 /**
  * Retrieves [RawContactsFields] data from the given [cursor].
- *
- * This does not modify the [cursor] position. Moving the cursor may result in different attribute
- * values.
  */
-internal class RawContactsCursor(cursor: Cursor, includeFields: Set<RawContactsField>) :
+internal class RawContactsCursor(cursor: Cursor, includeFields: Set<RawContactsField>?) :
     AbstractEntityCursor<RawContactsField>(cursor, includeFields), AccountCursor,
     RawContactIdCursor {
 

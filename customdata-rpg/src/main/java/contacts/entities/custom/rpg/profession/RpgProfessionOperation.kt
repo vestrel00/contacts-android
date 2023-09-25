@@ -10,7 +10,7 @@ internal class RpgProfessionOperationFactory :
     AbstractCustomDataOperation.Factory<RpgProfessionField, RpgProfessionEntity> {
 
     override fun create(
-        callerIsSyncAdapter: Boolean, isProfile: Boolean, includeFields: Set<RpgProfessionField>
+        callerIsSyncAdapter: Boolean, isProfile: Boolean, includeFields: Set<RpgProfessionField>?
     ): AbstractCustomDataOperation<RpgProfessionField, RpgProfessionEntity> =
         RpgProfessionOperation(
             callerIsSyncAdapter = callerIsSyncAdapter,
@@ -22,7 +22,7 @@ internal class RpgProfessionOperationFactory :
 private class RpgProfessionOperation(
     callerIsSyncAdapter: Boolean,
     isProfile: Boolean,
-    includeFields: Set<RpgProfessionField>
+    includeFields: Set<RpgProfessionField>?
 ) : AbstractCustomDataOperation<RpgProfessionField, RpgProfessionEntity>(
     callerIsSyncAdapter = callerIsSyncAdapter,
     isProfile = isProfile,

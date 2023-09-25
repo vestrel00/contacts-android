@@ -5,6 +5,7 @@ import contacts.core.entities.ExistingDataEntity
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.entities.operation.updateOperation
 import contacts.core.util.applyBatch
+import contacts.core.util.contacts
 import contacts.core.util.isEmpty
 
 /**
@@ -50,14 +51,31 @@ interface DataUpdate : CrudApi {
     /**
      * Specifies that only the given set of [fields] (data) will be updated.
      *
-     * If no fields are specified, then all fields will be updated. Otherwise, only the specified
-     * fields will be updated in addition to required API fields [Fields.Required] (e.g. IDs),
-     * which are always included.
+     * If no fields are specified (empty list), then all fields will be updated. Otherwise, only
+     * the specified fields will be updated.
      *
      * Blank data are deleted on update, unless the corresponding fields are NOT included.
      *
-     * Note that this may affect performance. It is recommended to only include fields that will be
-     * used to save CPU and memory.
+     * ## Including all fields
+     *
+     * If you want to include all fields, including custom data fields, then passing in an empty
+     * list or not invoking this function is the most performant way to do it because internal
+     * checks will be disabled (less lines of code executed).
+     *
+     * ## Developer notes
+     *
+     * Passing in an empty list here should set the reference to the internal field set to null to
+     * indicate that include field checks should be disabled. Implementations of
+     * [contacts.core.entities.operation.AbstractDataOperation] and other similar operations classes
+     * treat empty list vs null field sets differently. If the included field set is...
+     *
+     * - null, then the included field checks are disabled. This means that any non-blank data will
+     *   be processed. This is a more optimal, recommended way of including all fields.
+     * - not null but empty, then data will be skipped (no-op).
+     *
+     * Note that internal operations class instances may receive an empty list of fields instead of
+     * null when the **intersection** of the corresponding set of all fields and the
+     * non-null&non-empty set of included fields... is empty.
      */
     fun include(vararg fields: AbstractDataField): DataUpdate
 
@@ -170,7 +188,7 @@ private class DataUpdateImpl(
     override val contactsApi: Contacts,
     private val isProfile: Boolean,
 
-    private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
+    private var include: Include<AbstractDataField>? = null,
     private val data: MutableSet<ExistingDataEntity> = mutableSetOf(),
 
     override val isRedacted: Boolean = false
@@ -203,7 +221,7 @@ private class DataUpdateImpl(
 
     override fun include(fields: Sequence<AbstractDataField>): DataUpdate = apply {
         include = if (fields.isEmpty()) {
-            contactsApi.includeAllFields()
+            null // Set to null to disable include field checks, for optimization purposes.
         } else {
             Include(fields + Fields.Required.all.asSequence())
         }
@@ -239,7 +257,7 @@ private class DataUpdateImpl(
                     // succeed. This is only done to enforce API design.
                     false
                 } else {
-                    contactsApi.updateData(include.fields, data, customDataRegistry)
+                    contactsApi.updateData(include?.fields, data, customDataRegistry)
                 }
             }
             DataUpdateResult(results)
@@ -250,7 +268,8 @@ private class DataUpdateImpl(
 }
 
 private fun Contacts.updateData(
-    includeFields: Set<AbstractDataField>,
+    // Disable include checks when field set is null.
+    includeFields: Set<AbstractDataField>?,
     data: ExistingDataEntity,
     customDataRegistry: CustomDataRegistry
 ): Boolean = data.updateOperation(

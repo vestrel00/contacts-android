@@ -7,11 +7,8 @@ import contacts.core.entities.Entity
 
 /**
  * Retrieves [GroupsFields] data from the given [cursor].
- *
- * This does not modify the [cursor] position. Moving the cursor may result in different attribute
- * values.
  */
-internal class GroupsCursor(cursor: Cursor, includeFields: Set<GroupsField>) :
+internal class GroupsCursor(cursor: Cursor, includeFields: Set<GroupsField>?) :
     AbstractEntityCursor<GroupsField>(cursor, includeFields), AccountCursor {
 
     override val accountName: String? by string(GroupsFields.AccountName)

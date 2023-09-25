@@ -7,7 +7,7 @@ internal class HandleNameOperationFactory :
     AbstractCustomDataOperation.Factory<HandleNameField, HandleNameEntity> {
 
     override fun create(
-        callerIsSyncAdapter: Boolean, isProfile: Boolean, includeFields: Set<HandleNameField>
+        callerIsSyncAdapter: Boolean, isProfile: Boolean, includeFields: Set<HandleNameField>?
     ): AbstractCustomDataOperation<HandleNameField, HandleNameEntity> = HandleNameOperation(
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,
@@ -18,7 +18,7 @@ internal class HandleNameOperationFactory :
 private class HandleNameOperation(
     callerIsSyncAdapter: Boolean,
     isProfile: Boolean,
-    includeFields: Set<HandleNameField>
+    includeFields: Set<HandleNameField>?
 ) : AbstractCustomDataOperation<HandleNameField, HandleNameEntity>(
     callerIsSyncAdapter = callerIsSyncAdapter,
     isProfile = isProfile,

@@ -100,7 +100,7 @@ queryInsertUpdate.include(mutableSetOf<AbstractDataField>().apply {
 })
 ```
 
-The following entity properties are are used in the read/write operation,
+The following entity properties are used in the read/write operation,
 
 ```kotlin
 Contact {

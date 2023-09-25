@@ -79,9 +79,8 @@ interface ProfileQuery : CrudApi {
     /**
      * Includes only the given set of [fields] (data) in the profile Contact.
      *
-     * If no fields are specified, then all fields ([Fields.all]) are included. Otherwise, only the
-     * specified fields will be included in addition to required API fields [Fields.Required]
-     * (e.g. IDs), which are always included.
+     * If no fields are specified (empty list), then all fields are included. Otherwise, only
+     * the specified fields will be included.
      *
      * When all fields are included in a query operation, all properties of the profile Contacts
      * and Data are populated with values from the database. Properties of fields that are included
@@ -95,6 +94,23 @@ interface ProfileQuery : CrudApi {
      * ## Performance
      *
      * It is recommended to only include fields that will be used to save CPU and memory.
+     *
+     * ## Including all fields
+     *
+     * If you want to include all fields, including custom data fields, then passing in an empty
+     * list or not invoking this function is the most performant way to do it because internal
+     * checks will be disabled (less lines of code executed).
+     *
+     * ## Developer notes
+     *
+     * Passing in an empty list here should set the reference to the internal field set to null to
+     * indicate that include field checks should be disabled when processing cursor data via
+     * implementations of [contacts.core.entities.cursor.AbstractEntityCursor].
+     *
+     * When the internal field set is set to null, all fields should be included in the projection
+     * list of the actual query, which is why the [allFieldsIfNull] functions exist. In order to
+     * disable include field checks in the cursors, [contacts.core.util.query] provides a parameter
+     * to set the cursor holder's include fields to null.
      */
     fun include(vararg fields: AbstractDataField): ProfileQuery
 
@@ -119,9 +135,8 @@ interface ProfileQuery : CrudApi {
      *
      * For all other fields/properties, use [include].
      *
-     * If no fields are specified, then all RawContacts fields ([RawContactsFields.all]) are
-     * included. Otherwise, only the specified fields will be included in addition to required API
-     * fields [RawContactsFields.Required].
+     * If no RawContacts fields are specified (empty list), then all RawContacts fields are
+     * included. Otherwise, only the specified fields will be included.
      *
      * When all fields are included in a query operation, all of the aforementioned properties of
      * RawContacts are populated with values from the database. Properties of fields that are
@@ -138,7 +153,7 @@ interface ProfileQuery : CrudApi {
      *
      * It is recommended to only include fields that will be used to save CPU and memory.
      *
-     * ## Developer notes
+     * #### Developer notes
      *
      * So, why not just add these fields to [DataRawContactsFields]?
      *
@@ -153,6 +168,23 @@ interface ProfileQuery : CrudApi {
      *
      * Therefore, it made sense to make sure that [RawContactsFields] cannot be a part of a where
      * clause but can be included.
+     *
+     * ## Including all fields
+     *
+     * If you want to include all fields, including custom data fields, then passing in an empty
+     * list or not invoking this function is the most performant way to do it because internal
+     * checks will be disabled (less lines of code executed).
+     *
+     * #### Developer notes
+     *
+     * Passing in an empty list here should set the reference to the internal field set to null to
+     * indicate that include field checks should be disabled when processing cursor data via
+     * implementations of [contacts.core.entities.cursor.AbstractEntityCursor].
+     *
+     * When the internal field set is set to null, all fields should be included in the projection
+     * list of the actual query, which is why the [allFieldsIfNull] functions exist. In order to
+     * disable include field checks in the cursors, [contacts.core.util.query] provides a parameter
+     * to set the cursor holder's include fields to null.
      */
     fun includeRawContactsFields(vararg fields: RawContactsField): ProfileQuery
 
@@ -252,8 +284,8 @@ private class ProfileQueryImpl(
     override val contactsApi: Contacts,
 
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
-    private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
-    private var includeRawContactsFields: Include<RawContactsField> = DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS,
+    private var include: Include<AbstractDataField>? = null,
+    private var includeRawContactsFields: Include<RawContactsField>? = null,
 
     override val isRedacted: Boolean = false
 ) : ProfileQuery {
@@ -294,7 +326,7 @@ private class ProfileQueryImpl(
 
     override fun include(fields: Sequence<AbstractDataField>): ProfileQuery = apply {
         include = if (fields.isEmpty()) {
-            contactsApi.includeAllFields()
+            null // Set to null to disable include field checks, for optimization purposes.
         } else {
             Include(fields + REQUIRED_INCLUDE_FIELDS)
         }
@@ -312,7 +344,7 @@ private class ProfileQueryImpl(
     override fun includeRawContactsFields(fields: Sequence<RawContactsField>): ProfileQuery =
         apply {
             includeRawContactsFields = if (fields.isEmpty()) {
-                DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS
+                null // Set to null to disable include field checks, for optimization purposes.
             } else {
                 Include(fields + REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS)
             }
@@ -341,7 +373,6 @@ private class ProfileQueryImpl(
 
     private companion object {
         val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
-        val DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS by lazy { Include(RawContactsFields.all) }
         val REQUIRED_INCLUDE_FIELDS by lazy { Fields.Required.all.asSequence() }
         val REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS by lazy {
             RawContactsFields.Required.all.asSequence()
@@ -352,8 +383,8 @@ private class ProfileQueryImpl(
 private fun Contacts.resolve(
     customDataRegistry: CustomDataRegistry,
     rawContactsWhere: Where<RawContactsField>?,
-    include: Include<AbstractDataField>,
-    includeRawContactsFields: Include<RawContactsField>,
+    include: Include<AbstractDataField>?,
+    includeRawContactsFields: Include<RawContactsField>?,
     cancel: () -> Boolean
 ): Contact? {
     val rawContactIds = rawContactIds(rawContactsWhere, cancel)
@@ -362,14 +393,18 @@ private fun Contacts.resolve(
         return null
     }
 
+    val finalInclude = include.allFieldsIfNull(this)
+
     // Collect Contacts, RawContacts, and Data with this mapper.
     val contactsMapper = ContactsMapper(customDataRegistry, cancel)
 
     // Collect the profile Contact, if exist.
     contentResolver.query(
         ProfileUris.CONTACTS.uri(callerIsSyncAdapter),
-        include.onlyContactsFields(),
+        finalInclude.onlyContactsFields(),
         null,
+        // Ignore include field checks if include is null.
+        setCursorHolderIncludeFieldsToNull = include == null,
         processCursor = contactsMapper::processContactsCursor
     )
 
@@ -379,8 +414,10 @@ private fun Contacts.resolve(
             // Note that CALLER_IS_SYNCADAPTER probably does not really matter for queries but
             // might as well be consistent...
             ProfileUris.RAW_CONTACTS.uri(callerIsSyncAdapter),
-            includeRawContactsFields,
+            includeRawContactsFields.allFieldsIfNull(),
             RawContactsFields.Id `in` rawContactIds,
+            // Ignore include field checks if includeRawContactsFields is null.
+            setCursorHolderIncludeFieldsToNull = includeRawContactsFields == null,
             processCursor = contactsMapper::processRawContactsCursor
         )
     }
@@ -391,8 +428,10 @@ private fun Contacts.resolve(
             // Note that CALLER_IS_SYNCADAPTER probably does not really matter for queries but
             // might as well be consistent...
             ProfileUris.DATA.uri(callerIsSyncAdapter),
-            include,
+            finalInclude,
             Fields.RawContact.Id `in` rawContactIds,
+            // Ignore include field checks if include is null.
+            setCursorHolderIncludeFieldsToNull = include == null,
             processCursor = contactsMapper::processDataCursor
         )
     }

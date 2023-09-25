@@ -17,7 +17,7 @@ import contacts.core.intersect
  */
 internal fun ExistingDataEntity.updateOperation(
     callerIsSyncAdapter: Boolean,
-    includeFields: Set<AbstractDataField>,
+    includeFields: Set<AbstractDataField>?,
     customDataRegistry: CustomDataRegistry
 ): ContentProviderOperation? = dataOperation(
     callerIsSyncAdapter = callerIsSyncAdapter,
@@ -28,7 +28,7 @@ internal fun ExistingDataEntity.updateOperation(
 @Suppress("UNCHECKED_CAST")
 private fun ExistingDataEntity.dataOperation(
     callerIsSyncAdapter: Boolean,
-    includeFields: Set<AbstractDataField>,
+    includeFields: Set<AbstractDataField>?,
     customDataRegistry: CustomDataRegistry
 ): AbstractDataOperation<*, DataEntity> = when (mimeType) {
     // We could instead do when (this) is MutableAddress -> AddressOperation()
@@ -37,74 +37,74 @@ private fun ExistingDataEntity.dataOperation(
     MimeType.Address -> AddressOperation(
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,
-        Fields.Address.intersect(includeFields)
+        includeFields?.let(Fields.Address::intersect)
     )
 
     MimeType.Email -> EmailOperation(
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,
-        Fields.Email.intersect(includeFields)
+        includeFields?.let(Fields.Email::intersect)
     )
 
     MimeType.Event -> EventOperation(
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,
-        Fields.Event.intersect(includeFields)
+        includeFields?.let(Fields.Event::intersect)
     )
 
     MimeType.Im -> ImOperation(
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,
-        Fields.Im.intersect(includeFields)
+        includeFields?.let(Fields.Im::intersect)
     )
 
     MimeType.Name -> NameOperation(
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,
-        Fields.Name.intersect(includeFields)
+        includeFields?.let(Fields.Name::intersect)
     )
 
     MimeType.Nickname -> NicknameOperation(
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,
-        Fields.Nickname.intersect(includeFields)
+        includeFields?.let(Fields.Nickname::intersect)
     )
 
     MimeType.Note -> NoteOperation(
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,
-        Fields.Note.intersect(includeFields)
+        includeFields?.let(Fields.Note::intersect)
     )
 
     MimeType.Organization -> OrganizationOperation(
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,
-        Fields.Organization.intersect((includeFields))
+        includeFields?.let(Fields.Organization::intersect)
     )
 
     MimeType.Phone -> PhoneOperation(
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,
-        Fields.Phone.intersect(includeFields)
+        includeFields?.let(Fields.Phone::intersect)
     )
 
     MimeType.Relation -> RelationOperation(
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,
-        Fields.Relation.intersect(includeFields)
+        includeFields?.let(Fields.Relation::intersect)
     )
 
     MimeType.SipAddress -> SipAddressOperation(
 
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,
-        Fields.SipAddress.intersect(includeFields)
+        includeFields?.let(Fields.SipAddress::intersect)
     )
 
     MimeType.Website -> WebsiteOperation(
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,
-        Fields.Website.intersect(includeFields)
+        includeFields?.let(Fields.Website::intersect)
     )
 
     is MimeType.Custom -> {
@@ -114,10 +114,10 @@ private fun ExistingDataEntity.dataOperation(
             .entryOf(mimeType as MimeType.Custom)
 
         customDataEntry.operationFactory.create(
-                callerIsSyncAdapter = callerIsSyncAdapter,
-                isProfile = isProfile,
-                includeFields = customDataEntry.fieldSet.intersect(includeFields)
-            )
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
+            includeFields = includeFields?.let(customDataEntry.fieldSet::intersect)
+        )
     }
     // The GroupMembership and Photo class intentionally does not have a mutable version unlike the
     // other entities. Manage group memberships via the RawContactGroupMemberships extension

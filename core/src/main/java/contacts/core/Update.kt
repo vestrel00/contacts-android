@@ -101,14 +101,31 @@ interface Update : CrudApi {
     /**
      * Specifies that only the given set of [fields] (data) will be updated.
      *
-     * If no fields are specified, then all fields will be updated. Otherwise, only the specified
-     * fields will be updated in addition to required API fields [Fields.Required] (e.g. IDs),
-     * which are always included.
+     * If no fields are specified (empty list), then all fields will be updated. Otherwise, only
+     * the specified fields will be updated.
      *
      * Blank data are deleted on update, unless the corresponding fields are NOT included.
      *
-     * Note that this may affect performance. It is recommended to only include fields that will be
-     * used to save CPU and memory.
+     * ## Including all fields
+     *
+     * If you want to include all fields, including custom data fields, then passing in an empty
+     * list or not invoking this function is the most performant way to do it because internal
+     * checks will be disabled (less lines of code executed).
+     *
+     * ## Developer notes
+     *
+     * Passing in an empty list here should set the reference to the internal field set to null to
+     * indicate that include field checks should be disabled. Implementations of
+     * [contacts.core.entities.operation.AbstractDataOperation] and other similar operations classes
+     * treat empty list vs null field sets differently. If the included field set is...
+     *
+     * - null, then the included field checks are disabled. This means that any non-blank data will
+     *   be processed. This is a more optimal, recommended way of including all fields.
+     * - not null but empty, then data will be skipped (no-op).
+     *
+     * Note that internal operations class instances may receive an empty list of fields instead of
+     * null when the **intersection** of the corresponding set of all fields and the
+     * non-null&non-empty set of included fields... is empty.
      */
     fun include(vararg fields: AbstractDataField): Update
 
@@ -128,14 +145,33 @@ interface Update : CrudApi {
     fun include(fields: Fields.() -> Collection<AbstractDataField>): Update
 
     /**
-     * Similar to [include] except this is used to specify
-     * [contacts.core.entities.RawContact.sourceId] and
-     * [contacts.core.entities.RawContact.options] fields. All other RawContact table fields are
-     * ignored.
+     * Similar to [include] except this is used to specify fields that are specific to the
+     * RawContacts table.
      *
-     * If no fields are specified, then all RawContacts fields ([RawContactsFields.all]) are
-     * included. Otherwise, only the specified fields will be included in addition to required API
-     * fields [RawContactsFields.Required].
+     * If no fields are specified (empty list), then all RawContacts fields are included. Otherwise,
+     * only the specified fields will be included.
+     *
+     * ## Including all fields
+     *
+     * If you want to include all RawContacts fields, then passing in an empty list or not invoking
+     * this function is the most performant way to do it because internal checks will be disabled
+     * (less lines of code executed).
+     *
+     * ## Developer notes
+     *
+     * Passing in an empty list here should set the reference to the internal RawContacts field set
+     * to null to indicate that include RawContacts field checks should be disabled. Operations
+     * such as [contacts.core.entities.operation.RawContactsOperation] and
+     * [contacts.core.entities.operation.OptionsOperation] treat empty list vs null field sets
+     * differently. If the included field set is...
+     *
+     * - null, then the included field checks are disabled. This means that any non-blank data will
+     *   be processed. This is a more optimal, recommended way of including all fields.
+     * - not null but empty, then data will be skipped (no-op).
+     *
+     * Note that internal operations class instances may receive an empty list of fields instead of
+     * null when the **intersection** of the corresponding set of all fields and the
+     * non-null&non-empty set of included fields... is empty.
      */
     fun includeRawContactsFields(vararg fields: RawContactsField): Update
 
@@ -281,8 +317,8 @@ private class UpdateImpl(
     override val contactsApi: Contacts,
 
     private var deleteBlanks: Boolean = true,
-    private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
-    private var includeRawContactsFields: Include<RawContactsField> = DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS,
+    private var include: Include<AbstractDataField>? = null,
+    private var includeRawContactsFields: Include<RawContactsField>? = null,
     private val contacts: MutableSet<ExistingContactEntity> = mutableSetOf(),
     private val rawContacts: MutableSet<ExistingRawContactEntity> = mutableSetOf(),
 
@@ -325,7 +361,7 @@ private class UpdateImpl(
 
     override fun include(fields: Sequence<AbstractDataField>): Update = apply {
         include = if (fields.isEmpty()) {
-            contactsApi.includeAllFields()
+            null // Set to null to disable include field checks, for optimization purposes.
         } else {
             Include(fields + Fields.Required.all.asSequence())
         }
@@ -342,9 +378,9 @@ private class UpdateImpl(
 
     override fun includeRawContactsFields(fields: Sequence<RawContactsField>): Update = apply {
         includeRawContactsFields = if (fields.isEmpty()) {
-            DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS
+            null // Set to null to disable include field checks, for optimization purposes.
         } else {
-            Include(fields + REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS)
+            Include(fields + RawContactsFields.Required.all.asSequence())
         }
     }
 
@@ -401,8 +437,8 @@ private class UpdateImpl(
                     contactsApi.deleteRawContactsWhere(RawContactsFields.ContactId equalTo contact.id)
                 } else {
                     contactsApi.updateContact(
-                        include.fields,
-                        includeRawContactsFields.fields,
+                        include?.fields,
+                        includeRawContactsFields?.fields,
                         contact,
                         cancel
                     )
@@ -423,8 +459,8 @@ private class UpdateImpl(
                     contactsApi.deleteRawContactsWhere(RawContactsFields.Id equalTo rawContact.id)
                 } else {
                     contactsApi.updateRawContact(
-                        include.fields,
-                        includeRawContactsFields.fields,
+                        include?.fields,
+                        includeRawContactsFields?.fields,
                         rawContact,
                         cancel
                     )
@@ -439,21 +475,16 @@ private class UpdateImpl(
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
     }
-
-    private companion object {
-        val DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS by lazy { Include(RawContactsFields.all) }
-        val REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS by lazy {
-            RawContactsFields.Required.all.asSequence()
-        }
-    }
 }
 
 /**
  * Updates an existing profile or non-profile contact and all constituent raw contacts.
  */
 internal fun Contacts.updateContact(
-    includeFields: Set<AbstractDataField>,
-    includeRawContactsFields: Set<RawContactsField>,
+    // Disable include checks when field set is null.
+    includeFields: Set<AbstractDataField>?,
+    // Disable include checks when field set is null.
+    includeRawContactsFields: Set<RawContactsField>?,
     contact: ExistingContactEntity,
     cancel: () -> Boolean
 ): Boolean {
@@ -475,7 +506,7 @@ internal fun Contacts.updateContact(
         callerIsSyncAdapter = callerIsSyncAdapter,
         contact.id,
         contact.options,
-        Fields.Contact.Options.intersect(includeFields)
+        includeFields?.let(Fields.Contact.Options::intersect)
     )?.let(operations::add)
 
     /*
@@ -505,8 +536,10 @@ internal fun Contacts.updateContact(
  * if it does not yet exist.
  */
 internal fun Contacts.updateRawContact(
-    includeFields: Set<AbstractDataField>,
-    includeRawContactsFields: Set<RawContactsField>,
+    // Disable include checks when field set is null.
+    includeFields: Set<AbstractDataField>?,
+    // Disable include checks when field set is null.
+    includeRawContactsFields: Set<RawContactsField>?,
     rawContact: ExistingRawContactEntity,
     cancel: () -> Boolean
 ): Boolean {
@@ -547,8 +580,10 @@ private fun Contacts.executePendingPhotoDataOperationFor(rawContact: ExistingRaw
 }
 
 private fun Contacts.updateOperationsForRawContact(
-    includeFields: Set<AbstractDataField>,
-    includeRawContactsFields: Set<RawContactsField>,
+    // Disable include checks when field set is null.
+    includeFields: Set<AbstractDataField>?,
+    // Disable include checks when field set is null.
+    includeRawContactsFields: Set<RawContactsField>?,
     rawContact: ExistingRawContactEntity,
     cancel: () -> Boolean
 ): ArrayList<ContentProviderOperation> {
@@ -566,7 +601,7 @@ private fun Contacts.updateOperationsForRawContact(
         AddressOperation(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
-            Fields.Address.intersect(includeFields)
+            includeFields?.let(Fields.Address::intersect)
         ).updateInsertOrDeleteDataForRawContact(
             rawContact.addresses, rawContact.id, contentResolver
         )
@@ -576,7 +611,7 @@ private fun Contacts.updateOperationsForRawContact(
         EmailOperation(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
-            Fields.Email.intersect(includeFields)
+            includeFields?.let(Fields.Email::intersect)
         ).updateInsertOrDeleteDataForRawContact(
             rawContact.emails, rawContact.id, contentResolver
         )
@@ -586,7 +621,7 @@ private fun Contacts.updateOperationsForRawContact(
         EventOperation(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
-            Fields.Event.intersect(includeFields)
+            includeFields?.let(Fields.Event::intersect)
         ).updateInsertOrDeleteDataForRawContact(
             rawContact.events, rawContact.id, contentResolver
         )
@@ -596,7 +631,7 @@ private fun Contacts.updateOperationsForRawContact(
         GroupMembershipOperation(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
-            Fields.GroupMembership.intersect(includeFields)
+            includeFields?.let(Fields.GroupMembership::intersect)
         ).updateInsertOrDelete(
             rawContact.groupMemberships, rawContact.id, this, cancel
         )
@@ -606,7 +641,7 @@ private fun Contacts.updateOperationsForRawContact(
         ImOperation(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
-            Fields.Im.intersect(includeFields)
+            includeFields?.let(Fields.Im::intersect)
         ).updateInsertOrDeleteDataForRawContact(
             rawContact.ims, rawContact.id, contentResolver
         )
@@ -615,7 +650,7 @@ private fun Contacts.updateOperationsForRawContact(
     NameOperation(
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,
-        Fields.Name.intersect(includeFields)
+        includeFields?.let(Fields.Name::intersect)
     ).updateInsertOrDeleteDataForRawContact(
         rawContact.name, rawContact.id, contentResolver
     )?.let(operations::add)
@@ -623,7 +658,7 @@ private fun Contacts.updateOperationsForRawContact(
     NicknameOperation(
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,
-        Fields.Nickname.intersect(includeFields)
+        includeFields?.let(Fields.Nickname::intersect)
     ).updateInsertOrDeleteDataForRawContact(
         rawContact.nickname, rawContact.id, contentResolver
     )?.let(operations::add)
@@ -631,7 +666,7 @@ private fun Contacts.updateOperationsForRawContact(
     NoteOperation(
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,
-        Fields.Note.intersect(includeFields)
+        includeFields?.let(Fields.Note::intersect)
     ).updateInsertOrDeleteDataForRawContact(
         rawContact.note, rawContact.id, contentResolver
     )?.let(operations::add)
@@ -645,13 +680,13 @@ private fun Contacts.updateOperationsForRawContact(
         callerIsSyncAdapter = callerIsSyncAdapter,
         rawContact.options,
         rawContact.id,
-        RawContactsFields.Options.all.intersect(includeRawContactsFields)
+        includeRawContactsFields?.let(RawContactsFields.Options.all::intersect)
     )?.let(operations::add)
 
     OrganizationOperation(
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,
-        Fields.Organization.intersect(includeFields)
+        includeFields?.let(Fields.Organization::intersect)
     ).updateInsertOrDeleteDataForRawContact(
         rawContact.organization, rawContact.id, contentResolver
     )?.let(operations::add)
@@ -660,7 +695,7 @@ private fun Contacts.updateOperationsForRawContact(
         PhoneOperation(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
-            Fields.Phone.intersect(includeFields)
+            includeFields?.let(Fields.Phone::intersect)
         ).updateInsertOrDeleteDataForRawContact(
             rawContact.phones, rawContact.id, contentResolver
         )
@@ -673,7 +708,7 @@ private fun Contacts.updateOperationsForRawContact(
         RelationOperation(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
-            Fields.Relation.intersect(includeFields)
+            includeFields?.let(Fields.Relation::intersect)
         ).updateInsertOrDeleteDataForRawContact(
             rawContact.relations, rawContact.id, contentResolver
         )
@@ -682,7 +717,7 @@ private fun Contacts.updateOperationsForRawContact(
     SipAddressOperation(
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,
-        Fields.SipAddress.intersect(includeFields)
+        includeFields?.let(Fields.SipAddress::intersect)
     ).updateInsertOrDeleteDataForRawContact(
         rawContact.sipAddress, rawContact.id, contentResolver
     )?.let(operations::add)
@@ -691,7 +726,7 @@ private fun Contacts.updateOperationsForRawContact(
         WebsiteOperation(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
-            Fields.Website.intersect(includeFields)
+            includeFields?.let(Fields.Website::intersect)
         ).updateInsertOrDeleteDataForRawContact(
             rawContact.websites, rawContact.id, contentResolver
         )
@@ -711,7 +746,8 @@ private fun Contacts.updateOperationsForRawContact(
 private fun ExistingRawContactEntity.customDataUpdateInsertOrDeleteOperations(
     callerIsSyncAdapter: Boolean,
     contentResolver: ContentResolver,
-    includeFields: Set<AbstractDataField>,
+    // Disable include checks when field set is null.
+    includeFields: Set<AbstractDataField>?,
     customDataRegistry: CustomDataRegistry
 ): List<ContentProviderOperation> = buildList {
     for ((mimeTypeValue, customDataEntityHolder) in customDataEntities) {
@@ -721,7 +757,7 @@ private fun ExistingRawContactEntity.customDataUpdateInsertOrDeleteOperations(
         val customDataOperation = customDataEntry.operationFactory.create(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
-            includeFields = customDataEntry.fieldSet.intersect(includeFields)
+            includeFields = includeFields?.let(customDataEntry.fieldSet::intersect)
         )
 
         when (countRestriction) {

@@ -8,7 +8,7 @@ import contacts.core.entities.NicknameEntity
 internal class NicknameOperation(
     callerIsSyncAdapter: Boolean,
     isProfile: Boolean,
-    includeFields: Set<NicknameField>
+    includeFields: Set<NicknameField>?
 ) : AbstractDataOperation<NicknameField, NicknameEntity>(
     callerIsSyncAdapter = callerIsSyncAdapter,
     isProfile = isProfile,

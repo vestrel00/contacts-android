@@ -18,7 +18,6 @@ import contacts.core.entities.cursor.account
 import contacts.core.entities.cursor.rawContactsCursor
 import contacts.core.entities.mapper.groupMembershipMapper
 import contacts.core.equalTo
-import contacts.core.groups.Groups
 import contacts.core.util.contacts
 import contacts.core.util.isProfileId
 import contacts.core.util.nullIfNotInSystem
@@ -28,7 +27,7 @@ import contacts.core.util.rawContactsUri
 internal class GroupMembershipOperation(
     callerIsSyncAdapter: Boolean,
     isProfile: Boolean,
-    includeFields: Set<GroupMembershipField>
+    includeFields: Set<GroupMembershipField>?
 ) : AbstractDataOperation<GroupMembershipField, GroupMembershipEntity>(
     callerIsSyncAdapter = callerIsSyncAdapter,
     isProfile = isProfile,
@@ -51,7 +50,7 @@ internal class GroupMembershipOperation(
         groupMemberships: Collection<GroupMembershipEntity>,
         groupsMap: Map<Long, Group>? // Map of Group.id -> Group
     ): List<ContentProviderOperation> = buildList {
-        if (includeFields.isEmpty()) {
+        if (groupMemberships.isEmpty() || (includeFields != null && includeFields.isEmpty())) {
             // No-op when entity is blank or no fields are included.
             return@buildList
         }
@@ -88,7 +87,7 @@ internal class GroupMembershipOperation(
         contactsApi: Contacts,
         cancel: () -> Boolean,
     ): List<ContentProviderOperation> = buildList {
-        if (includeFields.isEmpty()) {
+        if (includeFields != null && includeFields.isEmpty()) {
             // No-op when no fields are included.
             return@buildList
         }

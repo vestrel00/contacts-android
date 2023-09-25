@@ -8,7 +8,7 @@ import contacts.core.entities.MimeType
 internal class EmailOperation(
     callerIsSyncAdapter: Boolean,
     isProfile: Boolean,
-    includeFields: Set<EmailField>
+    includeFields: Set<EmailField>?
 ) : AbstractDataOperation<EmailField, EmailEntity>(
     callerIsSyncAdapter = callerIsSyncAdapter,
     isProfile = isProfile,

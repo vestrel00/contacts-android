@@ -26,14 +26,20 @@ import contacts.core.util.toSqlValue
 /**
  * Builds [ContentProviderOperation]s for [Table.Data] using the field [F] and entity [E].
  *
- * ## IMPORTANT!
+ * ## Include fields
  *
- * Insert and update functions will do nothing for data that is not specified in [includeFields].
+ * Insert and update operations will do nothing (no-op) for data whose corresponding field is not
+ * specified in [includeFields]. If [includeFields] is...
+ *
+ * - null, then the included field checks are disabled. This means that any non-blank data will be
+ *   processed. This is a more optimal, recommended way of including all fields.
+ * - not null but empty, then data will be skipped (no-op).
  */
 abstract class AbstractDataOperation<F : DataField, E : DataEntity> constructor(
     callerIsSyncAdapter: Boolean,
     isProfile: Boolean,
-    protected val includeFields: Set<F>
+    // Null include field set mean include checks are disabled.
+    protected val includeFields: Set<F>?
 ) {
 
     internal val contentUri: Uri = dataUri(
@@ -62,7 +68,7 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity> constructor(
      * Returns null if [entity] is blank or no values have been set due to not being included.
      */
     internal fun insertForNewRawContact(entity: E): ContentProviderOperation? {
-        if (entity.isBlank || includeFields.isEmpty()) {
+        if (entity.isBlank || (includeFields != null && includeFields.isEmpty())) {
             // No-op when entity is blank or no fields are included.
             return null
         }
@@ -73,7 +79,10 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity> constructor(
         var hasValueSet = false
 
         setValuesFromData(entity) { field, dataValue ->
-            if (includeFields.contains(field) && dataValue.isNotNullOrBlank()) {
+            if (
+                dataValue.isNotNullOrBlank() &&
+                (includeFields == null || includeFields.contains(field))
+            ) {
                 // Only add the operation if the field should be included.
                 // No need to insert null values. Empty values are treated the same as null, same as
                 // the AOSP Android Contacts app.
@@ -123,7 +132,7 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity> constructor(
     internal fun updateInsertOrDeleteDataForRawContact(
         entities: Collection<E>, rawContactId: Long, contentResolver: ContentResolver
     ): List<ContentProviderOperation> = buildList {
-        if (includeFields.isEmpty()) {
+        if (includeFields != null && includeFields.isEmpty()) {
             // No-op when no fields are included.
             return@buildList
         }
@@ -194,7 +203,7 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity> constructor(
      */
     internal fun updateInsertOrDeleteDataForRawContact(
         entity: E?, rawContactId: Long, contentResolver: ContentResolver
-    ): ContentProviderOperation? = if (includeFields.isEmpty()) {
+    ): ContentProviderOperation? = if (includeFields != null && includeFields.isEmpty()) {
         // No-op when no fields are included.
         null
     } else if (entity != null && !entity.isBlank) {
@@ -234,7 +243,10 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity> constructor(
         var hasValueSet = false
 
         setValuesFromData(entity) { field, dataValue ->
-            if (includeFields.contains(field) && dataValue.isNotNullOrBlank()) {
+            if (
+                dataValue.isNotNullOrBlank() &&
+                (includeFields == null || includeFields.contains(field))
+            ) {
                 // Only add the operation if the field should be included.
                 // No need to insert null values. Empty values are treated the same as null, same as
                 // the AOSP Android Contacts app.
@@ -264,7 +276,7 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity> constructor(
      */
     internal fun updateDataRowOrDeleteIfBlank(entity: E): ContentProviderOperation? =
         entity.idOrNull?.let { dataRowId ->
-            if (includeFields.isEmpty()) {
+            if (includeFields != null && includeFields.isEmpty()) {
                 null
             } else if (entity.isBlank) {
                 deleteDataRowWithId(dataRowId)
@@ -289,7 +301,7 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity> constructor(
         var hasValueSet = false
 
         setValuesFromData(entity) { field, dataValue ->
-            if (includeFields.contains(field)) {
+            if (includeFields == null || includeFields.contains(field)) {
                 // Only add the operation if the field should be included.
                 // Intentionally allow to update values to null. Checking for blanks should be done at
                 // the call-site.

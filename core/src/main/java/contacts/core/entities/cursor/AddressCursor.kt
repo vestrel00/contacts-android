@@ -7,11 +7,8 @@ import contacts.core.entities.AddressEntity
 
 /**
  * Retrieves [Fields.Address] data from the given [cursor].
- *
- * This does not modify the [cursor] position. Moving the cursor may result in different attribute
- * values.
  */
-internal class AddressCursor(cursor: Cursor, includeFields: Set<AddressField>) :
+internal class AddressCursor(cursor: Cursor, includeFields: Set<AddressField>?) :
     AbstractDataCursor<AddressField>(cursor, includeFields) {
 
     val type: AddressEntity.Type? by type(

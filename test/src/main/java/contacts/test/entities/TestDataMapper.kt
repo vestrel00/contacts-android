@@ -7,7 +7,7 @@ internal class TestDataMapperFactory :
     AbstractCustomDataEntityMapper.Factory<TestDataField, TestDataCursor, TestData> {
 
     override fun create(
-        cursor: Cursor, includeFields: Set<TestDataField>
+        cursor: Cursor, includeFields: Set<TestDataField>?
     ): AbstractCustomDataEntityMapper<TestDataField, TestDataCursor, TestData> =
         TestDataMapper(TestDataCursor(cursor, includeFields))
 }

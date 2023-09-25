@@ -8,7 +8,7 @@ import contacts.core.entities.WebsiteEntity
 internal class WebsiteOperation(
     callerIsSyncAdapter: Boolean,
     isProfile: Boolean,
-    includeFields: Set<WebsiteField>
+    includeFields: Set<WebsiteField>?
 ) : AbstractDataOperation<WebsiteField, WebsiteEntity>(
     callerIsSyncAdapter = callerIsSyncAdapter,
     isProfile = isProfile,

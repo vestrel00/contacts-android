@@ -7,7 +7,7 @@ internal class GenderMapperFactory :
     AbstractCustomDataEntityMapper.Factory<GenderField, GenderDataCursor, Gender> {
 
     override fun create(
-        cursor: Cursor, includeFields: Set<GenderField>
+        cursor: Cursor, includeFields: Set<GenderField>?
     ): AbstractCustomDataEntityMapper<GenderField, GenderDataCursor, Gender> =
         GenderMapper(GenderDataCursor(cursor, includeFields))
 }

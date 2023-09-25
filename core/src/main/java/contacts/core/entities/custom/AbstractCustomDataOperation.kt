@@ -12,7 +12,7 @@ abstract class AbstractCustomDataOperation
 <F : AbstractCustomDataField, E : CustomDataEntity>(
     callerIsSyncAdapter: Boolean,
     isProfile: Boolean,
-    includeFields: Set<F>
+    includeFields: Set<F>?
 ) : AbstractDataOperation<F, E>(
     callerIsSyncAdapter = callerIsSyncAdapter,
     isProfile = isProfile,
@@ -46,12 +46,19 @@ abstract class AbstractCustomDataOperation
         /**
          * Creates instances of [AbstractCustomDataOperation].
          *
-         * Only the fields specified in [includeFields] will be used in insert/update operations.
+         * ## Include fields
+         *
+         * Insert and update operations will do nothing (no-op) for data whose corresponding field
+         * is not specified in [includeFields]. If [includeFields] is...
+         *
+         * - null, then the included field checks are disabled. This means that any non-blank data
+         *   will be processed. This is a more optimal, recommended way of including all fields.
+         * - not null but empty, then data will be skipped (no-op).
          */
         fun create(
             callerIsSyncAdapter: Boolean,
             isProfile: Boolean,
-            includeFields: Set<F>
+            includeFields: Set<F>?
         ): AbstractCustomDataOperation<F, E>
     }
 }

@@ -7,11 +7,8 @@ import contacts.core.entities.EventEntity
 
 /**
  * Retrieves [Fields.Event] data from the given [cursor].
- *
- * This does not modify the [cursor] position. Moving the cursor may result in different attribute
- * values.
  */
-internal class EventCursor(cursor: Cursor, includeFields: Set<EventField>) :
+internal class EventCursor(cursor: Cursor, includeFields: Set<EventField>?) :
     AbstractDataCursor<EventField>(cursor, includeFields) {
 
     val type: EventEntity.Type? by type(

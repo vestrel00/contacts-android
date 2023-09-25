@@ -65,9 +65,6 @@ internal class Include<out T : Field>(
     override fun toString(): String = columnNames.joinToString(", ")
 }
 
-internal fun Contacts.includeAllFields(): Include<AbstractDataField> =
-    Include(Fields.all + customDataRegistry.allFields())
-
 /**
  * Returns a new instance of [Include] where only [ContactsFields] in [this] are included.
  *
@@ -82,6 +79,22 @@ internal fun Include<AbstractDataField>.onlyContactsFields(): Include<ContactsFi
         // DataContactsFields.Id has a different columnName than ContactsFields.Id.
         .plus(ContactsFields.Id)
 )
+
+/**
+ * Returns this if not null. Otherwise, returns an instance with [Fields.all] and all registered
+ * custom data fields.
+ */
+internal fun Include<AbstractDataField>?.allFieldsIfNull(
+    contactsApi: Contacts
+): Include<AbstractDataField> = this ?: Include(
+    Fields.all + contactsApi.customDataRegistry.allFields()
+)
+
+/**
+ * Returns this if not null. Otherwise, returns an instance with [RawContactsFields.all].
+ */
+internal fun Include<RawContactsField>?.allFieldsIfNull(): Include<RawContactsField> =
+    this ?: Include(RawContactsFields.all)
 
 /**
  * Returns true if there is at least one field belonging to the Data table that is in this includes.

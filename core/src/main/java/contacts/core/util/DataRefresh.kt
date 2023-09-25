@@ -53,7 +53,7 @@ private fun <T : ExistingDataEntity> T.fetchDataEntity(
     isProfile,
     mimeType,
     null,
-    Include(fields(contacts.customDataRegistry) + Fields.Required.all),
+    null, // include all
     Fields.DataId equalTo dataId,
     CompoundOrderBy(setOf(Fields.DataId.asc())),
     1,

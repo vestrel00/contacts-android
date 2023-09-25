@@ -107,9 +107,8 @@ interface Query : CrudApi {
     /**
      * Includes only the given set of [fields] in each of the matching contacts.
      *
-     * If no fields are specified, then all fields ([Fields.all]) are included. Otherwise, only the
-     * specified fields will be included in addition to required API fields [Fields.Required]
-     * (e.g. IDs), which are always included.
+     * If no fields are specified (empty list), then all fields are included. Otherwise, only
+     * the specified fields will be included.
      *
      * When all fields are included in a query operation, all properties of Contacts and Data are
      * populated with values from the database. Properties of fields that are included are not
@@ -128,6 +127,23 @@ interface Query : CrudApi {
      *
      * The most optimal queries only include fields from [Fields.Contact] because no Data table rows
      * need to be processed.
+     *
+     * ## Including all fields
+     *
+     * If you want to include all fields, including custom data fields, then passing in an empty
+     * list or not invoking this function is the most performant way to do it because internal
+     * checks will be disabled (less lines of code executed).
+     *
+     * ## Developer notes
+     *
+     * Passing in an empty list here should set the reference to the internal field set to null to
+     * indicate that include field checks should be disabled when processing cursor data via
+     * implementations of [contacts.core.entities.cursor.AbstractEntityCursor].
+     *
+     * When the internal field set is set to null, all fields should be included in the projection
+     * list of the actual query, which is why the [allFieldsIfNull] functions exist. In order to
+     * disable include field checks in the cursors, [contacts.core.util.query] provides a parameter
+     * to set the cursor holder's include fields to null.
      */
     fun include(vararg fields: AbstractDataField): Query
 
@@ -152,9 +168,8 @@ interface Query : CrudApi {
      *
      * For all other fields/properties, use [include].
      *
-     * If no fields are specified, then all RawContacts fields ([RawContactsFields.all]) are
-     * included. Otherwise, only the specified fields will be included in addition to required API
-     * fields [RawContactsFields.Required].
+     * If no RawContacts fields are specified (empty list), then all RawContacts fields are
+     * included. Otherwise, only the specified fields will be included.
      *
      * When all fields are included in a query operation, all of the aforementioned properties of
      * RawContacts are populated with values from the database. Properties of fields that are
@@ -169,7 +184,7 @@ interface Query : CrudApi {
      *
      * It is recommended to only include fields that will be used to save CPU and memory.
      *
-     * ## Developer notes
+     * #### Developer notes
      *
      * So, why not just add these fields to [DataRawContactsFields]?
      *
@@ -461,8 +476,8 @@ private class QueryImpl(
     override val contactsApi: Contacts,
 
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
-    private var include: Include<AbstractDataField> = contactsApi.includeAllFields(),
-    private var includeRawContactsFields: Include<RawContactsField> = DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS,
+    private var include: Include<AbstractDataField>? = null,
+    private var includeRawContactsFields: Include<RawContactsField>? = null,
     private var where: Where<AbstractDataField>? = DEFAULT_WHERE,
     private var orderBy: CompoundOrderBy<ContactsField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
@@ -519,7 +534,7 @@ private class QueryImpl(
 
     override fun include(fields: Sequence<AbstractDataField>): Query = apply {
         include = if (fields.isEmpty()) {
-            contactsApi.includeAllFields()
+            null // Set to null to disable include field checks, for optimization purposes.
         } else {
             Include(fields + REQUIRED_INCLUDE_FIELDS)
         }
@@ -536,7 +551,7 @@ private class QueryImpl(
 
     override fun includeRawContactsFields(fields: Sequence<RawContactsField>): Query = apply {
         includeRawContactsFields = if (fields.isEmpty()) {
-            DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS
+            null // Set to null to disable include field checks, for optimization purposes.
         } else {
             Include(fields + REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS)
         }
@@ -601,7 +616,7 @@ private class QueryImpl(
             // attributes even if the consumer does not call these functions. This allows delegators to
             // make necessary modifications to private attributes without having to make this class
             // open for inheritance or exposing unnecessary attributes to consumers.
-            include(include.fields)
+            include(include?.fields ?: emptySet())
             where(where)
 
             contactsApi.resolve(
@@ -625,7 +640,6 @@ private class QueryImpl(
 
     private companion object {
         val DEFAULT_RAW_CONTACTS_WHERE: Where<RawContactsField>? = null
-        val DEFAULT_INCLUDE_RAW_CONTACTS_FIELDS by lazy { Include(RawContactsFields.all) }
         val REQUIRED_INCLUDE_FIELDS by lazy { Fields.Required.all.asSequence() }
         val REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS by lazy {
             RawContactsFields.Required.all.asSequence()
@@ -640,8 +654,8 @@ private class QueryImpl(
 
 private fun Contacts.resolve(
     customDataRegistry: CustomDataRegistry,
-    include: Include<AbstractDataField>,
-    includeRawContactsFields: Include<RawContactsField>,
+    include: Include<AbstractDataField>?,
+    includeRawContactsFields: Include<RawContactsField>?,
     rawContactsWhere: Where<RawContactsField>?,
     where: Where<AbstractDataField>?,
     orderBy: CompoundOrderBy<ContactsField>,
@@ -720,8 +734,8 @@ private fun Contacts.resolve(
 internal fun Contacts.resolve(
     customDataRegistry: CustomDataRegistry,
     contactIds: MutableSet<Long>?,
-    include: Include<AbstractDataField>,
-    includeRawContactsFields: Include<RawContactsField>,
+    include: Include<AbstractDataField>?,
+    includeRawContactsFields: Include<RawContactsField>?,
     orderBy: CompoundOrderBy<ContactsField>,
     limit: Int,
     offset: Int,
@@ -732,6 +746,8 @@ internal fun Contacts.resolve(
         return emptyList()
     }
 
+    val finalInclude = include.allFieldsIfNull(this)
+
     var offsetAndLimitedContactIds: Collection<Long>? = contactIds
 
     // Collect Contacts, RawContacts, and Data with this mapper.
@@ -739,10 +755,12 @@ internal fun Contacts.resolve(
 
     // Collect Contacts. If contactIds is null, then all Contacts are collected.
     query(
-        Table.Contacts, include.onlyContactsFields(), contactIds?.let {
+        Table.Contacts, finalInclude.onlyContactsFields(), contactIds?.let {
             ContactsFields.Id `in` it
         },
         sortOrder = "$orderBy LIMIT $limit OFFSET $offset",
+        // Ignore include field checks if include is null.
+        setCursorHolderIncludeFieldsToNull = include == null,
         processCursor = {
             contactsMapper.processContactsCursor(it)
             // We need to make sure we only use the contact ids after this call, which have been
@@ -761,7 +779,7 @@ internal fun Contacts.resolve(
 
     // Collect RawContacts.
     query(
-        Table.RawContacts, includeRawContactsFields,
+        Table.RawContacts, includeRawContactsFields.allFieldsIfNull(),
         // There may be RawContacts that are marked for deletion that have not yet been deleted.
         (RawContactsFields.Deleted notEqualTo true)
             .and(
@@ -769,6 +787,8 @@ internal fun Contacts.resolve(
                     RawContactsFields.ContactId `in` finalOffsetAndLimitedContactIds
                 }
             ),
+        // Ignore include field checks if includeRawContactsFields is null.
+        setCursorHolderIncludeFieldsToNull = includeRawContactsFields == null,
         processCursor = contactsMapper::processRawContactsCursor
     )
 
@@ -777,12 +797,14 @@ internal fun Contacts.resolve(
     }
 
     // Skip querying the Data table if there are no data fields included.
-    if (include.containsAtLeastOneDataField) {
+    if (finalInclude.containsAtLeastOneDataField) {
         // Collect Data. If finalOffsetAndLimitedContactIds is null, then all Data are collected.
         query(
-            Table.Data, include, finalOffsetAndLimitedContactIds?.let {
+            Table.Data, finalInclude, finalOffsetAndLimitedContactIds?.let {
                 Fields.Contact.Id `in` it
             },
+            // Ignore include field checks if include is null.
+            setCursorHolderIncludeFieldsToNull = include == null,
             processCursor = contactsMapper::processDataCursor
         )
     }

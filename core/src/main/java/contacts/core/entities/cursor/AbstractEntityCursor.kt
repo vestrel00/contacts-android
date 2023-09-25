@@ -4,13 +4,16 @@ import android.database.Cursor
 import android.net.Uri
 import contacts.core.Field
 import contacts.core.entities.DataEntity
-import java.util.*
+import java.util.Date
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 /**
  * A wrapper around a [Cursor] using fields of type [F]. This assumes that the cursor may change
  * positions at any time. Therefore, values returned should be dynamic.
+ *
+ * This does not modify the [cursor] position. Moving the cursor may result in different attribute
+ * values.
  *
  * This provides type restrictions with specific fields and convenience functions and delegates.
  *
@@ -102,17 +105,24 @@ import kotlin.reflect.KProperty
  * ```kotlin
  * val formattedAddress: String? by string(Fields.Address.FormattedAddress)
  * ```
+ *
+ * ## Include fields
+ *
+ * Data whose corresponding field is not specified in [includeFields] are guaranteed to be returned
+ * as null even if the value in the database in not null. If [includeFields] is null, then the
+ * included field checks are disabled. This means that any non-null data will be returned as is
+ * (not null). This is a more optimal, recommended way of including all fields.
  */
 abstract class AbstractEntityCursor<F : Field>(
     private val cursor: Cursor,
-    private val includeFields: Set<F>
+    private val includeFields: Set<F>?
 ) {
 
     // region REGULAR FUNCTIONS - NULLABLE
 
     @JvmOverloads
     protected fun getString(field: F, default: String? = null): String? {
-        if (!includeFields.contains(field) && !field.required) {
+        if ((includeFields != null && !includeFields.contains(field)) && !field.required) {
             return null
         }
 
@@ -138,7 +148,7 @@ abstract class AbstractEntityCursor<F : Field>(
 
     @JvmOverloads
     protected fun getBlob(field: F, default: ByteArray? = null): ByteArray? {
-        if (!includeFields.contains(field)) {
+        if (includeFields != null && !includeFields.contains(field)) {
             return null
         }
 

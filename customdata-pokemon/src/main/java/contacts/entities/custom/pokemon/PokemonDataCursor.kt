@@ -3,7 +3,7 @@ package contacts.entities.custom.pokemon
 import android.database.Cursor
 import contacts.core.entities.custom.AbstractCustomDataCursor
 
-internal class PokemonDataCursor(cursor: Cursor, includeFields: Set<PokemonField>) :
+internal class PokemonDataCursor(cursor: Cursor, includeFields: Set<PokemonField>?) :
     AbstractCustomDataCursor<PokemonField>(cursor, includeFields) {
 
     val name: String? by string(PokemonFields.Name)

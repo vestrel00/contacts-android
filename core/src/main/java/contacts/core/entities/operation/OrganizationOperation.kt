@@ -8,7 +8,7 @@ import contacts.core.entities.OrganizationEntity
 internal class OrganizationOperation(
     callerIsSyncAdapter: Boolean,
     isProfile: Boolean,
-    includeFields: Set<OrganizationField>
+    includeFields: Set<OrganizationField>?
 ) : AbstractDataOperation<OrganizationField, OrganizationEntity>(
     callerIsSyncAdapter = callerIsSyncAdapter,
     isProfile = isProfile,

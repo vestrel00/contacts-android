@@ -203,7 +203,7 @@ Cursors read the values from the Data table and convert them into the types you 
 For `Gender`,
 
 ```kotlin
-internal class GenderDataCursor(cursor: Cursor, includeFields: Set<GenderField>) :
+internal class GenderDataCursor(cursor: Cursor, includeFields: Set<GenderField>?) :
     AbstractCustomDataCursor<GenderField>(cursor, includeFields) {
 
     val type: GenderEntity.Type? by type(
@@ -218,7 +218,7 @@ internal class GenderDataCursor(cursor: Cursor, includeFields: Set<GenderField>)
 For `HandleName`,
 
 ```kotlin
-internal class HandleNameDataCursor(cursor: Cursor, includeFields: Set<HandleNameField>) :
+internal class HandleNameDataCursor(cursor: Cursor, includeFields: Set<HandleNameField>?) :
     AbstractCustomDataCursor<HandleNameField>(cursor, includeFields) {
 
     val handle: String? by string(HandleNameFields.Handle)
@@ -247,7 +247,7 @@ internal class GenderMapperFactory :
     AbstractCustomDataEntityMapper.Factory<GenderField, GenderDataCursor, Gender> {
 
     override fun create(
-        cursor: Cursor, includeFields: Set<GenderField>
+        cursor: Cursor, includeFields: Set<GenderField>?
     ): AbstractCustomDataEntityMapper<GenderField, GenderDataCursor, Gender> =
         GenderMapper(GenderDataCursor(cursor, includeFields))
 }
@@ -278,7 +278,7 @@ internal class HandleNameMapperFactory :
     AbstractCustomDataEntityMapper.Factory<HandleNameField, HandleNameDataCursor, HandleName> {
 
     override fun create(
-        cursor: Cursor, includeFields: Set<HandleNameField>
+        cursor: Cursor, includeFields: Set<HandleNameField>?
     ): AbstractCustomDataEntityMapper<HandleNameField, HandleNameDataCursor, HandleName> =
         HandleNameMapper(HandleNameDataCursor(cursor, includeFields))
 }
@@ -319,13 +319,25 @@ internal class GenderOperationFactory :
     AbstractCustomDataOperation.Factory<GenderField, GenderEntity> {
 
     override fun create(
-        isProfile: Boolean, includeFields: Set<GenderField>
-    ): AbstractCustomDataOperation<GenderField, GenderEntity> =
-        GenderOperation(isProfile, includeFields)
+        callerIsSyncAdapter: Boolean,
+        isProfile: Boolean,
+        includeFields: Set<GenderField>?
+    ): AbstractCustomDataOperation<GenderField, GenderEntity> = GenderOperation(
+        callerIsSyncAdapter = callerIsSyncAdapter,
+        isProfile = isProfile,
+        includeFields = includeFields
+    )
 }
 
-private class GenderOperation(isProfile: Boolean, includeFields: Set<GenderField>) :
-    AbstractCustomDataOperation<GenderField, GenderEntity>(isProfile, includeFields) {
+private class GenderOperation(
+    callerIsSyncAdapter: Boolean,
+    isProfile: Boolean,
+    includeFields: Set<GenderField>?
+) : AbstractCustomDataOperation<GenderField, GenderEntity>(
+    callerIsSyncAdapter = callerIsSyncAdapter,
+    isProfile = isProfile,
+    includeFields = includeFields
+) {
 
     override val mimeType: MimeType.Custom = GenderMimeType
 
@@ -345,13 +357,23 @@ internal class HandleNameOperationFactory :
     AbstractCustomDataOperation.Factory<HandleNameField, HandleNameEntity> {
 
     override fun create(
-        isProfile: Boolean, includeFields: Set<HandleNameField>
-    ): AbstractCustomDataOperation<HandleNameField, HandleNameEntity> =
-        HandleNameOperation(isProfile, includeFields)
+        callerIsSyncAdapter: Boolean, isProfile: Boolean, includeFields: Set<HandleNameField>?
+    ): AbstractCustomDataOperation<HandleNameField, HandleNameEntity> = HandleNameOperation(
+        callerIsSyncAdapter = callerIsSyncAdapter,
+        isProfile = isProfile,
+        includeFields = includeFields
+    )
 }
 
-private class HandleNameOperation(isProfile: Boolean, includeFields: Set<HandleNameField>) :
-    AbstractCustomDataOperation<HandleNameField, HandleNameEntity>(isProfile, includeFields) {
+private class HandleNameOperation(
+    callerIsSyncAdapter: Boolean,
+    isProfile: Boolean,
+    includeFields: Set<HandleNameField>?
+) : AbstractCustomDataOperation<HandleNameField, HandleNameEntity>(
+    callerIsSyncAdapter = callerIsSyncAdapter,
+    isProfile = isProfile,
+    includeFields = includeFields
+) {
 
     override val mimeType: MimeType.Custom = HandleNameMimeType
 

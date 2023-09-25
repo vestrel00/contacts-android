@@ -7,7 +7,7 @@ internal class PokemonOperationFactory :
     AbstractCustomDataOperation.Factory<PokemonField, PokemonEntity> {
 
     override fun create(
-        callerIsSyncAdapter: Boolean, isProfile: Boolean, includeFields: Set<PokemonField>
+        callerIsSyncAdapter: Boolean, isProfile: Boolean, includeFields: Set<PokemonField>?
     ): AbstractCustomDataOperation<PokemonField, PokemonEntity> = PokemonOperation(
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,
@@ -18,7 +18,7 @@ internal class PokemonOperationFactory :
 private class PokemonOperation(
     callerIsSyncAdapter: Boolean,
     isProfile: Boolean,
-    includeFields: Set<PokemonField>
+    includeFields: Set<PokemonField>?
 ) : AbstractCustomDataOperation<PokemonField, PokemonEntity>(
     callerIsSyncAdapter = callerIsSyncAdapter,
     isProfile = isProfile,

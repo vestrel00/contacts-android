@@ -16,7 +16,7 @@ queryInsertUpdate.include(mutableSetOf<AbstractDataField>().apply {
 })
 ```
 
-The following entity properties are are used in the read/write operation,
+The following entity properties are used in the read/write operation,
 
 ```kotlin
 Contact {
@@ -38,24 +38,32 @@ Contact {
 
 > ℹ️ For more info, read about [API Entities](./../entities/about-api-entities.md).
 
-To explicitly include everything,
+## Including all fields
+
+By default (not calling the `include` function) or passing in an empty list will result in the 
+inclusion of all fields (including custom data fields) in the most optimal way,
 
 ```kotlin
-query.include(Fields.all)
+query.include()
+// or
+query.include(emptyList())
 ```
 
-> ℹ️ Not invoking the `include` function will default to including everything, including custom data.
-> The above code will **exclude** custom data. Read the **Custom data support** section for more info.
+If for some reason you want to include only all non-custom data fields explicitly,
 
-The matching contacts **may** have non-null data corresponding to each of the included fields.
-Fields that are included will not guarantee non-null data in the returned contact instances because
-some data may actually be null in the database.
+```kotlin
+.include(Fields.all)
+```
 
-If no fields are specified, then all fields are included. Otherwise, only the specified fields will
-be included in addition to required API fields (e.g. IDs), which are always included.
+If you want to also include custom data fields explicitly (not recommended),
 
-> ℹ️ This may affect performance. It is recommended to only include fields that will be used to save
-> CPU and memory.
+```kotlin
+.include(Fields.all + contactsApi.customDataRegistry.allFields())
+```
+
+If you want to include all fields, including custom data fields, in the read/write operation, then 
+passing in an empty list or not invoking the `include` function is the most performant way to do it
+because internal checks will be disabled (less lines of code executed).
 
 ## Using `include` in query APIs
 
@@ -252,22 +260,3 @@ If the name row for the RawContact already exists before the update operation, t
 will be updated. The given name and family name columns will be set to the specified values. All 
 other columns will remain unchanged (the null or non-null values will remain null and non-null
 respectively).
-
-## Custom data support
-
-The `include` function supports registered custom data fields, which my be combined with AOSP
-(non-custom) data fields.
-
-By default, not calling the `include` function will include all fields, including custom data.
-However, the below code will include all AOSP fields but exclude custom data;
-
-```kotlin
-.include(Fields.all)
-```
-
-If you want to include everything, including custom data, and for some reason you must invoke the
-`include` function,
-
-```kotlin
-.include(Fields.all + contactsApi.customDataRegistry.allFields())
-```

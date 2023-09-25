@@ -5,10 +5,29 @@ import contacts.core.ContactsField
 import contacts.core.RawContactsField
 import contacts.core.entities.Contact
 import contacts.core.entities.ImmutableCustomDataEntity
-import contacts.core.entities.MimeType.*
+import contacts.core.entities.MimeType.Address
+import contacts.core.entities.MimeType.Custom
+import contacts.core.entities.MimeType.Email
+import contacts.core.entities.MimeType.Event
+import contacts.core.entities.MimeType.GroupMembership
+import contacts.core.entities.MimeType.Im
+import contacts.core.entities.MimeType.Name
+import contacts.core.entities.MimeType.Nickname
+import contacts.core.entities.MimeType.Note
+import contacts.core.entities.MimeType.Organization
+import contacts.core.entities.MimeType.Phone
+import contacts.core.entities.MimeType.Photo
+import contacts.core.entities.MimeType.Relation
+import contacts.core.entities.MimeType.SipAddress
+import contacts.core.entities.MimeType.Unknown
+import contacts.core.entities.MimeType.Website
 import contacts.core.entities.RawContact
 import contacts.core.entities.TempRawContact
-import contacts.core.entities.cursor.*
+import contacts.core.entities.cursor.CursorHolder
+import contacts.core.entities.cursor.contactsCursor
+import contacts.core.entities.cursor.dataCursor
+import contacts.core.entities.cursor.mimeTypeCursor
+import contacts.core.entities.cursor.rawContactsCursor
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.entities.custom.ImmutableCustomDataEntityHolder
 import contacts.core.intersect
@@ -177,6 +196,7 @@ private fun CursorHolder<AbstractDataField>.updateRawContact(
         Event -> eventMapper().nonBlankValueOrNull?.let(rawContact.events::add)
         GroupMembership ->
             groupMembershipMapper().nonBlankValueOrNull?.let(rawContact.groupMemberships::add)
+
         Im -> imMapper().nonBlankValueOrNull?.let(rawContact.ims::add)
         Name -> nameMapper().nonBlankValueOrNull?.let { rawContact.name = it }
         Nickname -> nicknameMapper().nonBlankValueOrNull?.let { rawContact.nickname = it }
@@ -184,6 +204,7 @@ private fun CursorHolder<AbstractDataField>.updateRawContact(
         Organization -> organizationMapper().nonBlankValueOrNull?.let {
             rawContact.organization = it
         }
+
         Phone -> phoneMapper().nonBlankValueOrNull?.let(rawContact.phones::add)
         Photo -> photoMapper().nonBlankValueOrNull?.let { rawContact.photo = it }
         Relation -> relationMapper().nonBlankValueOrNull?.let(rawContact.relations::add)
@@ -214,7 +235,7 @@ private fun CursorHolder<AbstractDataField>.updateRawContactCustomData(
     val customDataMapper = customDataEntry.mapperFactory.create(
         cursor,
         // Only include custom data fields assigned by this entry.
-        customDataEntry.fieldSet.intersect(includeFields)
+        includeFields?.let(customDataEntry.fieldSet::intersect)
     )
 
     // Do not add blanks.

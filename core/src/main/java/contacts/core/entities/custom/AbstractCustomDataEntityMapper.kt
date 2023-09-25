@@ -41,8 +41,9 @@ abstract class AbstractCustomDataEntityMapper<
         /**
          * Creates instances of [AbstractCustomDataEntityMapper] with the given [cursor].
          *
-         * Only the fields specified in [includeFields] will be included in query results.
+         * Only the data whose corresponding fields are in [includeFields] will be included in
+         * query results. If [includeFields] is null, then all data will be included in the results.
          */
-        fun create(cursor: Cursor, includeFields: Set<F>): AbstractCustomDataEntityMapper<F, C, E>
+        fun create(cursor: Cursor, includeFields: Set<F>?): AbstractCustomDataEntityMapper<F, C, E>
     }
 }

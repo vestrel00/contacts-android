@@ -26,6 +26,7 @@ internal class RawContactsOperation(
         isProfile = isProfile
     )
 
+    // TODO add includeFields: Set<RawContactsField>? as a parameter
     fun insert(rawContactAccount: Account?, sourceId: String?): ContentProviderOperation =
         newInsert(contentUri)
             /*
@@ -40,8 +41,11 @@ internal class RawContactsOperation(
             .build()
 
     fun update(
-        rawContact: ExistingRawContactEntity, includeFields: Set<RawContactsField>
-    ): ContentProviderOperation? = if (!includeFields.contains(RawContactsFields.SourceId)) {
+        rawContact: ExistingRawContactEntity, includeFields: Set<RawContactsField>?
+    ): ContentProviderOperation? = if (
+        includeFields != null &&
+        !includeFields.contains(RawContactsFields.SourceId)
+    ) {
         null
     } else {
         ContentProviderOperation.newUpdate(contentUri)

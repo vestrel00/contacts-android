@@ -6,11 +6,8 @@ import contacts.core.OrganizationField
 
 /**
  * Retrieves [Fields.Organization] data from the given [cursor].
- *
- * This does not modify the [cursor] position. Moving the cursor may result in different attribute
- * values.
  */
-internal class OrganizationCursor(cursor: Cursor, includeFields: Set<OrganizationField>) :
+internal class OrganizationCursor(cursor: Cursor, includeFields: Set<OrganizationField>?) :
     AbstractDataCursor<OrganizationField>(cursor, includeFields) {
 
     val company: String? by string(Fields.Organization.Company)

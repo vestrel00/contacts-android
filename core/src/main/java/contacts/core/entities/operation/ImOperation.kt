@@ -8,7 +8,7 @@ import contacts.core.entities.MimeType
 internal class ImOperation(
     callerIsSyncAdapter: Boolean,
     isProfile: Boolean,
-    includeFields: Set<ImField>
+    includeFields: Set<ImField>?
 ) : AbstractDataOperation<ImField, ImEntity>(
     callerIsSyncAdapter = callerIsSyncAdapter,
     isProfile = isProfile,

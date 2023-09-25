@@ -9,7 +9,7 @@ internal class GenderOperationFactory :
     override fun create(
         callerIsSyncAdapter: Boolean,
         isProfile: Boolean,
-        includeFields: Set<GenderField>
+        includeFields: Set<GenderField>?
     ): AbstractCustomDataOperation<GenderField, GenderEntity> = GenderOperation(
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,
@@ -20,7 +20,7 @@ internal class GenderOperationFactory :
 private class GenderOperation(
     callerIsSyncAdapter: Boolean,
     isProfile: Boolean,
-    includeFields: Set<GenderField>
+    includeFields: Set<GenderField>?
 ) : AbstractCustomDataOperation<GenderField, GenderEntity>(
     callerIsSyncAdapter = callerIsSyncAdapter,
     isProfile = isProfile,

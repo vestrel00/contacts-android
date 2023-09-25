@@ -7,7 +7,7 @@ import contacts.core.entities.MimeType
 import contacts.core.entities.toDbString
 
 internal class EventOperation(
-    callerIsSyncAdapter: Boolean, isProfile: Boolean, includeFields: Set<EventField>
+    callerIsSyncAdapter: Boolean, isProfile: Boolean, includeFields: Set<EventField>?
 ) : AbstractDataOperation<EventField, EventEntity>(
     callerIsSyncAdapter = callerIsSyncAdapter,
     isProfile = isProfile,

@@ -97,66 +97,64 @@ private class DataQueryFactoryImpl(
 ) : DataQueryFactory {
 
     override fun addresses(): DataQuery<AddressField, AddressFields, Address> = DataQueryImpl(
-        contacts, Fields.Address, MimeType.Address, isProfile
+        contacts, MimeType.Address, isProfile
     )
 
     override fun emails(): DataQuery<EmailField, EmailFields, Email> = DataQueryImpl(
-        contacts, Fields.Email, MimeType.Email, isProfile
+        contacts, MimeType.Email, isProfile
     )
 
     override fun events(): DataQuery<EventField, EventFields, Event> = DataQueryImpl(
-        contacts, Fields.Event, MimeType.Event, isProfile
+        contacts, MimeType.Event, isProfile
     )
 
     override fun groupMemberships(): DataQuery<GroupMembershipField, GroupMembershipFields, GroupMembership> =
         DataQueryImpl(
-            contacts, Fields.GroupMembership, MimeType.GroupMembership, isProfile
+            contacts, MimeType.GroupMembership, isProfile
         )
 
     override fun ims(): DataQuery<ImField, ImFields, Im> = DataQueryImpl(
-        contacts, Fields.Im, MimeType.Im, isProfile
+        contacts, MimeType.Im, isProfile
     )
 
     override fun names(): DataQuery<NameField, NameFields, Name> = DataQueryImpl(
-        contacts, Fields.Name, MimeType.Name, isProfile
+        contacts, MimeType.Name, isProfile
     )
 
     override fun nicknames(): DataQuery<NicknameField, NicknameFields, Nickname> = DataQueryImpl(
-        contacts, Fields.Nickname, MimeType.Nickname, isProfile
+        contacts, MimeType.Nickname, isProfile
     )
 
     override fun notes(): DataQuery<NoteField, NoteFields, Note> = DataQueryImpl(
-        contacts, Fields.Note, MimeType.Note, isProfile
+        contacts, MimeType.Note, isProfile
     )
 
     override fun organizations(): DataQuery<OrganizationField, OrganizationFields, Organization> =
         DataQueryImpl(
-            contacts, Fields.Organization, MimeType.Organization, isProfile
+            contacts, MimeType.Organization, isProfile
         )
 
     override fun phones(): DataQuery<PhoneField, PhoneFields, Phone> = DataQueryImpl(
-        contacts, Fields.Phone, MimeType.Phone, isProfile
+        contacts, MimeType.Phone, isProfile
     )
 
     override fun relations(): DataQuery<RelationField, RelationFields, Relation> = DataQueryImpl(
-        contacts, Fields.Relation, MimeType.Relation, isProfile
+        contacts, MimeType.Relation, isProfile
     )
 
     override fun sipAddresses(): DataQuery<SipAddressField, SipAddressFields, SipAddress> =
         DataQueryImpl(
-            contacts, Fields.SipAddress, MimeType.SipAddress, isProfile
+            contacts, MimeType.SipAddress, isProfile
         )
 
     override fun websites(): DataQuery<WebsiteField, WebsiteFields, Website> = DataQueryImpl(
-        contacts, Fields.Website, MimeType.Website, isProfile
+        contacts, MimeType.Website, isProfile
     )
 
     @Suppress("UNCHECKED_CAST")
     override fun <F : AbstractCustomDataField, S : AbstractCustomDataFieldSet<F>, E : ExistingCustomDataEntity>
             customData(mimeType: MimeType.Custom): DataQuery<F, S, E> = DataQueryImpl(
-        contacts,
-        contacts.customDataRegistry.entryOf(mimeType).fieldSet as S,
-        mimeType, isProfile
+        contacts, mimeType, isProfile
     )
 }
 
@@ -237,9 +235,8 @@ interface DataQuery<F : DataField, S : AbstractDataFieldSet<F>, E : ExistingData
     /**
      * Includes the given set of [fields] of type [F] in the resulting data objects of type [E].
      *
-     * If no fields are specified, then all fields are included. Otherwise, only the specified
-     * fields will be included in addition to required API fields [Fields.Required] (e.g. IDs),
-     * which are always included.
+     * If no fields are specified (empty list), then all fields are included. Otherwise, only
+     * the specified fields will be included.
      *
      * When all fields are included in a query operation, all properties of Contacts, RawContacts,
      * and Data are populated with values from the database. Properties of fields that are included
@@ -251,6 +248,23 @@ interface DataQuery<F : DataField, S : AbstractDataFieldSet<F>, E : ExistingData
      * included are guaranteed to be null.
      *
      * It is recommended to only include fields that will be used to save CPU and memory.
+     *
+     * ## Including all fields
+     *
+     * If you want to include all fields, including custom data fields, then passing in an empty
+     * list or not invoking this function is the most performant way to do it because internal
+     * checks will be disabled (less lines of code executed).
+     *
+     * ## Developer notes
+     *
+     * Passing in an empty list here should set the reference to the internal field set to null to
+     * indicate that include field checks should be disabled when processing cursor data via
+     * implementations of [contacts.core.entities.cursor.AbstractEntityCursor].
+     *
+     * When the internal field set is set to null, all fields should be included in the projection
+     * list of the actual query, which is why the [allFieldsIfNull] functions exist. In order to
+     * disable include field checks in the cursors, [contacts.core.util.query] provides a parameter
+     * to set the cursor holder's include fields to null.
      */
     fun include(vararg fields: F): DataQuery<F, S, E>
 
@@ -427,7 +441,6 @@ interface DataQuery<F : DataField, S : AbstractDataFieldSet<F>, E : ExistingData
 private class DataQueryImpl<F : DataField, S : AbstractDataFieldSet<F>, E : ExistingDataEntity>(
     override val contactsApi: Contacts,
 
-    private val allFields: S,
     private val mimeType: MimeType,
     private val isProfile: Boolean,
 
@@ -435,8 +448,7 @@ private class DataQueryImpl<F : DataField, S : AbstractDataFieldSet<F>, E : Exis
     // The type T is mainly used to constrict consumers, not implementors (us).
     // This allows us to append the RequiredDataFields, which casts T to AbstractDataField.
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
-    private var include: Include<AbstractDataField> =
-        Include(allFields.all + REQUIRED_INCLUDE_FIELDS),
+    private var include: Include<AbstractDataField>? = null,
     private var where: Where<AbstractDataField>? = DEFAULT_WHERE,
     private var orderBy: CompoundOrderBy<AbstractDataField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
@@ -464,7 +476,7 @@ private class DataQueryImpl<F : DataField, S : AbstractDataFieldSet<F>, E : Exis
         """.trimIndent()
 
     override fun redactedCopy(): DataQuery<F, S, E> = DataQueryImpl(
-        contactsApi, allFields, mimeType, isProfile,
+        contactsApi, mimeType, isProfile,
 
         // Redact account info.
         rawContactsWhere?.redactedCopy(),
@@ -492,16 +504,19 @@ private class DataQueryImpl<F : DataField, S : AbstractDataFieldSet<F>, E : Exis
     override fun include(fields: Collection<F>) = include(fields.asSequence())
 
     override fun include(fields: Sequence<F>): DataQuery<F, S, E> = apply {
-        val includeFields = if (fields.isEmpty()) {
-            allFields.all.asSequence()
+        include = if (fields.isEmpty()) {
+            null // Set to null to disable include field checks, for optimization purposes.
         } else {
-            fields
+            Include(fields + REQUIRED_INCLUDE_FIELDS)
         }
-
-        include = Include(includeFields + REQUIRED_INCLUDE_FIELDS)
     }
 
-    override fun include(fields: S.() -> Collection<F>) = include(fields(allFields))
+    @Suppress("UNCHECKED_CAST")
+    override fun include(fields: S.() -> Collection<F>) = include(
+        fields(
+            mimeType.fields(customDataRegistry) as S
+        )
+    )
 
     override fun where(where: Where<AbstractDataField>?): DataQuery<F, S, E> = apply {
         // Yes, I know DEFAULT_WHERE is null. This reads better though.
@@ -522,7 +537,12 @@ private class DataQueryImpl<F : DataField, S : AbstractDataFieldSet<F>, E : Exis
         }
     }
 
-    override fun orderBy(orderBy: S.() -> Collection<OrderBy<F>>) = orderBy(orderBy(allFields))
+    @Suppress("UNCHECKED_CAST")
+    override fun orderBy(orderBy: S.() -> Collection<OrderBy<F>>) = orderBy(
+        orderBy(
+            mimeType.fields(customDataRegistry) as S
+        )
+    )
 
     override fun limit(limit: Int): DataQuery<F, S, E> = apply {
         this.limit = if (limit > 0) {
@@ -585,7 +605,7 @@ internal fun <T : ExistingDataEntity> Contacts.resolveDataEntity(
     isProfile: Boolean,
     mimeType: MimeType,
     rawContactsWhere: Where<RawContactsField>?,
-    include: Include<AbstractDataField>,
+    include: Include<AbstractDataField>?,
     where: Where<AbstractDataField>?,
     orderBy: CompoundOrderBy<AbstractDataField>,
     limit: Int,
@@ -611,7 +631,11 @@ internal fun <T : ExistingDataEntity> Contacts.resolveDataEntity(
     return contentResolver.query(
         // mimeType.contentUri(),
         dataUri(isProfile),
-        include, dataWhere, "$orderBy LIMIT $limit OFFSET $offset"
+        include ?: Include(mimeType.fields(customDataRegistry).all + Fields.Required.all),
+        dataWhere,
+        "$orderBy LIMIT $limit OFFSET $offset",
+        // Ignore include field checks if include is null.
+        setCursorHolderIncludeFieldsToNull = include == null
     ) {
         buildList {
             val entityMapper = it.dataEntityMapperFor<T>(mimeType, customDataRegistry)

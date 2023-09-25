@@ -8,11 +8,8 @@ import java.util.*
 
 /**
  * Retrieves [Fields.Contact] data from the given [cursor].
- *
- * This does not modify the [cursor] position. Moving the cursor may result in different attribute
- * values.
  */
-internal class DataContactsCursor(cursor: Cursor, includeFields: Set<DataContactsField>) :
+internal class DataContactsCursor(cursor: Cursor, includeFields: Set<DataContactsField>?) :
     AbstractDataCursor<DataContactsField>(cursor, includeFields), JoinedContactsCursor {
 
     override val lookupKey: String? by string(Fields.Contact.LookupKey)

@@ -7,7 +7,7 @@ internal class TestDataOperationFactory :
     AbstractCustomDataOperation.Factory<TestDataField, TestDataEntity> {
 
     override fun create(
-        callerIsSyncAdapter: Boolean, isProfile: Boolean, includeFields: Set<TestDataField>
+        callerIsSyncAdapter: Boolean, isProfile: Boolean, includeFields: Set<TestDataField>?
     ): AbstractCustomDataOperation<TestDataField, TestDataEntity> = TestDataOperation(
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,
@@ -18,7 +18,7 @@ internal class TestDataOperationFactory :
 private class TestDataOperation(
     callerIsSyncAdapter: Boolean,
     isProfile: Boolean,
-    includeFields: Set<TestDataField>
+    includeFields: Set<TestDataField>?
 ) : AbstractCustomDataOperation<TestDataField, TestDataEntity>(
     callerIsSyncAdapter = callerIsSyncAdapter,
     isProfile = isProfile,

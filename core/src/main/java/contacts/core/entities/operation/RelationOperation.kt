@@ -8,7 +8,7 @@ import contacts.core.entities.RelationEntity
 internal class RelationOperation(
     callerIsSyncAdapter: Boolean,
     isProfile: Boolean,
-    includeFields: Set<RelationField>
+    includeFields: Set<RelationField>?
 ) : AbstractDataOperation<RelationField, RelationEntity>(
     callerIsSyncAdapter = callerIsSyncAdapter,
     isProfile = isProfile,

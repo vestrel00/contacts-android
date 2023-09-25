@@ -9,12 +9,9 @@ import java.util.*
 
 /**
  * Retrieves [ContactsFields] data from the given [cursor].
- *
- * This does not modify the [cursor] position. Moving the cursor may result in different attribute
- * values.
  */
 internal class ContactsCursor(
-    cursor: Cursor, includeFields: Set<ContactsField>
+    cursor: Cursor, includeFields: Set<ContactsField>?
 ) : AbstractEntityCursor<ContactsField>(cursor, includeFields), JoinedContactsCursor {
 
     override val contactId: Long by nonNullLong(ContactsFields.Id, Entity.INVALID_ID)

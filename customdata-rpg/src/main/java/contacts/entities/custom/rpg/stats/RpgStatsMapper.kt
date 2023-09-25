@@ -8,7 +8,7 @@ internal class RpgStatsMapperFactory :
     AbstractCustomDataEntityMapper.Factory<RpgStatsField, RpgStatsDataCursor, RpgStats> {
 
     override fun create(
-        cursor: Cursor, includeFields: Set<RpgStatsField>
+        cursor: Cursor, includeFields: Set<RpgStatsField>?
     ): AbstractCustomDataEntityMapper<RpgStatsField, RpgStatsDataCursor, RpgStats> =
         RpgStatsMapper(RpgStatsDataCursor(cursor, includeFields))
 }

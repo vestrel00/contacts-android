@@ -8,8 +8,13 @@ import contacts.core.*
  * specific fields and convenience functions.
  *
  * Used mainly for cursor manipulations and used for factory extensions.
+ *
+ * ## Include fields
+ *
+ * For reasons related to optimization, [includeFields] is allowed to be null. Read the
+ * documentation in [contacts.core.entities.cursor.AbstractEntityCursor] for more info.
  */
-internal class CursorHolder<T : Field>(val cursor: Cursor, val includeFields: Set<T>) {
+internal class CursorHolder<T : Field>(val cursor: Cursor, val includeFields: Set<T>?) {
 
     fun moveToNext(): Boolean = cursor.moveToNext()
 
@@ -21,23 +26,26 @@ internal class CursorHolder<T : Field>(val cursor: Cursor, val includeFields: Se
 }
 
 @Suppress("UNCHECKED_CAST")
-internal inline fun <reified T : Field> Cursor.toEntityCursor(includeFields: Set<T>): CursorHolder<T> =
-    when (T::class) {
-        AbstractDataField::class, GenericDataField::class, DataContactsField::class -> CursorHolder(
-            this,
-            includeFields as Set<AbstractDataField>
-        )
-        RawContactsField::class -> CursorHolder(this, includeFields as Set<RawContactsField>)
-        ContactsField::class -> CursorHolder(this, includeFields as Set<ContactsField>)
-        PhoneLookupField::class -> CursorHolder(this, includeFields as Set<PhoneLookupField>)
-        GroupsField::class -> CursorHolder(this, includeFields as Set<GroupsField>)
-        AggregationExceptionsField::class -> CursorHolder(
-            this,
-            includeFields as Set<AggregationExceptionsField>
-        )
-        BlockedNumbersField::class -> CursorHolder(this, includeFields as Set<BlockedNumbersField>)
-        SimContactsField::class -> CursorHolder(this, includeFields as Set<SimContactsField>)
-        else -> throw ContactsException(
-            "No entity cursor for ${T::class.java.simpleName}"
-        )
-    } as CursorHolder<T>
+internal inline fun <reified T : Field> Cursor.toEntityCursor(
+    includeFields: Set<T>?
+): CursorHolder<T> = when (T::class) {
+    AbstractDataField::class, GenericDataField::class, DataContactsField::class -> CursorHolder(
+        this,
+        includeFields as Set<AbstractDataField>?
+    )
+
+    RawContactsField::class -> CursorHolder(this, includeFields as Set<RawContactsField>?)
+    ContactsField::class -> CursorHolder(this, includeFields as Set<ContactsField>?)
+    PhoneLookupField::class -> CursorHolder(this, includeFields as Set<PhoneLookupField>?)
+    GroupsField::class -> CursorHolder(this, includeFields as Set<GroupsField>?)
+    AggregationExceptionsField::class -> CursorHolder(
+        this,
+        includeFields as Set<AggregationExceptionsField>?
+    )
+
+    BlockedNumbersField::class -> CursorHolder(this, includeFields as Set<BlockedNumbersField>?)
+    SimContactsField::class -> CursorHolder(this, includeFields as Set<SimContactsField>?)
+    else -> throw ContactsException(
+        "No entity cursor for ${T::class.java.simpleName}"
+    )
+} as CursorHolder<T>

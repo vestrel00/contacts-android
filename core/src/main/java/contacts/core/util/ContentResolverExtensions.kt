@@ -31,6 +31,16 @@ internal inline fun <reified T : Field, R> Contacts.query(
     sortOrder: String? = null,
 
     /**
+     * If true, the [CursorHolder.includeFields] exposed in [processCursor] will be set to null.
+     * This will result in implementations of [contacts.core.entities.cursor.AbstractEntityCursor]
+     * to be created with null include field sets. Otherwise, the [Include.fields] of the given
+     * [include] will be used.
+     *
+     * Regardless of this value, the projection list of the actual query will come from [include].
+     */
+    setCursorHolderIncludeFieldsToNull: Boolean = false,
+
+    /**
      * If true, SQLiteExceptions will be caught instead of crashing the app and returns a null
      * result. This is false by default.
      */
@@ -43,12 +53,17 @@ internal inline fun <reified T : Field, R> Contacts.query(
 ): R? = contentResolver.query(
     // As per ContactsContract.CALLER_IS_SYNCADAPTER documentation, there is probably no effect in
     // setting CALLER_IS_SYNCADAPTER for queries. However, it does not hurt to be consistent.
-    if (table is Table.ContactsContractTable) {
+    contentUri = if (table is Table.ContactsContractTable) {
         table.uri(callerIsSyncAdapter)
     } else {
         table.uri()
     },
-    include, where, sortOrder, suppressDbExceptions, processCursor
+    include = include,
+    where = where,
+    setCursorHolderIncludeFieldsToNull = setCursorHolderIncludeFieldsToNull,
+    sortOrder = sortOrder,
+    suppressDbExceptions = suppressDbExceptions,
+    processCursor = processCursor
 )
 
 @SuppressLint("Recycle")
@@ -59,6 +74,16 @@ internal inline fun <reified T : Field, R> ContentResolver.query(
      * The sort order, which may also be appended with the LIMIT and OFFSET.
      */
     sortOrder: String? = null,
+
+    /**
+     * If true, the [CursorHolder.includeFields] exposed in [processCursor] will be set to null.
+     * This will result in implementations of [contacts.core.entities.cursor.AbstractEntityCursor]
+     * to be created with null include field sets. Otherwise, the [Include.fields] of the given
+     * [include] will be used.
+     *
+     * Regardless of this value, the projection list of the actual query will come from [include].
+     */
+    setCursorHolderIncludeFieldsToNull: Boolean = false,
 
     /**
      * If true, SQLiteExceptions will be caught instead of crashing the app and returns a null
@@ -90,7 +115,14 @@ internal inline fun <reified T : Field, R> ContentResolver.query(
     var result: R? = null
 
     if (cursor != null) {
-        result = processCursor(cursor.toEntityCursor(include.fields))
+        val cursorHolder = cursor.toEntityCursor(
+            if (setCursorHolderIncludeFieldsToNull) {
+                null
+            } else {
+                include.fields
+            }
+        )
+        result = processCursor(cursorHolder)
         cursor.close()
     }
 

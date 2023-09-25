@@ -8,7 +8,7 @@ import contacts.core.entities.NameEntity
 internal class NameOperation(
     callerIsSyncAdapter: Boolean,
     isProfile: Boolean,
-    includeFields: Set<NameField>
+    includeFields: Set<NameField>?
 ) : AbstractDataOperation<NameField, NameEntity>(
     callerIsSyncAdapter = callerIsSyncAdapter,
     isProfile = isProfile,

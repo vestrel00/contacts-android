@@ -5,8 +5,15 @@ import contacts.core.AbstractDataField
 
 /**
  * An abstract cursor for data fields of type [T].
+ *
+ * ## Include fields
+ *
+ * Data whose corresponding field is not specified in [includeFields] are guaranteed to be returned
+ * as null even if the value in the database in not null. If [includeFields] is null, then the
+ * included field checks are disabled. This means that any non-null data will be returned as is
+ * (not null). This is a more optimal, recommended way of including all fields.
  */
-abstract class AbstractDataCursor<T : AbstractDataField>(cursor: Cursor, includeFields: Set<T>) :
+abstract class AbstractDataCursor<T : AbstractDataField>(cursor: Cursor, includeFields: Set<T>?) :
     AbstractEntityCursor<T>(cursor, includeFields), DataIdCursor {
 
     // Cannot be in the constructor as DataCursor is internal, which is why I couldn't use

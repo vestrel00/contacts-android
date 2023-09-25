@@ -8,7 +8,7 @@ import contacts.core.entities.NoteEntity
 internal class NoteOperation(
     callerIsSyncAdapter: Boolean,
     isProfile: Boolean,
-    includeFields: Set<NoteField>
+    includeFields: Set<NoteField>?
 ) : AbstractDataOperation<NoteField, NoteEntity>(
     callerIsSyncAdapter = callerIsSyncAdapter,
     isProfile = isProfile,

@@ -8,7 +8,7 @@ import contacts.core.entities.SipAddressEntity
 internal class SipAddressOperation(
     callerIsSyncAdapter: Boolean,
     isProfile: Boolean,
-    includeFields: Set<SipAddressField>
+    includeFields: Set<SipAddressField>?
 ) : AbstractDataOperation<SipAddressField, SipAddressEntity>(
     callerIsSyncAdapter = callerIsSyncAdapter,
     isProfile = isProfile,

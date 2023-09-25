@@ -7,11 +7,8 @@ import contacts.core.entities.Entity
 
 /**
  * Retrieves [AbstractDataField] data from the given [cursor].
- *
- * This does not modify the [cursor] position. Moving the cursor may result in different attribute
- * values.
  */
-internal class DataCursor(cursor: Cursor, includeFields: Set<AbstractDataField>) :
+internal class DataCursor(cursor: Cursor, includeFields: Set<AbstractDataField>?) :
     AbstractEntityCursor<AbstractDataField>(cursor, includeFields),
     DataIdCursor {
 
