@@ -284,7 +284,7 @@ private class SimContactsInsertImpl(
 private val String?.length: Int
     get() = this?.let { length } ?: 0
 
-fun Contacts.insertSimContact(simContact: NewSimContact, cancel: () -> Boolean): Boolean {
+internal fun Contacts.insertSimContact(simContact: NewSimContact, cancel: () -> Boolean): Boolean {
     val result = SimContactsOperation().insert(simContact)?.let {
         contentResolver.insert(Table.SimContacts.uri(), it)
     }
