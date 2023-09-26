@@ -30,20 +30,29 @@ internal class RawContactsOperation(
         rawContactAccount: Account?,
         sourceId: String?,
         includeFields: Set<RawContactsField>?
-    ): ContentProviderOperation = newInsert(contentUri)
+    ): ContentProviderOperation? =
         /*
-         * Passing in null account name and type is valid. It is the same behavior as the AOSP
-         * Contacts app when creating contacts when there are no available accounts. When an account
-         * becomes available (or is already available), Android will automatically update the
-         * RawContact name and type to an existing Account.
+         * There must at least be one key-value pair (even if the value is null) in the operation.
+         * Otherwise, an exception is thrown...
          *
-         * Also note that a new insert operation should still be created even if none of the
-         * following fields are included.
+         * java.lang.NullPointerException: Attempt to invoke virtual method
+         *     'java.util.Set android.content.ContentValues.keySet()' on a null object reference
          */
-        .withIncludedValue(includeFields, RawContactsFields.AccountName, rawContactAccount?.name)
-        .withIncludedValue(includeFields, RawContactsFields.AccountType, rawContactAccount?.type)
-        .withIncludedValue(includeFields, RawContactsFields.SourceId, sourceId)
-        .build()
+        if (includeFields != null && includeFields.intersect(POSSIBLE_INCLUDE_FIELDS_FOR_INSERT).isEmpty()) {
+            null
+        } else {
+            newInsert(contentUri)
+                /*
+                 * Passing in null account name and type is valid. It is the same behavior as the AOSP
+                 * Contacts app when creating contacts when there are no available accounts. When an account
+                 * becomes available (or is already available), Android will automatically update the
+                 * RawContact name and type to an existing Account.
+                 */
+                .withIncludedValue(includeFields, RawContactsFields.AccountName, rawContactAccount?.name)
+                .withIncludedValue(includeFields, RawContactsFields.AccountType, rawContactAccount?.type)
+                .withIncludedValue(includeFields, RawContactsFields.SourceId, sourceId)
+                .build()
+        }
 
     fun update(
         rawContact: ExistingRawContactEntity, includeFields: Set<RawContactsField>?
@@ -61,4 +70,10 @@ internal class RawContactsOperation(
 
     fun deleteRawContactsWhere(where: Where<RawContactsField>): ContentProviderOperation =
         newDelete(contentUri).withSelection(where).build()
+}
+
+private val POSSIBLE_INCLUDE_FIELDS_FOR_INSERT = buildSet {
+    add(RawContactsFields.AccountName)
+    add(RawContactsFields.AccountType)
+    add(RawContactsFields.SourceId)
 }

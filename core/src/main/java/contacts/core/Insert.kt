@@ -567,12 +567,18 @@ internal fun Contacts.insertRawContact(
      * This needs to be the first operation in the batch as it will be used by all subsequent
      * Data table insert operations.
      */
-    operations.add(
-        RawContactsOperation(
-            callerIsSyncAdapter = callerIsSyncAdapter,
-            isProfile = isProfile
-        ).insert(account, rawContact.sourceId, includeRawContactsFields)
-    )
+    val insertNewRawContactOperation = RawContactsOperation(
+        callerIsSyncAdapter = callerIsSyncAdapter,
+        isProfile = isProfile
+    ).insert(account, rawContact.sourceId, includeRawContactsFields)
+
+    if (insertNewRawContactOperation == null) {
+        // Fail immediately if there is no insert operation built because an Account name, type, or
+        // sourceId is not in includeRawContactsFields.
+        return null
+    } else {
+        operations.add(insertNewRawContactOperation)
+    }
 
     operations.addAll(
         AddressOperation(
