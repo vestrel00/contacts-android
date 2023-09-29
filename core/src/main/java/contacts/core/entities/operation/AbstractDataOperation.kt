@@ -62,12 +62,15 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity> constructor(
 
     /**
      * Returns a [ContentProviderOperation] for adding the [entity] properties to the insert
-     * operation. This assumes that this will be used in a batch of operations where the first
-     * operation is the insertion of a new RawContact.
+     * operation. The [rawContactIdOpIndex] indicates where in the batch of operations the parent
+     * RawContact is being inserted.
      *
      * Returns null if [entity] is blank or no values have been set due to not being included.
      */
-    internal fun insertForNewRawContact(entity: E): ContentProviderOperation? {
+    internal fun insertForNewRawContact(
+        entity: E,
+        rawContactIdOpIndex: Int
+    ): ContentProviderOperation? {
         if (entity.isBlank || (includeFields != null && includeFields.isEmpty())) {
             // No-op when entity is blank or no fields are included.
             return null
@@ -98,10 +101,10 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity> constructor(
         }
 
         return operation
-            // Sets the raw contact id column of this Data table row to the first result of the
-            // batch operation, which is assumed to be a new raw contact.
+            // Sets the raw contact id column of this Data table row to the result in the batch
+            // operation where the new raw contact is inserted.
             // Note that the Contact ID is automatically set by the Contacts provider.
-            .withValueBackReference(Fields.RawContact.Id.columnName, 0)
+            .withValueBackReference(Fields.RawContact.Id.columnName, rawContactIdOpIndex)
             // Sets the mimetype, which is the type of data (e.g. email) contained in this
             // row's "data1", "data2", ... columns
             .withValue(Fields.MimeType, mimeType.value)
@@ -109,16 +112,19 @@ abstract class AbstractDataOperation<F : DataField, E : DataEntity> constructor(
     }
 
     /**
-     * Returns [ContentProviderOperation]s for adding entities to the insert operation. This assumes
-     * that this will be used in a batch of operations where the first operation is the insertion of
-     * a new RawContact.
+     * Returns [ContentProviderOperation]s for adding entities to the insert operation. The
+     * [rawContactIdOpIndex] indicates where in the batch of operations the parent RawContact is
+     * being inserted.
      *
      * Blank entities are excluded.
      */
-    internal fun insertForNewRawContact(entities: List<E>): List<ContentProviderOperation> =
+    internal fun insertForNewRawContact(
+        entities: List<E>,
+        rawContactIdOpIndex: Int
+    ): List<ContentProviderOperation> =
         buildList {
             for (entity in entities) {
-                insertForNewRawContact(entity)?.let(::add)
+                insertForNewRawContact(entity, rawContactIdOpIndex)?.let(::add)
             }
         }
 

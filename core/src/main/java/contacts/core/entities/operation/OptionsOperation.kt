@@ -76,8 +76,9 @@ internal class OptionsOperation {
     fun updateNewRawContactOptions(
         callerIsSyncAdapter: Boolean,
         isProfile: Boolean,
-        options: OptionsEntity?,
-        includeFields: Set<RawContactsField>?
+        options: OptionsEntity,
+        includeFields: Set<RawContactsField>?,
+        rawContactIdOpIndex: Int
     ): ContentProviderOperation? = if (includeFields != null && includeFields.isEmpty()) {
         null
     } else {
@@ -90,9 +91,9 @@ internal class OptionsOperation {
             // The actual value in arrayOf does not matter.
             // It will be replaced by withSelectionBackReference.
             .withSelection("${RawContactsFields.Id.columnName}=?", arrayOf("-1"))
-            // Set the value of the ? (index 0) to the first result (fromIndex 0) of the batch
-            // operation, which is assumed to be a new raw contact.
-            .withSelectionBackReference(0, 0)
+            // Set the value of the ? (index 0) to the result in the batch operation where the new
+            // raw contact is inserted.
+            .withSelectionBackReference(0, rawContactIdOpIndex)
             .withRawContactOptions(options, includeFields)
             .build()
     }

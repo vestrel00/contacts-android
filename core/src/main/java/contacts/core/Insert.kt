@@ -2,6 +2,7 @@ package contacts.core
 
 import android.accounts.Account
 import android.content.ContentProviderOperation
+import android.content.ContentProviderResult
 import contacts.core.entities.Group
 import contacts.core.entities.NewRawContact
 import contacts.core.entities.RawContactEntity
@@ -307,6 +308,90 @@ interface Insert : CrudApi {
     fun commit(cancel: () -> Boolean): Result
 
     /**
+     * Inserts the [NewRawContact]s in the queue (added via [rawContacts]) **in chunks** and
+     * returns the [Result].
+     *
+     * ## [commitInChunks] vs [commit]
+     *
+     * When inserting just one [NewRawContact], the [commitInChunks] function behaves and performs
+     * identically to [commit].
+     *
+     * When inserting more than one [NewRawContact], the [commitInChunks] function is faster than
+     * [commit]. This performance improvement is negligible for small amounts of RawContacts
+     * (e.g. 5, 10, 20,...) BUT is very noticeable for much larger amounts
+     * (e.g. 500, 1000, 5000, ...) by a magnitude of 5x-10x!
+     *
+     * A caveat to using [commitInChunks] is that failure to insert one RawContact may result in
+     * failure to insert one or more other RawContacts that happen to be in inserted in the same
+     * "chunk" (or batch). Using [commit] does not have this caveat. By using [commit], each
+     * RawContact is inserted separately, guaranteeing that an error in the insertion of one
+     * RawContact does not affect another.
+     *
+     * It is recommended to use [commit] when inserting a few RawContacts. When inserting several
+     * hundreds or thousands of RawContacts, then you should probably use [commitInChunks] if you
+     * want to optimize for speed over "correctness".
+     *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.WRITE_PERMISSION] and
+     * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+    fun commitInChunks(): Result
+
+    /**
+     * Inserts the [NewRawContact]s in the queue (added via [rawContacts]) **in chunks** and
+     * returns the [Result].
+     *
+     * ## [commitInChunks] vs [commit]
+     *
+     * When inserting just one [NewRawContact], the [commitInChunks] function behaves and performs
+     * identically to [commit].
+     *
+     * When inserting more than one [NewRawContact], the [commitInChunks] function is faster than
+     * [commit]. This performance improvement is negligible for small amounts of RawContacts
+     * (e.g. 5, 10, 20,...) BUT is very noticeable for much larger amounts
+     * (e.g. 500, 1000, 5000, ...) by a magnitude of 5x-10x!
+     *
+     * A caveat to using [commitInChunks] is that failure to insert one RawContact may result in
+     * failure to insert one or more other RawContacts that happen to be in inserted in the same
+     * "chunk" (or batch). Using [commit] does not have this caveat. By using [commit], each
+     * RawContact is inserted separately, guaranteeing that an error in the insertion of one
+     * RawContact does not affect another.
+     *
+     * It is recommended to use [commit] when inserting a few RawContacts. When inserting several
+     * hundreds or thousands of RawContacts, then you should probably use [commitInChunks] if you
+     * want to optimize for speed over "correctness".
+     *
+     * ## Permissions
+     *
+     * Requires [ContactsPermissions.WRITE_PERMISSION] and
+     * [contacts.core.accounts.AccountsPermissions.GET_ACCOUNTS_PERMISSION].
+     *
+     * ## Cancellation
+     *
+     * To cancel at any time, the [cancel] function should return true.
+     *
+     * This is useful when running this function in a background thread or coroutine.
+     *
+     * **Cancelling does not undo insertions. This means that depending on when the cancellation
+     * occurs, some if not all of the RawContacts in the insert queue may have already been
+     * inserted.**
+     *
+     * ## Thread Safety
+     *
+     * This should be called in a background thread to avoid blocking the UI thread.
+     */
+    // [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
+    // @JvmOverloads cannot be used in interface methods...
+    // fun commitInChunks(cancel: () -> Boolean = { false }): Result
+    fun commitInChunks(cancel: () -> Boolean): Result
+
+    /**
      * Returns a redacted instance where all private user data are redacted.
      *
      * ## Redacted instances may produce invalid results!
@@ -461,20 +546,11 @@ private class InsertImpl(
             InsertFailed()
         } else {
             // Query all accounts outside of the for-loop to minimize performance hit!
-            val accountsInSystem: Collection<Account>? = if (validateAccounts) {
-                contactsApi.accounts().query().find(cancel)
-            } else {
-                null
-            }
+            val accountsInSystem = accountsInSystem(cancel)
 
             // Query groups for all of the NewRawContacts' Accounts outside of the for-loop to
             // minimize performance hit!
-            val accountsGroupsMap: Map<Account?, Map<Long, Group>>? =
-                if (validateGroupMemberships) {
-                    contactsApi.accountsGroupsMapFor(rawContacts, cancel)
-                } else {
-                    null
-                }
+            val accountsGroupsMap = accountsGroupsMap(cancel)
 
             val results = mutableMapOf<NewRawContact, Long?>()
             for (rawContact in rawContacts) {
@@ -502,8 +578,192 @@ private class InsertImpl(
             .also { onPostExecute(contactsApi, it) }
     }
 
+    override fun commitInChunks(): Insert.Result = commitInChunks { false }
+
+    override fun commitInChunks(cancel: () -> Boolean): Insert.Result {
+        onPreExecute()
+
+        return if (rawContacts.isEmpty() || !permissions.canInsert() || cancel()) {
+            InsertFailed()
+        } else {
+            val insertInChunksOperation = InsertInChunksOperation(cancel)
+
+            for (rawContact in rawContacts) {
+                if (cancel()) {
+                    break
+                }
+
+                insertInChunksOperation.insert(rawContact)
+            }
+            insertInChunksOperation.insertLeftovers()
+
+            InsertResult(insertInChunksOperation.resultsMap)
+        }
+            .redactedCopyOrThis(isRedacted)
+            .also { onPostExecute(contactsApi, it) }
+    }
+
+    private fun accountsInSystem(cancel: () -> Boolean): Collection<Account>? =
+        if (validateAccounts) {
+            contactsApi.accounts().query().find(cancel)
+        } else {
+            null
+        }
+
+    private fun accountsGroupsMap(cancel: () -> Boolean): Map<Account?, Map<Long, Group>>? =
+        if (validateGroupMemberships) {
+            contactsApi.accountsGroupsMapFor(rawContacts, cancel)
+        } else {
+            null
+        }
+
+    private inner class InsertInChunksOperation(private val cancel: () -> Boolean) {
+
+        // Query all accounts outside of the for-loop to minimize performance hit!
+        private val accountsInSystem = accountsInSystem(cancel)
+
+        // Query groups for all of the NewRawContacts' Accounts outside of the for-loop to
+        // minimize performance hit!
+        private val accountsGroupsMap = accountsGroupsMap(cancel)
+
+        /**
+         * The combined operations for inserting all of the [rawContacts].
+         */
+        private val accumulatedOperations = arrayListOf<ContentProviderOperation>()
+
+        /**
+         * The indices of each RawContact insert operation in [accumulatedOperations]. This is useful
+         * for getting the RawContact database IDs in the resulting Array<ContentProviderResult>.
+         */
+        private val rawContactsIndices = mutableMapOf<NewRawContact, Int>()
+
+        /**
+         * Contains the IDs of all the inserted [NewRawContact] in this class instance.
+         *
+         * For inserts that failed, the value in the map is null.
+         */
+        val resultsMap = mutableMapOf<NewRawContact, Long?>()
+
+        fun insert(rawContact: NewRawContact) {
+            var rawContactIdOpIndex = accumulatedOperations.size
+
+            var operations = insertOperationsForRawContact(rawContact, rawContactIdOpIndex)
+
+            if (operations.isEmpty()) {
+                resultsMap[rawContact] = null
+                return
+            }
+
+            if (accumulatedOperations.size == 0 && operations.size > MAX_OPERATIONS_PER_BATCH) {
+                /*
+                 * This one RawContact has produced more than MAX_OPERATIONS_PER_BATCH. This is
+                 * probably an edge case with very low occurrence, so we will just attempt to
+                 * apply the batched operations even though it may fail. We don't really know if
+                 * there is a MAX_OPERATIONS_PER_BATCH and if there is what that number actually is.
+                 * Even if we knew, the number may differ across OEMs.
+                 *
+                 * If someone from the community every encounters this scenario and is causing them
+                 * insertion failures, then they can create an issue. Until then, we will keep
+                 * things simple!
+                 *
+                 * Note that this hypothetical scenario is present in both commit and commitInChunks
+                 * functions.
+                 */
+                rawContactsIndices[rawContact] = rawContactIdOpIndex
+                accumulatedOperations.addAll(operations)
+                flush()
+                return
+            }
+
+            if (accumulatedOperations.size + operations.size > MAX_OPERATIONS_PER_BATCH) {
+                flush()
+
+                /*
+                 * We have to recalculate the rawContactIdOpIndex and operations before adding them
+                 * to rawContactsIndices and accumulatedOperations. Otherwise, subsequent flushes
+                 * will fail because the rawContactIdOpIndex, and the operations that use that
+                 * rawContactIdOpIndex, will cause an IndexOutOfBoundsException because the value
+                 * back reference index is... out of bounds. For example...
+                 *
+                 * 1. Insert 51 RawContacts with a Name. Each RawContact produces 2 operations;
+                 *    insert RawContact and insert Name
+                 * 2. At the 51st call of this insert function, rawContactIdOpIndex will be set to
+                 *    accumulatedOperations.size, which (before flushing) is 100.
+                 * 3. Now, there will be 2 leftover operations in accumulatedOperations that uses
+                 *    the value back reference of 100.
+                 * 4. Flushing the leftovers will then result in an IndexOutOfBoundsException
+                 *    because the operations are pointing to an index of 100, which is outside the
+                 *    bounds of 2 operations results.
+                 *
+                 * Therefore, we have to reevaluate rawContactIdOpIndex and operations.
+                 *
+                 * Note that instead of rebuilding the operations, we might be able to iterate over
+                 * existing ones and replace the value back reference... but that sounds like a huge
+                 * hassle and might not even be possible. High effort that increases code complexity
+                 * for little gains... no thanks!
+                 */
+                rawContactIdOpIndex = accumulatedOperations.size // this is 0 after flushing
+                operations = insertOperationsForRawContact(rawContact, rawContactIdOpIndex)
+            }
+
+            rawContactsIndices[rawContact] = rawContactIdOpIndex
+            accumulatedOperations.addAll(operations)
+        }
+
+        fun insertLeftovers() {
+            flush()
+        }
+
+        /**
+         * Apply the [accumulatedOperations], process the results, and clear the
+         * [accumulatedOperations] and [rawContactsIndices].
+         */
+        private fun flush() {
+            if (accumulatedOperations.isEmpty()) {
+                return
+            }
+
+            /*
+             * Atomically create the RawContact rows and all of the associated Data rows. All of the
+             * accumulated operations will either succeed or fail.
+             */
+            val results = contentResolver.applyBatch(accumulatedOperations)
+
+            // Record results and execute any pending photo data operations.
+            for ((rawContact, resultsIndex) in rawContactsIndices) {
+                if (cancel()) {
+                    break
+                }
+
+                val newRawContactId = results?.getOrNull(resultsIndex)?.rawContactId
+                resultsMap[rawContact] = newRawContactId
+                if (newRawContactId != null) {
+                    contactsApi.executePhotoDataOperation(rawContact, newRawContactId)
+                }
+            }
+
+            accumulatedOperations.clear()
+            rawContactsIndices.clear()
+        }
+
+        private fun insertOperationsForRawContact(
+            rawContact: NewRawContact, rawContactIdOpIndex: Int
+        ): ArrayList<ContentProviderOperation> = contactsApi.insertOperationsForRawContact(
+            accountsInSystem,
+            accountsGroupsMap?.get(rawContact.account),
+            include?.fields, includeRawContactsFields?.fields,
+            rawContact,
+            rawContactIdOpIndex,
+            IS_PROFILE
+        )
+    }
+
     private companion object {
         const val IS_PROFILE = false
+
+        // According to this discussion thread, this is the max number of operations in a batch that
+        // may succeed; https://github.com/vestrel00/contacts-android/discussions/317#discussion-5650555
+        const val MAX_OPERATIONS_PER_BATCH = 100
     }
 }
 
@@ -545,6 +805,75 @@ internal fun Contacts.insertRawContact(
     rawContact: NewRawContact,
     isProfile: Boolean
 ): Long? {
+    val operations = insertOperationsForRawContact(
+        accountsInSystem,
+        accountGroupsMap,
+        includeFields,
+        includeRawContactsFields,
+        rawContact,
+        0,
+        isProfile
+    )
+
+    /*
+     * Atomically create the RawContact row and all of the associated Data rows. All of the
+     * above operations will either succeed or fail.
+     */
+    val results = contentResolver.applyBatch(operations)
+
+    /*
+     * The ContentProviderResult[0] contains the first result of the batch, which is the
+     * RawContactOperation.
+     */
+    return results
+        ?.firstOrNull()
+        ?.rawContactId
+        ?.also { rawContactId ->
+            executePhotoDataOperation(rawContact, rawContactId)
+        }
+}
+
+private fun Contacts.executePhotoDataOperation(rawContact: NewRawContact, rawContactId: Long) {
+    // We will attempt to set the photo, ignoring whether it fails or succeeds. Users of this
+    // library can submit a request to change this behavior if they want =)
+    rawContact.photoDataOperation?.let {
+        if (it is PhotoDataOperation.SetPhoto) {
+            setRawContactPhotoDirect(rawContactId, it.photoData)
+        }
+    }
+    // Perform the operation only once. Users can set a pending operation again if they'd like.
+    rawContact.photoDataOperation = null
+}
+
+/**
+ * The [ContentProviderResult.uri] contains the RawContact._ID as the last path segment.
+ *
+ * E.G. "content://com.android.contacts/raw_contacts/18"
+ *
+ * In this case, 18 is the RawContacts._ID. It is formed by the Contacts Provider using
+ * `Uri.withAppendedPath(ContactsContract.RawContacts.CONTENT_URI, "18")`
+ */
+private val ContentProviderResult.rawContactId: Long?
+    get() = uri?.lastPathSegment?.toLongOrNull()
+
+/**
+ * Returns all of the [ContentProviderOperation] that will insert the [rawContact] and all
+ * associated data.
+ *
+ * Returns an empty list if there are no operations, indicating that the insert should fail.
+ */
+private fun Contacts.insertOperationsForRawContact(
+    accountsInSystem: Collection<Account>?,
+    // Map of Group IDs to Groups for Groups that belong to the RawContact's Account.
+    accountGroupsMap: Map<Long, Group>?,
+    // Disable include checks when field set is null.
+    includeFields: Set<AbstractDataField>?,
+    // Disable include checks when field set is null.
+    includeRawContactsFields: Set<RawContactsField>?,
+    rawContact: NewRawContact,
+    rawContactIdOpIndex: Int,
+    isProfile: Boolean
+): ArrayList<ContentProviderOperation> {
     // This ensures that a valid and (visible) account is used. Otherwise, null is used. For Samsung
     // and Xiaomi devices, RawContacts with null accounts will later be set to a local non-null
     // account that may not returned by the system AccountManager. This disallows 3rd party apps
@@ -575,7 +904,7 @@ internal fun Contacts.insertRawContact(
     if (insertNewRawContactOperation == null) {
         // Fail immediately if there is no insert operation built because an Account name, type, or
         // sourceId is not in includeRawContactsFields.
-        return null
+        return operations // empty at this point
     } else {
         operations.add(insertNewRawContactOperation)
     }
@@ -586,7 +915,7 @@ internal fun Contacts.insertRawContact(
             isProfile = isProfile,
             includeFields?.let(Fields.Address::intersect)
         ).insertForNewRawContact(
-            rawContact.addresses
+            rawContact.addresses, rawContactIdOpIndex
         )
     )
 
@@ -596,7 +925,7 @@ internal fun Contacts.insertRawContact(
             isProfile = isProfile,
             includeFields?.let(Fields.Email::intersect)
         ).insertForNewRawContact(
-            rawContact.emails
+            rawContact.emails, rawContactIdOpIndex
         )
     )
 
@@ -606,7 +935,7 @@ internal fun Contacts.insertRawContact(
             isProfile = isProfile,
             includeFields?.let(Fields.Event::intersect)
         ).insertForNewRawContact(
-            rawContact.events
+            rawContact.events, rawContactIdOpIndex
         )
     )
 
@@ -615,7 +944,9 @@ internal fun Contacts.insertRawContact(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
             includeFields?.let(Fields.GroupMembership::intersect)
-        ).insertForNewRawContact(rawContact.groupMemberships, accountGroupsMap)
+        ).insertForNewRawContact(
+            rawContact.groupMemberships, accountGroupsMap, rawContactIdOpIndex
+        )
     )
 
     operations.addAll(
@@ -623,7 +954,7 @@ internal fun Contacts.insertRawContact(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
             includeFields?.let(Fields.Im::intersect)
-        ).insertForNewRawContact(rawContact.ims)
+        ).insertForNewRawContact(rawContact.ims, rawContactIdOpIndex)
     )
 
     rawContact.name?.let {
@@ -631,7 +962,7 @@ internal fun Contacts.insertRawContact(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
             includeFields?.let(Fields.Name::intersect)
-        ).insertForNewRawContact(it)
+        ).insertForNewRawContact(it, rawContactIdOpIndex)
             ?.let(operations::add)
     }
 
@@ -640,7 +971,7 @@ internal fun Contacts.insertRawContact(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
             includeFields?.let(Fields.Nickname::intersect)
-        ).insertForNewRawContact(it)
+        ).insertForNewRawContact(it, rawContactIdOpIndex)
             ?.let(operations::add)
     }
 
@@ -649,7 +980,7 @@ internal fun Contacts.insertRawContact(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
             includeFields?.let(Fields.Note::intersect)
-        ).insertForNewRawContact(it)
+        ).insertForNewRawContact(it, rawContactIdOpIndex)
             ?.let(operations::add)
     }
 
@@ -658,19 +989,23 @@ internal fun Contacts.insertRawContact(
     // Options.starred. If starred is true, the Contacts Provider will automatically add a group
     // membership to the favorites group (if exist). If starred is false, then the favorites group
     // membership will be removed.
-    OptionsOperation().updateNewRawContactOptions(
-        callerIsSyncAdapter = callerIsSyncAdapter,
-        isProfile = isProfile,
-        rawContact.options,
-        includeRawContactsFields?.let(RawContactsFields.Options.all::intersect)
-    )?.let(operations::add)
+
+    rawContact.options?.let {
+        OptionsOperation().updateNewRawContactOptions(
+            callerIsSyncAdapter = callerIsSyncAdapter,
+            isProfile = isProfile,
+            it,
+            includeRawContactsFields?.let(RawContactsFields.Options.all::intersect),
+            rawContactIdOpIndex
+        )?.let(operations::add)
+    }
 
     rawContact.organization?.let {
         OrganizationOperation(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
             includeFields?.let(Fields.Organization::intersect)
-        ).insertForNewRawContact(it)
+        ).insertForNewRawContact(it, rawContactIdOpIndex)
             ?.let(operations::add)
     }
 
@@ -679,9 +1014,7 @@ internal fun Contacts.insertRawContact(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
             includeFields?.let(Fields.Phone::intersect)
-        ).insertForNewRawContact(
-            rawContact.phones
-        )
+        ).insertForNewRawContact(rawContact.phones, rawContactIdOpIndex)
     )
 
     // Photo is intentionally excluded here. Use the ContactPhoto and RawContactPhoto extensions
@@ -692,7 +1025,7 @@ internal fun Contacts.insertRawContact(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
             includeFields?.let(Fields.Relation::intersect)
-        ).insertForNewRawContact(rawContact.relations)
+        ).insertForNewRawContact(rawContact.relations, rawContactIdOpIndex)
     )
 
     rawContact.sipAddress?.let {
@@ -700,7 +1033,7 @@ internal fun Contacts.insertRawContact(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
             includeFields?.let(Fields.SipAddress::intersect)
-        ).insertForNewRawContact(it)
+        ).insertForNewRawContact(it, rawContactIdOpIndex)
             ?.let(operations::add)
     }
 
@@ -709,9 +1042,7 @@ internal fun Contacts.insertRawContact(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
             includeFields?.let(Fields.Website::intersect)
-        ).insertForNewRawContact(
-            rawContact.websites
-        )
+        ).insertForNewRawContact(rawContact.websites, rawContactIdOpIndex)
     )
 
     // Process custom data
@@ -720,39 +1051,12 @@ internal fun Contacts.insertRawContact(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
             includeFields = includeFields,
-            customDataRegistry = customDataRegistry
+            customDataRegistry = customDataRegistry,
+            rawContactIdOpIndex = rawContactIdOpIndex
         )
     )
 
-    /*
-     * Atomically create the RawContact row and all of the associated Data rows. All of the
-     * above operations will either succeed or fail.
-     */
-    val results = contentResolver.applyBatch(operations)
-
-    /*
-     * The ContentProviderResult[0] contains the first result of the batch, which is the
-     * RawContactOperation. The uri contains the RawContact._ID as the last path segment.
-     *
-     * E.G. "content://com.android.contacts/raw_contacts/18"
-     * In this case, 18 is the RawContacts._ID.
-     *
-     * It is formed by the Contacts Provider using
-     * Uri.withAppendedPath(ContactsContract.RawContacts.CONTENT_URI, "18")
-     */
-    return results?.firstOrNull()?.let { result ->
-        result.uri?.lastPathSegment?.toLongOrNull()
-    }?.also { rawContactId ->
-        // We will attempt to set the photo, ignoring whether it fails or succeeds. Users of this
-        // library can submit a request to change this behavior if they want =)
-        rawContact.photoDataOperation?.let {
-            if (it is PhotoDataOperation.SetPhoto) {
-                setRawContactPhotoDirect(rawContactId, it.photoData)
-            }
-        }
-        // Perform the operation only once. Users can set a pending operation again if they'd like.
-        rawContact.photoDataOperation = null
-    }
+    return operations
 }
 
 private fun NewRawContact.customDataInsertOperations(
@@ -760,7 +1064,8 @@ private fun NewRawContact.customDataInsertOperations(
     isProfile: Boolean,
     // Disable include checks when field set is null.
     includeFields: Set<AbstractDataField>?,
-    customDataRegistry: CustomDataRegistry
+    customDataRegistry: CustomDataRegistry,
+    rawContactIdOpIndex: Int
 ): List<ContentProviderOperation> = buildList {
     for ((mimeTypeValue, customDataEntityHolder) in customDataEntities) {
         val customDataEntry = customDataRegistry.entryOf(mimeTypeValue)
@@ -775,12 +1080,15 @@ private fun NewRawContact.customDataInsertOperations(
         when (countRestriction) {
             CustomDataCountRestriction.AT_MOST_ONE -> {
                 customDataEntityHolder.entities.firstOrNull()?.let {
-                    customDataOperation.insertForNewRawContact(it)?.let(::add)
+                    customDataOperation
+                        .insertForNewRawContact(it, rawContactIdOpIndex)
+                        ?.let(::add)
                 }
             }
 
             CustomDataCountRestriction.NO_LIMIT -> {
-                customDataOperation.insertForNewRawContact(customDataEntityHolder.entities)
+                customDataOperation
+                    .insertForNewRawContact(customDataEntityHolder.entities, rawContactIdOpIndex)
                     .let(::addAll)
             }
         }

@@ -48,7 +48,8 @@ internal class GroupMembershipOperation(
      */
     fun insertForNewRawContact(
         groupMemberships: Collection<GroupMembershipEntity>,
-        groupsMap: Map<Long, Group>? // Map of Group.id -> Group
+        groupsMap: Map<Long, Group>?, // Map of Group.id -> Group
+        rawContactIdOpIndex: Int
     ): List<ContentProviderOperation> = buildList {
         if (groupMemberships.isEmpty() || (includeFields != null && includeFields.isEmpty())) {
             // No-op when entity is blank or no fields are included.
@@ -65,7 +66,7 @@ internal class GroupMembershipOperation(
                 // memberships that are not in it.
                 groupsMap == null || groupsMap[it.groupId] != null
             }
-            .forEach { insertForNewRawContact(it)?.let(::add) }
+            .forEach { insertForNewRawContact(it, rawContactIdOpIndex)?.let(::add) }
     }
 
     /**

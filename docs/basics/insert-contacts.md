@@ -188,6 +188,33 @@ To execute the insert,
 .commit()
 ```
 
+To execute the most optimal (fastest) insert for large amounts of RawContacts,
+
+```kotlin
+.commitInChunks()
+```
+
+### `commitInChunks` vs `commit`
+     
+When inserting just one `NewRawContact`, the `commitInChunks` function behaves and performs 
+identically to `commit`.
+
+When inserting more than one `NewRawContact`, the `commitInChunks` function is faster than `commit`.
+This performance improvement is negligible for small amounts of RawContacts (e.g. 5, 10, 20,...) 
+BUT is very noticeable for much larger amounts (e.g. 500, 1000, 5000, ...) by a magnitude of 
+3x to 5x or even, more depending on the amount of RawContacts and the amount of data each one holds.
+
+A caveat to using `commitInChunks` is that failure to insert one RawContact may result in failure to
+insert one or more other RawContacts that happen to be in inserted in the same "chunk" (or batch). 
+Using `commit` does not have this caveat. By using `commit`, each RawContact is inserted separately,
+guaranteeing that an error in the insertion of one RawContact does not affect another.
+
+It is recommended to use `commit` when inserting a few RawContacts. When inserting several hundreds 
+or thousands of RawContacts, then you should probably use `commitInChunks` if you want to optimize 
+for speed over "correctness".
+
+> ℹ️ For more insights, join the discussion; https://github.com/vestrel00/contacts-android/discussions/317
+
 ### Handling the insert result
 
 The `commit` function returns a `Result`,
