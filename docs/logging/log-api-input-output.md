@@ -44,12 +44,16 @@ Query.Result {
             )
         ]
     )
+    isLimitBreached: false
     isRedacted: false
-}
+} (10 milliseconds)
 ```
 
 This is very useful during development. If you have any issues with the library, maintainers will
 most likely ask you for these logs to help debug your issues.
+
+> ℹ️ Notice that at the end, in parenthesis, the execution time of the `find` or `commit` operation
+> is provided 🙂
 
 ## Custom loggers
 
@@ -70,7 +74,7 @@ class TimberLogger : Logger {
 
 val contactsApi = Contacts(
     context,
-    logger = AndroidLogger()
+    logger = TimberLogger()
 )
 ```
 
