@@ -3,8 +3,8 @@
 This library provides the `AccountsQuery` API that allows you to retrieve **visible** `Account`s 
 from the `AccountManager` whose `Account.type` has a matching 
 `android.content.SyncAdapterType.accountType` where the
-[`android.content.SyncAdapterType.authority` is equal to
-[`android.provider.ContactsContract.AUTHORITY`.
+`android.content.SyncAdapterType.authority` is equal to
+`android.provider.ContactsContract.AUTHORITY`.
 
 If you look at all of the Accounts returned by the `AccountManager.getAccounts` in your 3rd party
 app, you might see the following [Account.type]s...
