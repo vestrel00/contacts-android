@@ -115,6 +115,7 @@ There are also more features that are on the way!
 2. ☢️ [Dynamically integrate custom data from other apps](https://github.com/vestrel00/contacts-android/issues/112)
 3. ☢️ [Auto-generated custom data using annotations](https://github.com/vestrel00/contacts-android/issues/210)
 4. ☢️ [Read/write from/to .VCF file](https://github.com/vestrel00/contacts-android/issues/26)
+5. ☢️ [Multi-SIM card support](https://github.com/vestrel00/contacts-android/issues/336)
 
 ## Installation
 

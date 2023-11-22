@@ -106,9 +106,9 @@ This feature lets users activate and use additional SIMs on devices that have tw
 The APIs in this library have not been tested against dual SIM card configurations. It should still
 work, at the very least the current default/active SIM card should be accessible.
 
-Please [raise an issue](https://github.com/vestrel00/contacts-android/issues/new) if you find any bugs
-or [start a discussion](https://github.com/vestrel00/contacts-android/discussions/new) and share 
-your thoughts or knowledge =)
+Support for multi-SIM card configurations is in the roadmap! Here's the issue for it;
+
+https://github.com/vestrel00/contacts-android/issues/336
 
 ## Limitations
 
