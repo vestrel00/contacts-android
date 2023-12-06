@@ -254,17 +254,20 @@ Additionally, this is able to match phone numbers with or without using country 
 the phone number "+923123456789" (country code 92) will be matched using any of the following;
 "03123456789", "923123456789", "+923123456789".
 
-The reverse is true. For example, the phone number "03123456789" will be matched using any of the 
-following; "03123456789", "923123456789", "+923123456789".
+The reverse is partially true. For example, the phone number "03123456789" will be matched using
+"03123456789" or "+923123456789" BUT will NOT be matched using "923123456789".
 
-However, if a phone number is saved with AND without a country code, then only the contact with the 
-number that matches exactly will be returned. For example, when numbers "+923123456789" and 
+If a phone number is saved with AND without a country code, then only the contact with the number 
+that matches exactly will be returned. For example, when numbers "+923123456789" and 
 "03123456789" are saved, searching for "03123456789" will return only the contact with that exact 
 number (NOT including the contact with "+923123456789").
 
 > ℹ️ Matching is not strictly based on the `PhoneEntity.normalizedNumber` (E164 representation) if 
 > it is not null. In cases where it is null, matching will be done strictly based on the 
 > `PhoneEntity.number`.
+
+> ⚠️ The matching process/results described here may differ across OEMs and/or Android versions.
+> For more details, read https://github.com/vestrel00/contacts-android/issues/337#issuecomment-1843672903
 
 ### Match.SIP
 
