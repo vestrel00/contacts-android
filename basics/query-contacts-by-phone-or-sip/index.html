@@ -2275,16 +2275,18 @@ will return the contact(s) with the number "1234".</p>
 <p>Additionally, this is able to match phone numbers with or without using country codes. For example, 
 the phone number "+923123456789" (country code 92) will be matched using any of the following;
 "03123456789", "923123456789", "+923123456789".</p>
-<p>The reverse is true. For example, the phone number "03123456789" will be matched using any of the 
-following; "03123456789", "923123456789", "+923123456789".</p>
-<p>However, if a phone number is saved with AND without a country code, then only the contact with the 
-number that matches exactly will be returned. For example, when numbers "+923123456789" and 
+<p>The reverse is partially true. For example, the phone number "03123456789" will be matched using
+"03123456789" or "+923123456789" BUT will NOT be matched using "923123456789".</p>
+<p>If a phone number is saved with AND without a country code, then only the contact with the number 
+that matches exactly will be returned. For example, when numbers "+923123456789" and 
 "03123456789" are saved, searching for "03123456789" will return only the contact with that exact 
 number (NOT including the contact with "+923123456789").</p>
 <blockquote>
 <p>ℹ️ Matching is not strictly based on the <code>PhoneEntity.normalizedNumber</code> (E164 representation) if 
 it is not null. In cases where it is null, matching will be done strictly based on the 
 <code>PhoneEntity.number</code>.</p>
+<p>⚠️ The matching process/results described here may differ across OEMs and/or Android versions.
+For more details, read https://github.com/vestrel00/contacts-android/issues/337#issuecomment-1843672903</p>
 </blockquote>
 <h3 id="matchsip">Match.SIP<a class="headerlink" href="#matchsip" title="Permanent link">&para;</a></h3>
 <p>Same as <code>Match.PHONE</code> except this matches SIP addresses instead of phone numbers.</p>
