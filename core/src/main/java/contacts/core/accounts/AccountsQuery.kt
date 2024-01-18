@@ -185,7 +185,7 @@ private class AccountsQueryImpl(
     override fun toString(): String =
         """
             AccountsQuery {
-                accountType: $accountTypes
+                accountTypes: $accountTypes
                 hasPermission: ${accountsPermissions.canQueryAccounts()}
                 isRedacted: $isRedacted
             }
@@ -223,7 +223,10 @@ private class AccountsQueryImpl(
             // No (visible) accounts in the system. No point in processing the rest of the query.
             || visibleAccounts.isEmpty()
         ) {
-            AccountsQueryResult(visibleAccounts)
+            // The visibleAccounts may not be empty even if `android.permission.GET_ACCOUNTS` is
+            // not explicitly granted. Therefore, we ensure the result is an empty set by
+            // explicitly passing in an empty set instead of visibleAccounts.
+            AccountsQueryResult(emptySet())
         } else {
             if (!cancel() && accountTypes.isNotEmpty()) {
                 // Reduce the accounts to only those that have the given types.
@@ -232,8 +235,10 @@ private class AccountsQueryImpl(
 
             if (!cancel()) {
                 // Remove accounts that do not have a sync adapter for contacts.
+                val syncAdapterAccountTypesWithContactsAuthority =
+                    syncAdapterAccountTypesWithContactsAuthority()
                 visibleAccounts.removeAll {
-                    !syncAdapterAccountTypesWithContactsAuthority().contains(it.type)
+                    !syncAdapterAccountTypesWithContactsAuthority.contains(it.type)
                 }
             }
 

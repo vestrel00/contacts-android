@@ -13,7 +13,7 @@ import contacts.core.isPermissionGrantedFor
 interface AccountsPermissions {
 
     /**
-     * Returns true if [GET_ACCOUNTS_PERMISSION] ] is granted.
+     * Returns true if [GET_ACCOUNTS_PERMISSION] is granted.
      */
     fun canQueryAccounts(): Boolean
 
