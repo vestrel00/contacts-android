@@ -242,14 +242,14 @@ heading explore each API in full detail. You may also find these samples in the 
     
     public class QueryContactsAdvancedActivity extends Activity {
     
+        @Nullable
         Contact getContactById(Long contactId) {
-            return ContactsFactory.create(this)
+            Query.Result result = ContactsFactory.create(this)
                     .query()
-                    .where(
-                            equalTo(Fields.Contact.Id, contactId)
-                    )
-                    .find()
-                    .get(0);
+                    .where(equalTo(Fields.Contact.Id, contactId))
+                    .limit(1)
+                    .find();
+            return !result.isEmpty() ? result.get(0) : null;
         }
     
         List<Contact> getContactByLookupKey(String lookupKey) {
@@ -486,17 +486,18 @@ heading explore each API in full detail. You may also find these samples in the 
                     .where(isNotNullOrEmpty(Fields.Note.Note))
                     .find();
         }
-    
+        @Nullable
         RawContact getRawContactById(Long rawContactId) {
-            return ContactsFactory.create(this)
+            RawContactsQuery.Result result = ContactsFactory.create(this)
                     .rawContactsQuery()
                     .rawContactsWhere(
                             new ArrayList<>(),
                             equalTo(RawContactsFields.Id, rawContactId)
                     )
                     // alternatively, .where(equalTo(Fields.RawContact.Id, rawContactId))
-                    .find()
-                    .get(0);
+                    .limit(1)
+                    .find();
+            return !result.isEmpty() ? result.get(0) : null;
         }
     }
     ```
@@ -1111,8 +1112,9 @@ heading explore each API in full detail. You may also find these samples in the 
                     .find();
         }
     
+        @Nullable
         Event getContactBirthday(Long contactId) {
-            return ContactsFactory.create(this)
+            DataQuery.Result<Event> result = ContactsFactory.create(this)
                     .data()
                     .query()
                     .events()
@@ -1122,8 +1124,9 @@ heading explore each API in full detail. You may also find these samples in the 
                                     equalTo(Fields.Event.Type, EventEntity.Type.BIRTHDAY)
                             )
                     )
-                    .find()
-                    .get(0);
+                    .limit(1)
+                    .find();
+            return !result.isEmpty() ? result.get(0) : null;
         }
     }
     ```

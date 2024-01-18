@@ -51,8 +51,9 @@ public class QueryDataActivity extends Activity {
                 .find();
     }
 
+    @Nullable
     Event getContactBirthday(Long contactId) {
-        return ContactsFactory.create(this)
+        DataQuery.Result<Event> result = ContactsFactory.create(this)
                 .data()
                 .query()
                 .events()
@@ -62,7 +63,8 @@ public class QueryDataActivity extends Activity {
                                 equalTo(Fields.Event.Type, EventEntity.Type.BIRTHDAY)
                         )
                 )
-                .find()
-                .get(0);
+                .limit(1)
+                .find();
+        return !result.isEmpty() ? result.get(0) : null;
     }
 }
