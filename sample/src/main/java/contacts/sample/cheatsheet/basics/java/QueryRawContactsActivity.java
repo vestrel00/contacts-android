@@ -55,16 +55,18 @@ public class QueryRawContactsActivity extends Activity {
                 .where(isNotNullOrEmpty(Fields.Note.Note))
                 .find();
     }
-
+    
+    @Nullable
     RawContact getRawContactById(Long rawContactId) {
-        return ContactsFactory.create(this)
+        RawContactsQuery.Result result = ContactsFactory.create(this)
                 .rawContactsQuery()
                 .rawContactsWhere(
                         new ArrayList<>(),
                         equalTo(RawContactsFields.Id, rawContactId)
                 )
                 // alternatively, .where(equalTo(Fields.RawContact.Id, rawContactId))
-                .find()
-                .get(0);
+                .limit(1)
+                .find();
+        return !result.isEmpty() ? result.get(0) : null;
     }
 }

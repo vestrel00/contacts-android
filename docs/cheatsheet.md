@@ -487,8 +487,8 @@ heading explore each API in full detail. You may also find these samples in the 
                     .find();
         }
         @Nullable
-        RawContact getRawContactById(Long contactId) {
-            Query.Result result = ContactsFactory.create(this)
+        RawContact getRawContactById(Long rawContactId) {
+            RawContactsQuery.Result result = ContactsFactory.create(this)
                     .rawContactsQuery()
                     .rawContactsWhere(
                             new ArrayList<>(),
