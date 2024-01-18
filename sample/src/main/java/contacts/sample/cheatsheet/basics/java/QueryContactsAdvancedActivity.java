@@ -14,14 +14,14 @@ import contacts.core.entities.Contact;
 
 public class QueryContactsAdvancedActivity extends Activity {
 
+    @Nullable
     Contact getContactById(Long contactId) {
-        return ContactsFactory.create(this)
+        Query.Result result = ContactsFactory.create(this)
                 .query()
-                .where(
-                        equalTo(Fields.Contact.Id, contactId)
-                )
-                .find()
-                .get(0);
+                .where(equalTo(Fields.Contact.Id, contactId))
+                .limit(1)
+                .find();
+        return !result.isEmpty() ? result.get(0) : null;
     }
 
     List<Contact> getContactByLookupKey(String lookupKey) {
