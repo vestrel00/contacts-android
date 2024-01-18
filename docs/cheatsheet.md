@@ -233,11 +233,14 @@ heading explore each API in full detail. You may also find these samples in the 
     
     import android.accounts.Account;
     import android.app.Activity;
-    
+
+    import org.jetbrains.annotations.Nullable;
+
     import java.util.List;
     
     import contacts.core.ContactsFactory;
     import contacts.core.Fields;
+    import contacts.core.Query;
     import contacts.core.entities.Contact;
     
     public class QueryContactsAdvancedActivity extends Activity {
@@ -436,13 +439,16 @@ heading explore each API in full detail. You may also find these samples in the 
     
     import android.accounts.Account;
     import android.app.Activity;
-    
+
+    import org.jetbrains.annotations.Nullable;
+
     import java.util.ArrayList;
     import java.util.List;
     
     import contacts.core.ContactsFactory;
     import contacts.core.Fields;
     import contacts.core.RawContactsFields;
+    import contacts.core.RawContactsQuery;
     import contacts.core.entities.RawContact;
     
     public class QueryRawContactsActivity extends Activity {
@@ -1066,11 +1072,14 @@ heading explore each API in full detail. You may also find these samples in the 
     
     import android.accounts.Account;
     import android.app.Activity;
-    
+
+    import org.jetbrains.annotations.Nullable;
+
     import java.util.List;
     
     import contacts.core.ContactsFactory;
     import contacts.core.Fields;
+    import contacts.core.data.DataQuery;
     import contacts.core.entities.*;
     
     public class QueryDataActivity extends Activity {

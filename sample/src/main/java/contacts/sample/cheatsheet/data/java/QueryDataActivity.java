@@ -6,10 +6,13 @@ import static contacts.core.WhereKt.*;
 import android.accounts.Account;
 import android.app.Activity;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 
 import contacts.core.ContactsFactory;
 import contacts.core.Fields;
+import contacts.core.data.DataQuery;
 import contacts.core.entities.*;
 
 public class QueryDataActivity extends Activity {

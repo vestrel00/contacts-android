@@ -6,12 +6,15 @@ import static contacts.core.WhereKt.isNotNullOrEmpty;
 import android.accounts.Account;
 import android.app.Activity;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import contacts.core.ContactsFactory;
 import contacts.core.Fields;
 import contacts.core.RawContactsFields;
+import contacts.core.RawContactsQuery;
 import contacts.core.entities.RawContact;
 
 public class QueryRawContactsActivity extends Activity {
