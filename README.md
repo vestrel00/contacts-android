@@ -6,7 +6,6 @@
 
 [![JitPack](https://jitpack.io/v/vestrel00/contacts-android.svg)](https://jitpack.io/#vestrel00/contacts-android)
 [![Monthly Downloads](https://jitpack.io/v/vestrel00/contacts-android/month.svg)](https://jitpack.io/#vestrel00/contacts-android)
-[![Release 0.2.0 - colossal milestone reached (0.2.0)](https://img.shields.io/badge/Colossal-Milestone%20reached-orange.svg?style=flat&logo=github)](https://github.com/vestrel00/contacts-android/releases/tag/0.2.0)
 
 [![Google Dev Library](https://img.shields.io/badge/Google%20Dev%20Library-Entry-2872e8.svg?style=flat&logo=google)](https://devlibrary.withgoogle.com/products/android/repos/vestrel00-contacts-android)
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Entry-green.svg?style=flat&logo=android)](https://android-arsenal.com/details/1/8393)
@@ -34,8 +33,8 @@ as the AOSP Android Contacts app and Google Contacts app, this library is for yo
 ## Quick links
 
 - 📜 [Documentation][github-pages]
-- 🚉 [Current Release - 0.3.1](https://github.com/vestrel00/contacts-android/releases/tag/0.3.1)
-- 🚂 [Upcoming Release - 0.3.2](https://github.com/vestrel00/contacts-android/discussions/316)
+- 🚉 [Current Release - 0.3.2](https://github.com/vestrel00/contacts-android/releases/tag/0.3.2)
+- 🚂 [Upcoming Release - 0.3.3](https://github.com/vestrel00/contacts-android/discussions/349)
 - ℹ️ [Project Status][project-status]
 - 🗺 [Project Roadmap][project-roadmap]
 - 💌 [Why use this library?][why-use-this]
@@ -134,18 +133,18 @@ To install individual modules,
 
 ```groovy
 dependencies {
-    implementation 'com.github.vestrel00.contacts-android:core:0.3.1'
+    implementation 'com.github.vestrel00.contacts-android:core:0.3.2'
     
-    implementation 'com.github.vestrel00.contacts-android:async:0.3.1'
-    implementation 'com.github.vestrel00.contacts-android:customdata-gender:0.3.1'
-    implementation 'com.github.vestrel00.contacts-android:customdata-googlecontacts:0.3.1'
-    implementation 'com.github.vestrel00.contacts-android:customdata-handlename:0.3.1'
-    implementation 'com.github.vestrel00.contacts-android:customdata-pokemon:0.3.1'
-    implementation 'com.github.vestrel00.contacts-android:customdata-rpg:0.3.1'
-    implementation 'com.github.vestrel00.contacts-android:debug:0.3.1'
-    implementation 'com.github.vestrel00.contacts-android:permissions:0.3.1'
-    implementation 'com.github.vestrel00.contacts-android:test:0.3.1'
-    implementation 'com.github.vestrel00.contacts-android:ui:0.3.1'
+    implementation 'com.github.vestrel00.contacts-android:async:0.3.2'
+    implementation 'com.github.vestrel00.contacts-android:customdata-gender:0.3.2'
+    implementation 'com.github.vestrel00.contacts-android:customdata-googlecontacts:0.3.2'
+    implementation 'com.github.vestrel00.contacts-android:customdata-handlename:0.3.2'
+    implementation 'com.github.vestrel00.contacts-android:customdata-pokemon:0.3.2'
+    implementation 'com.github.vestrel00.contacts-android:customdata-rpg:0.3.2'
+    implementation 'com.github.vestrel00.contacts-android:debug:0.3.2'
+    implementation 'com.github.vestrel00.contacts-android:permissions:0.3.2'
+    implementation 'com.github.vestrel00.contacts-android:test:0.3.2'
+    implementation 'com.github.vestrel00.contacts-android:ui:0.3.2'
     // Notice that when importing specific modules/subprojects, the first ":" comes after "contacts-android".
 }
 ```
@@ -156,7 +155,7 @@ To install all modules in a single line,
 
 ```groovy
 dependencies {
-    implementation 'com.github.vestrel00:contacts-android:0.3.1'
+    implementation 'com.github.vestrel00:contacts-android:0.3.2'
     // Notice that when importing all modules, the first ":" comes after "vestrel00".
 }
 ```
