@@ -126,6 +126,9 @@ theme:
       toggle:
         icon: material/toggle-switch
         name: Switch to light mode
+  features:
+    - content.code.copy
+    - content.code.select
 
 # Plugins
 plugins:
@@ -133,15 +136,20 @@ plugins:
 
 # Extensions
 markdown_extensions:
-  # https://squidfunk.github.io/mkdocs-material/setup/extensions/python-markdown/?h=toc#table-of-contents
-  - toc:
-      permalink: true
   # https://squidfunk.github.io/mkdocs-material/reference/code-blocks/
   - pymdownx.highlight:
       anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
+  - pymdownx.superfences
   # https://squidfunk.github.io/mkdocs-material/reference/content-tabs
   - pymdownx.superfences
   - pymdownx.tabbed:
       alternate_style: true
+  # https://squidfunk.github.io/mkdocs-material/reference/data-tables/
+  - tables
+  # https://squidfunk.github.io/mkdocs-material/setup/extensions/python-markdown/?h=toc#table-of-contents
+  - toc:
+      permalink: true
