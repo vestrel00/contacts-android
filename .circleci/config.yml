@@ -9,9 +9,9 @@ jobs:
       tag: default
     steps:
       - checkout
-      - accept_licenses
-      - android/restore-gradle-cache
-      - android/restore-build-cache
+      - android/accept_licenses
+      - android/restore_gradle_cache
+      - android/restore_build_cache
       - run:
           name: Build all variants
           command: |
