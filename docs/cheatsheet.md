@@ -3663,12 +3663,6 @@ heading explore each API in full detail. You may also find these samples in the 
     class ConvenienceFunctionsActivity : Activity() {
     
         fun getSetRawContactDataThroughContact(contact: Contact) {
-            @Suppress("Unused")
-            val contactEmailSequence = contact.emails()
-    
-            @Suppress("Unused")
-            val contactEmailList = contact.emailList()
-    
             contact.mutableCopy().addEmail(NewEmail().apply {
                 address = "test@email.com"
                 type = EmailEntity.Type.WORK
@@ -3728,8 +3722,6 @@ heading explore each API in full detail. You may also find these samples in the 
     public class ConvenienceFunctionsActivity extends Activity {
     
         void getSetRawContactDataThroughContact(Contact contact) {
-            List<Email> contactEmailList = ContactDataKt.emailList(contact);
-    
             NewEmail newEmail = new NewEmail();
             newEmail.setAddress("test@email.com");
             newEmail.setType(EmailEntity.Type.WORK);

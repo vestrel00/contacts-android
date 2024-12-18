@@ -8,12 +8,6 @@ import contacts.core.util.*
 class ConvenienceFunctionsActivity : Activity() {
 
     fun getSetRawContactDataThroughContact(contact: Contact) {
-        @Suppress("Unused")
-        val contactEmailSequence = contact.emails()
-
-        @Suppress("Unused")
-        val contactEmailList = contact.emailList()
-
         contact.mutableCopy().addEmail(NewEmail().apply {
             address = "test@email.com"
             type = EmailEntity.Type.WORK
