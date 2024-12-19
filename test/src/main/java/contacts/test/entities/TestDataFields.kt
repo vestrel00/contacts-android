@@ -12,7 +12,7 @@ internal data class TestDataField internal constructor(private val columnName: C
     override val customMimeType: MimeType.Custom = TestDataMimeType
 }
 
-internal object TestDataFields : AbstractCustomDataFieldSet<TestDataField>() {
+internal data object TestDataFields : AbstractCustomDataFieldSet<TestDataField>() {
 
     val Value = TestDataField(ColumnName.DATA)
 
