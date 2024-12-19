@@ -69,7 +69,7 @@ class SettingsActivity : BaseActivity() {
     }
 
     private fun Spinner.setupSortBy() {
-        adapter = ArrayAdapter(context, R.layout.simple_list_item_1_no_padding, SortBy.values())
+        adapter = ArrayAdapter(context, R.layout.simple_list_item_1_no_padding, SortBy.entries)
             .also { it.setDropDownViewResource(android.R.layout.simple_list_item_1) }
 
         setSelection(preferences.sortBy.ordinal)
@@ -80,7 +80,7 @@ class SettingsActivity : BaseActivity() {
     }
 
     private fun Spinner.setupNameFormat() {
-        adapter = ArrayAdapter(context, R.layout.simple_list_item_1_no_padding, NameFormat.values())
+        adapter = ArrayAdapter(context, R.layout.simple_list_item_1_no_padding, NameFormat.entries)
             .also { it.setDropDownViewResource(android.R.layout.simple_list_item_1) }
 
         setSelection(preferences.nameFormat.ordinal)
@@ -92,7 +92,7 @@ class SettingsActivity : BaseActivity() {
 
     private fun Spinner.setupPhoneticName() {
         adapter =
-            ArrayAdapter(context, R.layout.simple_list_item_1_no_padding, PhoneticName.values())
+            ArrayAdapter(context, R.layout.simple_list_item_1_no_padding, PhoneticName.entries)
                 .also { it.setDropDownViewResource(android.R.layout.simple_list_item_1) }
 
         setSelection(preferences.phoneticName.ordinal)

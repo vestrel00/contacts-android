@@ -121,11 +121,11 @@ sealed interface ImEntity : DataEntityWithTypeAndLabel<Protocol> {
 
         internal companion object {
 
-            fun fromValue(value: Int?): Protocol? = values().find { it.value == value }
+            fun fromValue(value: Int?): Protocol? = entries.find { it.value == value }
 
             // Message taken directly from official docs.
             private const val DEPRECATED_PROTOCOL =
-                "This constant was deprecated in API level 31. Use CUSTOM with customProtocol."
+                "This constant was deprecated in API level 31. Use CUSTOM with CustomProtocol."
         }
     }
 }

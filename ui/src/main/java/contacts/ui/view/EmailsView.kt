@@ -19,7 +19,7 @@ class EmailsView @JvmOverloads constructor(
     context, attributeSet, defStyleAttr,
     dataFactory = NewEmailFactory,
     dataViewFactory = EmailViewFactory,
-    defaultUnderlyingDataTypes = EmailEntity.Type.values().filter { !it.isCustomType }
+    defaultUnderlyingDataTypes = EmailEntity.Type.entries.filter { !it.isCustomType }
 )
 
 private object EmailViewFactory :

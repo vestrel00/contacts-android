@@ -32,10 +32,10 @@ sealed interface DataEntityTypeFactory<E : DataEntity, T : DataEntity.Type> {
     fun from(resources: Resources, data: E): DataEntityType<T>
 }
 
-object AddressTypeFactory : DataEntityTypeFactory<AddressEntity, AddressEntity.Type> {
+data object AddressTypeFactory : DataEntityTypeFactory<AddressEntity, AddressEntity.Type> {
 
     override fun systemTypes(resources: Resources):
-            MutableList<DataEntityType<AddressEntity.Type>> = AddressEntity.Type.values()
+            MutableList<DataEntityType<AddressEntity.Type>> = AddressEntity.Type.entries
         .asSequence()
         .map { type -> DataEntityType(type, type.labelStr(resources, null), false) }
         .toMutableList()
@@ -53,10 +53,10 @@ object AddressTypeFactory : DataEntityTypeFactory<AddressEntity, AddressEntity.T
     private val DEFAULT_TYPE = AddressEntity.Type.HOME
 }
 
-object EmailTypeFactory : DataEntityTypeFactory<EmailEntity, EmailEntity.Type> {
+data object EmailTypeFactory : DataEntityTypeFactory<EmailEntity, EmailEntity.Type> {
 
     override fun systemTypes(resources: Resources): MutableList<DataEntityType<EmailEntity.Type>> =
-        EmailEntity.Type.values()
+        EmailEntity.Type.entries
             .asSequence()
             .map { type -> DataEntityType(type, type.labelStr(resources, null), false) }
             .toMutableList()
@@ -72,10 +72,10 @@ object EmailTypeFactory : DataEntityTypeFactory<EmailEntity, EmailEntity.Type> {
     private val DEFAULT_TYPE = EmailEntity.Type.HOME
 }
 
-object EventTypeFactory : DataEntityTypeFactory<EventEntity, EventEntity.Type> {
+data object EventTypeFactory : DataEntityTypeFactory<EventEntity, EventEntity.Type> {
 
     override fun systemTypes(resources: Resources): MutableList<DataEntityType<EventEntity.Type>> =
-        EventEntity.Type.values()
+        EventEntity.Type.entries
             .asSequence()
             .map { type -> DataEntityType(type, type.labelStr(resources, null), false) }
             .toMutableList()
@@ -93,10 +93,10 @@ object EventTypeFactory : DataEntityTypeFactory<EventEntity, EventEntity.Type> {
     private val DEFAULT_TYPE = EventEntity.Type.BIRTHDAY
 }
 
-object ImsTypeFactory : DataEntityTypeFactory<ImEntity, ImEntity.Protocol> {
+data object ImsTypeFactory : DataEntityTypeFactory<ImEntity, ImEntity.Protocol> {
 
     override fun systemTypes(resources: Resources): MutableList<DataEntityType<ImEntity.Protocol>> =
-        ImEntity.Protocol.values()
+        ImEntity.Protocol.entries
             .asSequence()
             .map { protocol ->
                 DataEntityType(protocol, protocol.labelStr(resources, null), false)
@@ -121,10 +121,10 @@ object ImsTypeFactory : DataEntityTypeFactory<ImEntity, ImEntity.Protocol> {
     private val DEFAULT_TYPE = ImEntity.Protocol.AIM
 }
 
-object PhoneTypeFactory : DataEntityTypeFactory<PhoneEntity, PhoneEntity.Type> {
+data object PhoneTypeFactory : DataEntityTypeFactory<PhoneEntity, PhoneEntity.Type> {
 
     override fun systemTypes(resources: Resources): MutableList<DataEntityType<PhoneEntity.Type>> =
-        PhoneEntity.Type.values()
+        PhoneEntity.Type.entries
             .asSequence()
             .map { type -> DataEntityType(type, type.labelStr(resources, null), false) }
             .toMutableList()
@@ -140,10 +140,10 @@ object PhoneTypeFactory : DataEntityTypeFactory<PhoneEntity, PhoneEntity.Type> {
     private val DEFAULT_TYPE = PhoneEntity.Type.MOBILE
 }
 
-object RelationTypeFactory : DataEntityTypeFactory<RelationEntity, RelationEntity.Type> {
+data object RelationTypeFactory : DataEntityTypeFactory<RelationEntity, RelationEntity.Type> {
 
     override fun systemTypes(resources: Resources):
-            MutableList<DataEntityType<RelationEntity.Type>> = RelationEntity.Type.values()
+            MutableList<DataEntityType<RelationEntity.Type>> = RelationEntity.Type.entries
         .asSequence()
         .map { type -> DataEntityType(type, type.labelStr(resources, null), false) }
         .toMutableList()

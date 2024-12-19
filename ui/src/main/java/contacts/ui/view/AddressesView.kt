@@ -20,7 +20,7 @@ class AddressesView @JvmOverloads constructor(
     context, attributeSet, defStyleAttr,
     dataFactory = NewAddressFactory,
     dataViewFactory = AddressViewFactory,
-    defaultUnderlyingDataTypes = AddressEntity.Type.values().filter { !it.isCustomType }
+    defaultUnderlyingDataTypes = AddressEntity.Type.entries.filter { !it.isCustomType }
 )
 
 private class AddressView(context: Context) :

@@ -132,7 +132,7 @@ sealed interface AddressEntity : DataEntityWithTypeAndLabel<Type> {
 
         internal companion object {
 
-            fun fromValue(value: Int?): Type? = values().find { it.value == value }
+            fun fromValue(value: Int?): Type? = entries.find { it.value == value }
         }
     }
 }
