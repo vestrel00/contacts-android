@@ -84,6 +84,7 @@ sealed interface MutableRpgStatsEntity : RpgStatsEntity, MutableCustomDataEntity
 /**
  * An existing immutable [RpgStatsEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class RpgStats internal constructor(
 
@@ -136,6 +137,7 @@ data class RpgStats internal constructor(
 /**
  * An existing mutable [RpgStatsEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class MutableRpgStats internal constructor(
 

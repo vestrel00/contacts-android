@@ -75,6 +75,7 @@ sealed interface MutableNoteEntity : NoteEntity, MutableDataEntity {
 /**
  * An existing immutable [NoteEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class Note internal constructor(
 
@@ -114,6 +115,7 @@ data class Note internal constructor(
 /**
  * An existing mutable [NoteEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class MutableNote internal constructor(
 

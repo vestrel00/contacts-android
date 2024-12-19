@@ -80,6 +80,7 @@ sealed interface MutableHandleNameEntity : HandleNameEntity, MutableCustomDataEn
 /**
  * An existing immutable [HandleNameEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class HandleName internal constructor(
 
@@ -120,6 +121,7 @@ data class HandleName internal constructor(
 /**
  * An existing mutable [HandleNameEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class MutableHandleName internal constructor(
 

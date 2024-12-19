@@ -5,6 +5,7 @@ import contacts.core.AbstractCustomDataField.ColumnName
 import contacts.core.AbstractCustomDataFieldSet
 import contacts.core.entities.MimeType
 
+@ConsistentCopyVisibility
 internal data class TestDataField internal constructor(private val columnName: ColumnName) :
     AbstractCustomDataField(columnName) {
 

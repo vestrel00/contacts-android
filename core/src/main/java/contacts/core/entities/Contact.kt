@@ -298,6 +298,7 @@ sealed interface ExistingContactEntity : ContactEntity, ExistingEntity {
  *
  * To get a mutable copy of this instance, use [mutableCopy].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class Contact internal constructor(
 
@@ -364,6 +365,7 @@ data class Contact internal constructor(
  *
  * This contains an immutable list of existing [MutableRawContact]s.
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class MutableContact internal constructor(
 

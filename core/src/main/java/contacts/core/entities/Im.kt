@@ -197,6 +197,7 @@ sealed interface MutableImEntity : ImEntity, MutableDataEntityWithTypeAndLabel<P
 /**
  * An existing immutable [ImEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class Im internal constructor(
 
@@ -241,6 +242,7 @@ data class Im internal constructor(
 /**
  * An existing mutable [ImEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class MutableIm internal constructor(
 

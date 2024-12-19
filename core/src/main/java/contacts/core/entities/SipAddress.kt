@@ -78,6 +78,7 @@ sealed interface MutableSipAddressEntity : SipAddressEntity, MutableDataEntity {
 /**
  * An existing immutable [SipAddressEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class SipAddress internal constructor(
 
@@ -117,6 +118,7 @@ data class SipAddress internal constructor(
 /**
  * An existing mutable [SipAddressEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class MutableSipAddress internal constructor(
 

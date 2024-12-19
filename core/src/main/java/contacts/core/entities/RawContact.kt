@@ -319,6 +319,7 @@ sealed interface ExistingRawContactEntity : RawContactEntity, ExistingEntity {
  *
  * This can hold existing immutable data entities.
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class RawContact internal constructor(
 
@@ -415,6 +416,7 @@ data class RawContact internal constructor(
  *
  * This can hold new and existing mutable data entities.
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class MutableRawContact internal constructor(
 

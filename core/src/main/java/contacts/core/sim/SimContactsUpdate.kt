@@ -176,6 +176,7 @@ interface SimContactsUpdate : CrudApi {
     override fun redactedCopy(): SimContactsUpdate
 
     // We could use a Pair but it's too generic. We have more control this way.
+    @ConsistentCopyVisibility
     data class Entry internal constructor(
         val current: ExistingSimContactEntity,
         val modified: MutableSimContact,

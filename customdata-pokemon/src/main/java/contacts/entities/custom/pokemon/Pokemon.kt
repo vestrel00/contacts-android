@@ -105,6 +105,7 @@ sealed interface MutablePokemonEntity : PokemonEntity, MutableCustomDataEntity {
 /**
  * An existing immutable [PokemonEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class Pokemon internal constructor(
 
@@ -154,6 +155,7 @@ data class Pokemon internal constructor(
 /**
  * An existing mutable [PokemonEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class MutablePokemon internal constructor(
 

@@ -187,6 +187,7 @@ sealed interface MutableAddressEntity : AddressEntity, MutableDataEntityWithType
 /**
  * An existing immutable [AddressEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class Address internal constructor(
 
@@ -253,6 +254,7 @@ data class Address internal constructor(
 /**
  * An existing mutable [AddressEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class MutableAddress internal constructor(
 

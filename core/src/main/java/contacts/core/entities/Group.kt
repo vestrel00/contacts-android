@@ -195,6 +195,7 @@ sealed interface ExistingGroupEntity : GroupEntity, ExistingEntity {
 /**
  * An existing immutable [GroupEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class Group internal constructor(
 
@@ -236,6 +237,7 @@ data class Group internal constructor(
 /**
  * An existing mutable [GroupEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class MutableGroup internal constructor(
 

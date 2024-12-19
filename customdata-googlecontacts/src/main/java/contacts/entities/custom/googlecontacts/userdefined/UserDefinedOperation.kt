@@ -45,11 +45,12 @@ private class UserDefinedOperation(
          */
         if (
             !data.field.isNullOrBlank() && !data.label.isNullOrBlank() &&
-            (includeFields == null ||
-                    includeFields.containsAll(GoogleContactsFields.UserDefined.all))
+            (includeFields == null || (includeFields as Set<UserDefinedField>).containsAll(
+                GoogleContactsFields.UserDefined.all
+            ))
         ) {
             // Note that if `setValue` is not invoked at least once, then no insert or update
-            // operation will be performed for this instance.
+            // operation will be performed for this instance.Ï
             setValue(GoogleContactsFields.UserDefined.Field, data.field)
             setValue(GoogleContactsFields.UserDefined.Label, data.label)
         }

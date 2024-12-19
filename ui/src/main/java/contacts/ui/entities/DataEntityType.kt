@@ -10,6 +10,7 @@ import contacts.core.entities.DataEntity
  * (e.g. [android.widget.ArrayAdapter] for [android.widget.Spinner]) without having to create
  * custom adapters.
  */
+@ConsistentCopyVisibility
 data class DataEntityType<T : DataEntity.Type> internal constructor(
 
     /**

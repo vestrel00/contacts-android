@@ -106,6 +106,7 @@ sealed interface MutableOptionsEntity : OptionsEntity, MutableEntity {
 /**
  * An existing immutable [OptionsEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class Options internal constructor(
 
@@ -139,6 +140,7 @@ data class Options internal constructor(
 /**
  * An existing mutable [OptionsEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class MutableOptions internal constructor(
 

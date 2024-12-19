@@ -97,6 +97,7 @@ sealed interface MutableGenderEntity : GenderEntity, MutableCustomDataEntityWith
 /**
  * An existing immutable [GenderEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class Gender internal constructor(
 
@@ -136,6 +137,7 @@ data class Gender internal constructor(
 /**
  * An existing mutable [GenderEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class MutableGender internal constructor(
 

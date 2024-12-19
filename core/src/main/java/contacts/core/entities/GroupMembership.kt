@@ -58,6 +58,7 @@ sealed interface GroupMembershipEntity : DataEntity {
 /**
  * An existing immutable [GroupMembershipEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class GroupMembership internal constructor(
 
@@ -84,6 +85,7 @@ data class GroupMembership internal constructor(
  * Use functions in GroupToGroupMembership to create instances of this from an existing group.
  */
 // Intentionally not exposing constructor to consumers. This is also intentionally immutable.
+@ConsistentCopyVisibility
 @Parcelize
 data class NewGroupMembership internal constructor(
 

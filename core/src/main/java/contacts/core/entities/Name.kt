@@ -191,6 +191,7 @@ sealed interface MutableNameEntity : NameEntity, MutableDataEntity {
 /**
  * An existing immutable [NameEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class Name internal constructor(
 
@@ -263,6 +264,7 @@ data class Name internal constructor(
 /**
  * An existing mutable [NameEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class MutableName internal constructor(
 

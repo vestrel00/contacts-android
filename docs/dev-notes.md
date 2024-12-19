@@ -1235,23 +1235,26 @@ cater exclusively to Java users.
 First, consumers are not allowed to create immutable entities. Those must come from the API itself
 to ensure data integrity. Whether or not we will change this in the future is debatable =)
 
-Consumers are able to set read-only and private or internal variables though because all `Entity` 
+~~Consumers are able to set read-only and private or internal variables though because all `Entity` 
 implementations are data classes. Data classes provide a `copy` function that allows for setting any
 property no matter their visibility and even if the constructor is private. As a matter of fact, 
 setting the constructor of a `data class` as `private` gives this warning by Android Studio: 
-"Private data class constructor is exposed via the 'copy' method.
+"Private data class constructor is exposed via the 'copy' method.~~
 
-There is currently no way to disable the `copy` function of data classes (that I know of). The only
+~~There is currently no way to disable the `copy` function of data classes (that I know of). The only
 thing we can do is to provide documentation to consumers, insisting against the use of the `copy`
-method as it may lead to unwanted side effects when updating and deleting contacts.
+method as it may lead to unwanted side effects when updating and deleting contacts.~~
 
-> ℹ️ We could just use regular classes instead of data classes but entities should be data classes
+> ~~ℹ️ We could just use regular classes instead of data classes but entities should be data classes
 > because it is what they are (know what I mean?!). Also, I'd hate to have to generate equals and
 > hashcode functions for them, which will make the code harder to maintain. Though, we might do this
 > anyways at some point if we want to make it possible for a mutable entity to equal an immutable
-> entity. Time will tell =)
-> FIXME? Hide / disable data class `copy` function if kotlin ever allows it. 
+> entity. Time will tell =)~~
+> 
 > https://discuss.kotlinlang.org/t/data-class-copy-visibility-modifier/19746
+
+As of https://github.com/vestrel00/contacts-android/issues/358, the above notes that have been
+~~strikethrough~~ no longer apply =) 
 
 ## Immutable vs Mutable Entities
 

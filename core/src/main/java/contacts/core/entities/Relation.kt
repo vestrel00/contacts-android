@@ -107,6 +107,7 @@ sealed interface MutableRelationEntity : RelationEntity, MutableDataEntityWithTy
 /**
  * An existing immutable [RelationEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class Relation internal constructor(
 
@@ -152,6 +153,7 @@ data class Relation internal constructor(
 /**
  * An existing mutable [RelationEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class MutableRelation internal constructor(
 
