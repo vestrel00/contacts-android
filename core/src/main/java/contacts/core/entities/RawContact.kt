@@ -559,7 +559,7 @@ data class NewRawContact @JvmOverloads constructor(
  * Used internally to optimize cursor to contact mappings.
  */
 @Parcelize
-internal data class TempRawContact constructor(
+internal data class TempRawContact(
 
     override val id: Long,
     val contactId: Long,

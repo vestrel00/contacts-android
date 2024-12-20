@@ -396,7 +396,7 @@ fun NewRawContact.data(): Sequence<NewDataEntity> = sequence {
     yieldAll(
         customDataEntities.values
             .flatMap { it.entities }
-            .filterIsInstance(NewCustomDataEntity::class.java)
+            .filterIsInstance<NewCustomDataEntity>()
     )
 }
 
