@@ -1,7 +1,10 @@
+@file:Suppress("Deprecation")
+
 package contacts.core.entities
 
 import android.content.res.Resources
 import android.provider.ContactsContract.CommonDataKinds
+import contacts.core.DEPRECATED_IM
 import contacts.core.entities.ImEntity.Protocol
 import kotlinx.parcelize.Parcelize
 
@@ -10,6 +13,7 @@ import kotlinx.parcelize.Parcelize
  *
  * A RawContact may have 0, 1, or more entries of this data kind.
  */
+@Deprecated(DEPRECATED_IM)
 sealed interface ImEntity : DataEntityWithTypeAndLabel<Protocol> {
 
     // Type and Label are also available. However, they have no use here as the protocol and custom
@@ -81,29 +85,30 @@ sealed interface ImEntity : DataEntityWithTypeAndLabel<Protocol> {
 
         // Order of declaration is the same as seen in the AOSP contacts app
         @Deprecated(DEPRECATED_PROTOCOL)
-        AIM(@Suppress("Deprecation") CommonDataKinds.Im.PROTOCOL_AIM), // Default
+        AIM(CommonDataKinds.Im.PROTOCOL_AIM), // Default
 
         @Deprecated(DEPRECATED_PROTOCOL)
-        MSN(@Suppress("Deprecation") CommonDataKinds.Im.PROTOCOL_MSN),
+        MSN(CommonDataKinds.Im.PROTOCOL_MSN),
 
         @Deprecated(DEPRECATED_PROTOCOL)
-        YAHOO(@Suppress("Deprecation") CommonDataKinds.Im.PROTOCOL_YAHOO),
+        YAHOO(CommonDataKinds.Im.PROTOCOL_YAHOO),
 
         @Deprecated(DEPRECATED_PROTOCOL)
-        SKYPE(@Suppress("Deprecation") CommonDataKinds.Im.PROTOCOL_SKYPE),
+        SKYPE(CommonDataKinds.Im.PROTOCOL_SKYPE),
 
         @Deprecated(DEPRECATED_PROTOCOL)
-        QQ(@Suppress("Deprecation") CommonDataKinds.Im.PROTOCOL_QQ),
+        QQ(CommonDataKinds.Im.PROTOCOL_QQ),
 
         @Deprecated(DEPRECATED_PROTOCOL)
-        HANGOUTS(@Suppress("Deprecation") CommonDataKinds.Im.PROTOCOL_GOOGLE_TALK),
+        HANGOUTS(CommonDataKinds.Im.PROTOCOL_GOOGLE_TALK),
 
         @Deprecated(DEPRECATED_PROTOCOL)
-        ICQ(@Suppress("Deprecation") CommonDataKinds.Im.PROTOCOL_ICQ),
+        ICQ(CommonDataKinds.Im.PROTOCOL_ICQ),
 
         @Deprecated(DEPRECATED_PROTOCOL)
-        JABBER(@Suppress("Deprecation") CommonDataKinds.Im.PROTOCOL_JABBER),
+        JABBER(CommonDataKinds.Im.PROTOCOL_JABBER),
 
+        @Deprecated(DEPRECATED_PROTOCOL)
         CUSTOM(CommonDataKinds.Im.PROTOCOL_CUSTOM);
 
         // Not including the rest of these because they are not shown in the AOSP contacts app.
@@ -117,7 +122,8 @@ sealed interface ImEntity : DataEntityWithTypeAndLabel<Protocol> {
 
         override fun labelStr(resources: Resources, label: String?): String =
             // Make sure not to use getTypeLabel here!
-            CommonDataKinds.Im.getProtocolLabel(resources, value, label).toString()
+            CommonDataKinds.Im.getProtocolLabel(resources, value, label)
+                .toString()
 
         internal companion object {
 
@@ -125,7 +131,7 @@ sealed interface ImEntity : DataEntityWithTypeAndLabel<Protocol> {
 
             // Message taken directly from official docs.
             private const val DEPRECATED_PROTOCOL =
-                "This constant was deprecated in API level 31. Use CUSTOM with CustomProtocol."
+                "This constant was deprecated in API level 31. Use CUSTOM with customProtocol."
         }
     }
 }
@@ -151,6 +157,7 @@ sealed interface ImEntity : DataEntityWithTypeAndLabel<Protocol> {
 /**
  * A mutable [ImEntity]. `
  */
+@Deprecated(DEPRECATED_IM)
 sealed interface MutableImEntity : ImEntity, MutableDataEntityWithTypeAndLabel<Protocol> {
 
     override var protocol: Protocol?
@@ -197,6 +204,7 @@ sealed interface MutableImEntity : ImEntity, MutableDataEntityWithTypeAndLabel<P
 /**
  * An existing immutable [ImEntity].
  */
+@Deprecated(DEPRECATED_IM)
 @ConsistentCopyVisibility
 @Parcelize
 data class Im internal constructor(
@@ -242,6 +250,7 @@ data class Im internal constructor(
 /**
  * An existing mutable [ImEntity].
  */
+@Deprecated(DEPRECATED_IM)
 @ConsistentCopyVisibility
 @Parcelize
 data class MutableIm internal constructor(
@@ -271,6 +280,7 @@ data class MutableIm internal constructor(
 /**
  * A new mutable [ImEntity].
  */
+@Deprecated(DEPRECATED_IM)
 @Parcelize
 data class NewIm @JvmOverloads constructor(
 

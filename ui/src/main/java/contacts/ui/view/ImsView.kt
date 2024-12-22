@@ -1,3 +1,5 @@
+@file:Suppress("Deprecation")
+
 package contacts.ui.view
 
 import android.content.Context

@@ -435,7 +435,6 @@ interface Insert : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun Insert(contacts: Contacts): Insert = InsertImpl(contacts)
 
 private class InsertImpl(
@@ -949,6 +948,7 @@ private fun Contacts.insertOperationsForRawContact(
         )
     )
 
+    @Suppress("Deprecation")
     operations.addAll(
         ImOperation(
             callerIsSyncAdapter = callerIsSyncAdapter,
@@ -1028,6 +1028,7 @@ private fun Contacts.insertOperationsForRawContact(
         ).insertForNewRawContact(rawContact.relations, rawContactIdOpIndex)
     )
 
+    @Suppress("Deprecation")
     rawContact.sipAddress?.let {
         SipAddressOperation(
             callerIsSyncAdapter = callerIsSyncAdapter,

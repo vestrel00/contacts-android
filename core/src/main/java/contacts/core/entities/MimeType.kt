@@ -33,7 +33,7 @@ sealed class MimeType {
     }
 
     internal data object Im : MimeType() {
-        override val value = CommonDataKinds.Im.CONTENT_ITEM_TYPE
+        override val value = @Suppress("Deprecation") CommonDataKinds.Im.CONTENT_ITEM_TYPE
     }
 
     internal data object Name : MimeType() {
@@ -65,7 +65,7 @@ sealed class MimeType {
     }
 
     internal data object SipAddress : MimeType() {
-        override val value = CommonDataKinds.SipAddress.CONTENT_ITEM_TYPE
+        override val value = @Suppress("Deprecation") CommonDataKinds.SipAddress.CONTENT_ITEM_TYPE
     }
 
     internal data object Website : MimeType() {

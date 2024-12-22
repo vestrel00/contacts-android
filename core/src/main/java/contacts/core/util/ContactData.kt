@@ -1,5 +1,7 @@
 package contacts.core.util
 
+import contacts.core.DEPRECATED_IM
+import contacts.core.DEPRECATED_SIP_ADDRESS
 import contacts.core.entities.*
 
 // Dev note: The functions that return a List instead of a Sequence are useful for Java consumers
@@ -122,6 +124,8 @@ fun Contact.groupMembershipList(): List<GroupMembership> = groupMemberships().to
 /**
  * Sequence of Ims from all [Contact.rawContacts] ordered by the [Im.id].
  */
+@Deprecated(DEPRECATED_IM)
+@Suppress("Deprecation")
 fun Contact.ims(): Sequence<Im> = rawContacts
     .asSequence()
     .flatMap { it.ims.asSequence() }
@@ -130,6 +134,8 @@ fun Contact.ims(): Sequence<Im> = rawContacts
 /**
  * List of Ims from all [Contact.rawContacts] ordered by the [Im.id].
  */
+@Deprecated(DEPRECATED_IM)
+@Suppress("Deprecation")
 fun Contact.imList(): List<Im> = ims().toList()
 
 /**
@@ -218,6 +224,8 @@ fun Contact.relationList(): List<Relation> = relations().toList()
 /**
  * Sequence of SIP addresses from all [Contact.rawContacts] ordered by the [SipAddress.id].
  */
+@Deprecated(DEPRECATED_SIP_ADDRESS)
+@Suppress("Deprecation")
 fun Contact.sipAddresses(): Sequence<SipAddress> = rawContacts
     .asSequence()
     .mapNotNull { it.sipAddress }
@@ -226,6 +234,8 @@ fun Contact.sipAddresses(): Sequence<SipAddress> = rawContacts
 /**
  * List of SIP addresses from all [Contact.rawContacts] ordered by the [SipAddress.id].
  */
+@Deprecated(DEPRECATED_SIP_ADDRESS)
+@Suppress("Deprecation")
 fun Contact.sipAddressList(): List<SipAddress> = sipAddresses().toList()
 
 /**
@@ -435,6 +445,8 @@ fun MutableContact.groupMembershipList(): List<GroupMembershipEntity> = groupMem
 /**
  * Sequence of Ims from all [MutableContact.rawContacts] ordered by id.
  */
+@Deprecated(DEPRECATED_IM)
+@Suppress("Deprecation")
 fun MutableContact.ims(): Sequence<MutableImEntity> = rawContacts
     .asSequence()
     .flatMap { it.ims.asSequence() }
@@ -443,12 +455,16 @@ fun MutableContact.ims(): Sequence<MutableImEntity> = rawContacts
 /**
  * List of IMs from all [MutableContact.rawContacts] ordered by id.
  */
+@Deprecated(DEPRECATED_IM)
+@Suppress("Deprecation")
 fun MutableContact.imList(): List<MutableImEntity> = ims().toList()
 
 /**
  * Adds the given [im] to the list of [MutableRawContact.ims] of the first [MutableRawContact] in
  * [MutableContact.rawContacts] sorted by the [MutableRawContact.id].
  */
+@Deprecated(DEPRECATED_IM)
+@Suppress("Deprecation")
 fun MutableContact.addIm(im: MutableImEntity) {
     rawContacts.firstOrNull()?.addIm(im)
 }
@@ -457,6 +473,8 @@ fun MutableContact.addIm(im: MutableImEntity) {
  * Adds a new IM (configured by [configureIm]) to the list of [MutableRawContact.ims] of the first
  * [MutableRawContact] in [MutableContact.rawContacts] sorted by the [MutableRawContact.id].
  */
+@Deprecated(DEPRECATED_IM)
+@Suppress("Deprecation")
 fun MutableContact.addIm(configureIm: NewIm.() -> Unit) {
     rawContacts.firstOrNull()?.addIm(configureIm)
 }
@@ -468,6 +486,8 @@ fun MutableContact.addIm(configureIm: NewIm.() -> Unit) {
  * be removed. Set [byReference] to true to remove all instances that are **equal by reference
  * (same object)**.
  */
+@Deprecated(DEPRECATED_IM)
+@Suppress("Deprecation")
 @JvmOverloads
 fun MutableContact.removeIm(im: MutableImEntity, byReference: Boolean = false) {
     for (rawContact in rawContacts) {
@@ -478,6 +498,8 @@ fun MutableContact.removeIm(im: MutableImEntity, byReference: Boolean = false) {
 /**
  * Removes all [ims] from all of the [MutableContact.rawContacts].
  */
+@Deprecated(DEPRECATED_IM)
+@Suppress("Deprecation")
 fun MutableContact.removeAllIms() {
     for (rawContact in rawContacts) {
         rawContact.removeAllIms()
@@ -732,6 +754,8 @@ fun MutableContact.removeAllRelations() {
 /**
  * Sequence of SIP addresses from all [MutableContact.rawContacts] ordered by id.
  */
+@Deprecated(DEPRECATED_SIP_ADDRESS)
+@Suppress("Deprecation")
 fun MutableContact.sipAddresses(): Sequence<MutableSipAddressEntity> = rawContacts
     .asSequence()
     .mapNotNull { it.sipAddress }
@@ -740,12 +764,16 @@ fun MutableContact.sipAddresses(): Sequence<MutableSipAddressEntity> = rawContac
 /**
  * List of SIP addresses from all [MutableContact.rawContacts] ordered by id.
  */
+@Deprecated(DEPRECATED_SIP_ADDRESS)
+@Suppress("Deprecation")
 fun MutableContact.sipAddressList(): List<MutableSipAddressEntity> = sipAddresses().toList()
 
 /**
  * Sets the [MutableRawContact.sipAddress] of the first [MutableRawContact] in
  * [MutableContact.rawContacts] sorted by the [MutableRawContact.id].
  */
+@Deprecated(DEPRECATED_SIP_ADDRESS)
+@Suppress("Deprecation")
 fun MutableContact.setSipAddress(sipAddress: MutableSipAddressEntity?) {
     rawContacts.firstOrNull()?.setSipAddress(sipAddress)
 }
@@ -755,6 +783,8 @@ fun MutableContact.setSipAddress(sipAddress: MutableSipAddressEntity?) {
  * [MutableRawContact] in [MutableContact.rawContacts] sorted by the [MutableRawContact.id] to a
  * new SIP address.
  */
+@Deprecated(DEPRECATED_SIP_ADDRESS)
+@Suppress("Deprecation")
 fun MutableContact.setSipAddress(configureSipAddress: NewSipAddress.() -> Unit) {
     rawContacts.firstOrNull()?.setSipAddress(configureSipAddress)
 }

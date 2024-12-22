@@ -1,5 +1,8 @@
+@file:Suppress("Deprecation")
+
 package contacts.core.entities
 
+import contacts.core.DEPRECATED_SIP_ADDRESS
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -7,6 +10,7 @@ import kotlinx.parcelize.Parcelize
  *
  * A RawContact may have 0 or 1 entry of this data kind.
  */
+@Deprecated(DEPRECATED_SIP_ADDRESS)
 sealed interface SipAddressEntity : DataEntity {
 
     // Type and Label are also available. However, it is unnecessary as there is only one sip
@@ -56,6 +60,7 @@ sealed interface SipAddressEntity : DataEntity {
 /**
  * A mutable [SipAddressEntity]. `
  */
+@Deprecated(DEPRECATED_SIP_ADDRESS)
 sealed interface MutableSipAddressEntity : SipAddressEntity, MutableDataEntity {
 
     override var sipAddress: String?
@@ -78,6 +83,7 @@ sealed interface MutableSipAddressEntity : SipAddressEntity, MutableDataEntity {
 /**
  * An existing immutable [SipAddressEntity].
  */
+@Deprecated(DEPRECATED_SIP_ADDRESS)
 @ConsistentCopyVisibility
 @Parcelize
 data class SipAddress internal constructor(
@@ -118,6 +124,7 @@ data class SipAddress internal constructor(
 /**
  * An existing mutable [SipAddressEntity].
  */
+@Deprecated(DEPRECATED_SIP_ADDRESS)
 @ConsistentCopyVisibility
 @Parcelize
 data class MutableSipAddress internal constructor(
@@ -145,6 +152,7 @@ data class MutableSipAddress internal constructor(
 /**
  * A new mutable [SipAddressEntity].
  */
+@Deprecated(DEPRECATED_SIP_ADDRESS)
 @Parcelize
 data class NewSipAddress @JvmOverloads constructor(
 

@@ -12,7 +12,7 @@ fun ExistingRawContactEntity.data(): Sequence<ExistingDataEntity> = sequence {
     yieldAll(emails.filterIsInstance<ExistingDataEntity>())
     yieldAll(events.filterIsInstance<ExistingDataEntity>())
     // Group memberships are implicitly read-only.
-    yieldAll(ims.filterIsInstance<ExistingDataEntity>())
+    yieldAll(@Suppress("Deprecation") ims.filterIsInstance<ExistingDataEntity>())
     (name as? ExistingDataEntity)?.also { yield(it) }
     (nickname as? ExistingDataEntity)?.also { yield(it) }
     (note as? ExistingDataEntity)?.also { yield(it) }
@@ -20,7 +20,7 @@ fun ExistingRawContactEntity.data(): Sequence<ExistingDataEntity> = sequence {
     yieldAll(phones.filterIsInstance<ExistingDataEntity>())
     // Photo is implicitly read-only.
     yieldAll(relations.filterIsInstance<ExistingDataEntity>())
-    (sipAddress as? ExistingDataEntity)?.also { yield(it) }
+    (@Suppress("Deprecation") sipAddress as? ExistingDataEntity)?.also { yield(it) }
     yieldAll(websites.filterIsInstance<ExistingDataEntity>())
 
     yieldAll(

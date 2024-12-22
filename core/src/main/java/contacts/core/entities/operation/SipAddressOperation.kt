@@ -1,3 +1,5 @@
+@file:Suppress("Deprecation")
+
 package contacts.core.entities.operation
 
 import contacts.core.Fields

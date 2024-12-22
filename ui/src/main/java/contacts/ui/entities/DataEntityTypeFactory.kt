@@ -93,6 +93,7 @@ data object EventTypeFactory : DataEntityTypeFactory<EventEntity, EventEntity.Ty
     private val DEFAULT_TYPE = EventEntity.Type.BIRTHDAY
 }
 
+@Suppress("Deprecation")
 data object ImsTypeFactory : DataEntityTypeFactory<ImEntity, ImEntity.Protocol> {
 
     override fun systemTypes(resources: Resources): MutableList<DataEntityType<ImEntity.Protocol>> =

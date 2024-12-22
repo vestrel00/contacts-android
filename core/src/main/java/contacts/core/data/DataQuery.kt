@@ -1,11 +1,74 @@
 package contacts.core.data
 
 import android.accounts.Account
-import contacts.core.*
+import contacts.core.AbstractCustomDataField
+import contacts.core.AbstractCustomDataFieldSet
+import contacts.core.AbstractDataField
+import contacts.core.AbstractDataFieldSet
+import contacts.core.AddressField
+import contacts.core.AddressFields
+import contacts.core.CompoundOrderBy
+import contacts.core.Contacts
+import contacts.core.ContactsException
+import contacts.core.ContactsPermissions
+import contacts.core.CrudApi
+import contacts.core.DEPRECATED_IM
+import contacts.core.DEPRECATED_SIP_ADDRESS
+import contacts.core.DataField
+import contacts.core.EmailField
+import contacts.core.EmailFields
+import contacts.core.EventField
+import contacts.core.EventFields
+import contacts.core.F
+import contacts.core.Fields
+import contacts.core.GroupMembershipField
+import contacts.core.GroupMembershipFields
+import contacts.core.ImField
+import contacts.core.ImFields
+import contacts.core.Include
+import contacts.core.NameField
+import contacts.core.NameFields
+import contacts.core.NicknameField
+import contacts.core.NicknameFields
+import contacts.core.NoteField
+import contacts.core.NoteFields
+import contacts.core.OrderBy
+import contacts.core.OrganizationField
+import contacts.core.OrganizationFields
+import contacts.core.PhoneField
+import contacts.core.PhoneFields
+import contacts.core.RawContactsField
+import contacts.core.RawContactsFields
+import contacts.core.RelationField
+import contacts.core.RelationFields
+import contacts.core.SipAddressField
+import contacts.core.SipAddressFields
+import contacts.core.WebsiteField
+import contacts.core.WebsiteFields
+import contacts.core.Where
+import contacts.core.allFieldsIfNull
+import contacts.core.and
+import contacts.core.asc
+import contacts.core.contentResolver
+import contacts.core.customDataRegistry
 import contacts.core.entities.*
 import contacts.core.entities.cursor.rawContactsCursor
+import contacts.core.entities.fields
 import contacts.core.entities.mapper.dataEntityMapperFor
-import contacts.core.util.*
+import contacts.core.equalTo
+import contacts.core.`in`
+import contacts.core.onPostExecute
+import contacts.core.onPreExecute
+import contacts.core.permissions
+import contacts.core.redactedCopies
+import contacts.core.redactedCopyOrThis
+import contacts.core.util.contacts
+import contacts.core.util.dataUri
+import contacts.core.util.isEmpty
+import contacts.core.util.offsetAndLimit
+import contacts.core.util.query
+import contacts.core.util.rawContactsUri
+import contacts.core.util.toRawContactsWhere
 
 /**
  * Provides new query instances for specific types of Profile OR non-Profile (depending on instance)
@@ -36,7 +99,8 @@ interface DataQueryFactory {
     /**
      * Queries for [Im]s.
      */
-    fun ims(): DataQuery<ImField, ImFields, Im>
+    @Deprecated(DEPRECATED_IM)
+    fun ims(): DataQuery<ImField, ImFields, @Suppress("Deprecation") Im>
 
     /**
      * Queries for [Name]s.
@@ -73,7 +137,8 @@ interface DataQueryFactory {
     /**
      * Queries for [SipAddress]es.
      */
-    fun sipAddresses(): DataQuery<SipAddressField, SipAddressFields, SipAddress>
+    @Deprecated(DEPRECATED_SIP_ADDRESS)
+    fun sipAddresses(): DataQuery<SipAddressField, SipAddressFields, @Suppress("Deprecation") SipAddress>
 
     /**
      * Queries for [Website]s.
@@ -87,7 +152,6 @@ interface DataQueryFactory {
             customData(mimeType: MimeType.Custom): DataQuery<F, S, E>
 }
 
-@Suppress("FunctionName")
 internal fun DataQueryFactory(contacts: Contacts, isProfile: Boolean): DataQueryFactory =
     DataQueryFactoryImpl(contacts, isProfile)
 
@@ -113,7 +177,8 @@ private class DataQueryFactoryImpl(
             contacts, MimeType.GroupMembership, isProfile
         )
 
-    override fun ims(): DataQuery<ImField, ImFields, Im> = DataQueryImpl(
+    @Deprecated(DEPRECATED_IM)
+    override fun ims(): DataQuery<ImField, ImFields, @Suppress("Deprecation") Im> = DataQueryImpl(
         contacts, MimeType.Im, isProfile
     )
 
@@ -142,7 +207,8 @@ private class DataQueryFactoryImpl(
         contacts, MimeType.Relation, isProfile
     )
 
-    override fun sipAddresses(): DataQuery<SipAddressField, SipAddressFields, SipAddress> =
+    @Deprecated(DEPRECATED_SIP_ADDRESS)
+    override fun sipAddresses(): DataQuery<SipAddressField, SipAddressFields, @Suppress("Deprecation") SipAddress> =
         DataQueryImpl(
             contacts, MimeType.SipAddress, isProfile
         )
@@ -151,7 +217,6 @@ private class DataQueryFactoryImpl(
         contacts, MimeType.Website, isProfile
     )
 
-    @Suppress("UNCHECKED_CAST")
     override fun <F : AbstractCustomDataField, S : AbstractCustomDataFieldSet<F>, E : ExistingCustomDataEntity>
             customData(mimeType: MimeType.Custom): DataQuery<F, S, E> = DataQueryImpl(
         contacts, mimeType, isProfile

@@ -5,8 +5,13 @@ package contacts.core
 import android.annotation.TargetApi
 import android.os.Build
 import android.provider.BlockedNumberContract
-import android.provider.ContactsContract.*
+import android.provider.ContactsContract.AggregationExceptions
+import android.provider.ContactsContract.CommonDataKinds
 import android.provider.ContactsContract.Contacts
+import android.provider.ContactsContract.Data
+import android.provider.ContactsContract.Groups
+import android.provider.ContactsContract.PhoneLookup
+import android.provider.ContactsContract.RawContacts
 import contacts.core.AbstractCustomDataField.ColumnName
 import contacts.core.ContactsFields.all
 import contacts.core.Fields.all
@@ -175,6 +180,7 @@ data object Fields : AbstractDataFieldSet<AbstractDataField>() {
     @JvmField
     val GroupMembership = GroupMembershipFields()
 
+    @Deprecated(DEPRECATED_IM)
     @JvmField
     val Im = ImFields()
 
@@ -210,6 +216,7 @@ data object Fields : AbstractDataFieldSet<AbstractDataField>() {
     @JvmField
     val Relation = RelationFields()
 
+    @Deprecated(DEPRECATED_SIP_ADDRESS)
     @JvmField
     val SipAddress = SipAddressFields()
 
@@ -237,7 +244,7 @@ data object Fields : AbstractDataFieldSet<AbstractDataField>() {
             addAll(Email.all)
             addAll(Event.all)
             addAll(GroupMembership.all)
-            addAll(Im.all)
+            addAll(@Suppress("Deprecation") Im.all)
             add(IsPrimary)
             add(IsSuperPrimary)
             add(MimeType)
@@ -255,7 +262,7 @@ data object Fields : AbstractDataFieldSet<AbstractDataField>() {
 
             addAll(RawContact.all)
             addAll(Relation.all)
-            addAll(SipAddress.all)
+            addAll(@Suppress("Deprecation") SipAddress.all)
             addAll(Website.all)
         }
     }
@@ -269,7 +276,7 @@ data object Fields : AbstractDataFieldSet<AbstractDataField>() {
             addAll(Email.forMatching)
             addAll(Event.forMatching)
             addAll(GroupMembership.forMatching)
-            addAll(Im.forMatching)
+            addAll(@Suppress("Deprecation") Im.forMatching)
             // add(IsPrimary) not included
             // add(IsSuperPrimary) not included
             // add(MimeType) not included
@@ -281,7 +288,7 @@ data object Fields : AbstractDataFieldSet<AbstractDataField>() {
             addAll(Photo.forMatching)
             addAll(RawContact.forMatching)
             addAll(Relation.forMatching)
-            addAll(SipAddress.forMatching)
+            addAll(@Suppress("Deprecation") SipAddress.forMatching)
             addAll(Website.forMatching)
         }.toSet() // ensure that this is not modifiable at runtime
     }
@@ -640,17 +647,20 @@ data class ImField internal constructor(override val columnName: String) : DataF
 
 class ImFields internal constructor() : AbstractDataFieldSet<ImField>() {
 
+    @Deprecated(DEPRECATED_IM)
     @JvmField
-    val Protocol = ImField(CommonDataKinds.Im.PROTOCOL)
+    val Protocol = ImField(@Suppress("Deprecation") CommonDataKinds.Im.PROTOCOL)
 
+    @Deprecated(DEPRECATED_IM)
     @JvmField
-    val CustomProtocol = ImField(CommonDataKinds.Im.CUSTOM_PROTOCOL)
+    val CustomProtocol = ImField(@Suppress("Deprecation") CommonDataKinds.Im.CUSTOM_PROTOCOL)
 
+    @Deprecated(DEPRECATED_IM)
     @JvmField
-    val Data = ImField(CommonDataKinds.Im.DATA)
+    val Data = ImField(@Suppress("Deprecation") CommonDataKinds.Im.DATA)
 
     override val all by lazy {
-        setOf(Protocol, CustomProtocol, Data)
+        @Suppress("Deprecation") setOf(Protocol, CustomProtocol, Data)
     }
 
     override val forMatching by lazy {
@@ -663,7 +673,7 @@ class ImFields internal constructor() : AbstractDataFieldSet<ImField>() {
         // a (user input) text to a (constant) number. Perhaps it has an index table containing
         // a mapping of the Protocol number to its localized text? Or maybe it performs a query
         // on the text to find the corresponding Protocol number?
-        setOf(Data /*, Protocol */)
+        @Suppress("Deprecation") setOf(Data /*, Protocol */)
     }
 }
 
@@ -887,11 +897,13 @@ data class SipAddressField internal constructor(override val columnName: String)
 
 class SipAddressFields internal constructor() : AbstractDataFieldSet<SipAddressField>() {
 
+    @Deprecated(DEPRECATED_SIP_ADDRESS)
     @JvmField
-    val SipAddress = SipAddressField(CommonDataKinds.SipAddress.SIP_ADDRESS)
+    val SipAddress =
+        SipAddressField(@Suppress("Deprecation") CommonDataKinds.SipAddress.SIP_ADDRESS)
 
     override val all by lazy {
-        setOf(SipAddress)
+        @Suppress("Deprecation") setOf(SipAddress)
     }
 
     // The GeneralMatch algorithm of the Contacts Provider does not match any of these fields.

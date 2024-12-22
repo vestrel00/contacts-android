@@ -55,7 +55,7 @@ private fun ExistingDataEntity.dataOperation(
     MimeType.Im -> ImOperation(
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,
-        includeFields?.let(Fields.Im::intersect)
+        @Suppress("Deprecation") includeFields?.let(Fields.Im::intersect)
     )
 
     MimeType.Name -> NameOperation(
@@ -95,10 +95,9 @@ private fun ExistingDataEntity.dataOperation(
     )
 
     MimeType.SipAddress -> SipAddressOperation(
-
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,
-        includeFields?.let(Fields.SipAddress::intersect)
+        @Suppress("Deprecation") includeFields?.let(Fields.SipAddress::intersect)
     )
 
     MimeType.Website -> WebsiteOperation(

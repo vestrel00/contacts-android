@@ -310,7 +310,6 @@ interface Update : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun Update(contacts: Contacts): Update = UpdateImpl(contacts)
 
 private class UpdateImpl(
@@ -637,6 +636,7 @@ private fun Contacts.updateOperationsForRawContact(
         )
     )
 
+    @Suppress("Deprecation")
     operations.addAll(
         ImOperation(
             callerIsSyncAdapter = callerIsSyncAdapter,
@@ -714,6 +714,7 @@ private fun Contacts.updateOperationsForRawContact(
         )
     )
 
+    @Suppress("Deprecation")
     SipAddressOperation(
         callerIsSyncAdapter = callerIsSyncAdapter,
         isProfile = isProfile,

@@ -1,35 +1,6 @@
 package contacts.core.util
 
-import contacts.core.entities.Address
-import contacts.core.entities.Email
-import contacts.core.entities.Event
-import contacts.core.entities.GroupMembership
-import contacts.core.entities.Im
-import contacts.core.entities.Name
-import contacts.core.entities.NewAddress
-import contacts.core.entities.NewEmail
-import contacts.core.entities.NewEvent
-import contacts.core.entities.NewGroupMembership
-import contacts.core.entities.NewIm
-import contacts.core.entities.NewName
-import contacts.core.entities.NewNickname
-import contacts.core.entities.NewNote
-import contacts.core.entities.NewOptions
-import contacts.core.entities.NewOrganization
-import contacts.core.entities.NewPhone
-import contacts.core.entities.NewRawContact
-import contacts.core.entities.NewRelation
-import contacts.core.entities.NewSipAddress
-import contacts.core.entities.NewWebsite
-import contacts.core.entities.Nickname
-import contacts.core.entities.Note
-import contacts.core.entities.Options
-import contacts.core.entities.Organization
-import contacts.core.entities.Phone
-import contacts.core.entities.RawContact
-import contacts.core.entities.Relation
-import contacts.core.entities.SipAddress
-import contacts.core.entities.Website
+import contacts.core.entities.*
 
 // TODO? Add newCopy function to Entity interfaces and expose it to library users?
 // It would allow library users to easily insert copies of entities into the database.
@@ -45,7 +16,7 @@ private fun RawContact.newCopy() = NewRawContact(
     emails = emails.asSequence().map { it.newCopy() }.toMutableList(),
     events = events.asSequence().map { it.newCopy() }.toMutableList(),
     groupMemberships = groupMemberships.asSequence().map { it.newCopy() }.toMutableList(),
-    ims = ims.asSequence().map { it.newCopy() }.toMutableList(),
+    ims = @Suppress("Deprecation") ims.asSequence().map { it.newCopy() }.toMutableList(),
     name = name?.newCopy(),
     nickname = nickname?.newCopy(),
     note = note?.newCopy(),
@@ -54,7 +25,7 @@ private fun RawContact.newCopy() = NewRawContact(
     phones = phones.asSequence().map { it.newCopy() }.toMutableList(),
     photo = photo,
     relations = relations.asSequence().map { it.newCopy() }.toMutableList(),
-    sipAddress = sipAddress?.newCopy(),
+    sipAddress = @Suppress("Deprecation") sipAddress?.newCopy(),
     websites = websites.asSequence().map { it.newCopy() }.toMutableList(),
 
     customDataEntities = customDataEntities
@@ -70,6 +41,7 @@ private fun Website.newCopy() = NewWebsite(
     isRedacted = isRedacted
 )
 
+@Suppress("Deprecation")
 private fun SipAddress.newCopy() = NewSipAddress(
     sipAddress = sipAddress,
 
@@ -144,6 +116,7 @@ private fun Name.newCopy() = NewName(
     isRedacted = isRedacted
 )
 
+@Suppress("Deprecation")
 private fun Im.newCopy() = NewIm(
     protocol = protocol,
     customProtocol = customProtocol,

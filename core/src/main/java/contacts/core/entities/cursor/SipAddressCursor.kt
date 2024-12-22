@@ -10,5 +10,5 @@ import contacts.core.SipAddressField
 internal class SipAddressCursor(cursor: Cursor, includeFields: Set<SipAddressField>?) :
     AbstractDataCursor<SipAddressField>(cursor, includeFields) {
 
-    val sipAddress: String? by string(Fields.SipAddress.SipAddress)
+    val sipAddress: String? by string(@Suppress("Deprecation") Fields.SipAddress.SipAddress)
 }

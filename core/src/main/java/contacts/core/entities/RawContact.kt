@@ -1,6 +1,8 @@
 package contacts.core.entities
 
 import android.accounts.Account
+import contacts.core.DEPRECATED_IM
+import contacts.core.DEPRECATED_SIP_ADDRESS
 import contacts.core.entities.custom.AbstractCustomDataEntityHolder
 import contacts.core.entities.custom.CustomDataEntityHolder
 import contacts.core.entities.custom.ImmutableCustomDataEntityHolder
@@ -52,7 +54,8 @@ sealed interface RawContactEntity : Entity {
     /**
      * A list of [ImEntity].
      */
-    val ims: List<ImEntity>
+    @Deprecated(DEPRECATED_IM)
+    val ims: List<@Suppress("Deprecation") ImEntity>
 
     /**
      * The [NameEntity].
@@ -104,7 +107,8 @@ sealed interface RawContactEntity : Entity {
     /**
      * The [SipAddressEntity].
      */
-    val sipAddress: SipAddressEntity?
+    @Deprecated(DEPRECATED_SIP_ADDRESS)
+    val sipAddress: @Suppress("Deprecation") SipAddressEntity?
 
     /**
      * A list [WebsiteEntity].
@@ -120,8 +124,19 @@ sealed interface RawContactEntity : Entity {
 
     override val isBlank: Boolean
         get() = propertiesAreAllNullOrBlank(
-            name, nickname, note, organization, sipAddress,
-            addresses, emails, events, groupMemberships, ims, phones, relations, websites,
+            name,
+            nickname,
+            note,
+            organization,
+            @Suppress("Deprecation") sipAddress,
+            addresses,
+            emails,
+            events,
+            groupMemberships,
+            @Suppress("Deprecation") ims,
+            phones,
+            relations,
+            websites,
             customDataEntities.values.flatMap { it.entities }
             // The following are intentionally excluded as they do not constitute a row in the
             // Data table; displayNamePrimary, displayNameAlt, account, options
@@ -335,7 +350,7 @@ data class RawContact internal constructor(
     override val emails: List<Email>,
     override val events: List<Event>,
     override val groupMemberships: List<GroupMembership>,
-    override val ims: List<Im>,
+    @Deprecated(DEPRECATED_IM) override val ims: List<@Suppress("Deprecation") Im>,
     override val name: Name?,
     override val nickname: Nickname?,
     override val note: Note?,
@@ -344,7 +359,7 @@ data class RawContact internal constructor(
     override val phones: List<Phone>,
     override val photo: Photo?,
     override val relations: List<Relation>,
-    override val sipAddress: SipAddress?,
+    @Deprecated(DEPRECATED_SIP_ADDRESS) override val sipAddress: @Suppress("Deprecation") SipAddress?,
     override val websites: List<Website>,
     override val customDataEntities: Map<String, ImmutableCustomDataEntityHolder>,
 
@@ -365,7 +380,7 @@ data class RawContact internal constructor(
         emails = emails.asSequence().mutableCopies().toMutableList(),
         events = events.asSequence().mutableCopies().toMutableList(),
         groupMemberships = groupMemberships.toMutableList(),
-        ims = ims.asSequence().mutableCopies().toMutableList(),
+        ims = @Suppress("Deprecation") ims.asSequence().mutableCopies().toMutableList(),
         name = name?.mutableCopy(),
         nickname = nickname?.mutableCopy(),
         note = note?.mutableCopy(),
@@ -374,7 +389,7 @@ data class RawContact internal constructor(
         phones = phones.asSequence().mutableCopies().toMutableList(),
         photo = photo,
         relations = relations.asSequence().mutableCopies().toMutableList(),
-        sipAddress = sipAddress?.mutableCopy(),
+        sipAddress = @Suppress("Deprecation") sipAddress?.mutableCopy(),
         websites = websites.asSequence().mutableCopies().toMutableList(),
 
         customDataEntities = customDataEntities
@@ -395,14 +410,14 @@ data class RawContact internal constructor(
         emails = emails.redactedCopies(),
         events = events.redactedCopies(),
         groupMemberships = groupMemberships.redactedCopies(),
-        ims = ims.redactedCopies(),
+        ims = @Suppress("Deprecation") ims.redactedCopies(),
         name = name?.redactedCopy(),
         nickname = nickname?.redactedCopy(),
         organization = organization?.redactedCopy(),
         phones = phones.redactedCopies(),
         photo = photo?.redactedCopy(),
         relations = relations.redactedCopies(),
-        sipAddress = sipAddress?.redactedCopy(),
+        sipAddress = @Suppress("Deprecation") sipAddress?.redactedCopy(),
         websites = websites.redactedCopies(),
 
         customDataEntities = customDataEntities.mapValues {
@@ -435,7 +450,7 @@ data class MutableRawContact internal constructor(
     override var emails: MutableList<MutableEmailEntity>,
     override var events: MutableList<MutableEventEntity>,
     override var groupMemberships: MutableList<GroupMembershipEntity>,
-    override var ims: MutableList<MutableImEntity>,
+    @Deprecated(DEPRECATED_IM) override var ims: MutableList<@Suppress("Deprecation") MutableImEntity>,
     override var name: MutableNameEntity?,
     override var nickname: MutableNicknameEntity?,
     override var note: MutableNoteEntity?,
@@ -444,7 +459,7 @@ data class MutableRawContact internal constructor(
     override var phones: MutableList<MutablePhoneEntity>,
     override var photo: PhotoEntity?,
     override var relations: MutableList<MutableRelationEntity>,
-    override var sipAddress: MutableSipAddressEntity?,
+    @Deprecated(DEPRECATED_SIP_ADDRESS) override var sipAddress: @Suppress("Deprecation") MutableSipAddressEntity?,
     override var websites: MutableList<MutableWebsiteEntity>,
 
     override val customDataEntities: MutableMap<String, CustomDataEntityHolder>,
@@ -470,7 +485,7 @@ data class MutableRawContact internal constructor(
         emails = emails.asSequence().redactedCopies().toMutableList(),
         events = events.asSequence().redactedCopies().toMutableList(),
         groupMemberships = groupMemberships.asSequence().redactedCopies().toMutableList(),
-        ims = ims.asSequence().redactedCopies().toMutableList(),
+        ims = @Suppress("Deprecation") ims.asSequence().redactedCopies().toMutableList(),
         name = name?.redactedCopy(),
         nickname = nickname?.redactedCopy(),
         options = options?.redactedCopy(),
@@ -478,7 +493,7 @@ data class MutableRawContact internal constructor(
         phones = phones.asSequence().redactedCopies().toMutableList(),
         photo = photo?.redactedCopy(),
         relations = relations.asSequence().redactedCopies().toMutableList(),
-        sipAddress = sipAddress?.redactedCopy(),
+        sipAddress = @Suppress("Deprecation") sipAddress?.redactedCopy(),
         websites = websites.asSequence().redactedCopies().toMutableList(),
 
         customDataEntities = customDataEntities.mapValues {
@@ -502,7 +517,7 @@ data class NewRawContact @JvmOverloads constructor(
     override var emails: MutableList<NewEmail> = mutableListOf(),
     override var events: MutableList<NewEvent> = mutableListOf(),
     override var groupMemberships: MutableList<NewGroupMembership> = mutableListOf(),
-    override var ims: MutableList<NewIm> = mutableListOf(),
+    @Deprecated(DEPRECATED_IM) override var ims: MutableList<@Suppress("Deprecation") NewIm> = mutableListOf(),
     override var name: NewName? = null,
     override var nickname: NewNickname? = null,
     override var note: NewNote? = null,
@@ -511,7 +526,7 @@ data class NewRawContact @JvmOverloads constructor(
     override var phones: MutableList<NewPhone> = mutableListOf(),
     override var photo: Photo? = null,
     override var relations: MutableList<NewRelation> = mutableListOf(),
-    override var sipAddress: NewSipAddress? = null,
+    @Deprecated(DEPRECATED_SIP_ADDRESS) override var sipAddress: @Suppress("Deprecation") NewSipAddress? = null,
     override var websites: MutableList<NewWebsite> = mutableListOf(),
 
     override val customDataEntities: MutableMap<String, CustomDataEntityHolder> = mutableMapOf(),
@@ -535,7 +550,7 @@ data class NewRawContact @JvmOverloads constructor(
         emails = emails.asSequence().redactedCopies().toMutableList(),
         events = events.asSequence().redactedCopies().toMutableList(),
         groupMemberships = groupMemberships.asSequence().redactedCopies().toMutableList(),
-        ims = ims.asSequence().redactedCopies().toMutableList(),
+        ims = @Suppress("Deprecation") ims.asSequence().redactedCopies().toMutableList(),
         name = name?.redactedCopy(),
         nickname = nickname?.redactedCopy(),
         note = note?.redactedCopy(),
@@ -544,7 +559,7 @@ data class NewRawContact @JvmOverloads constructor(
         phones = phones.asSequence().redactedCopies().toMutableList(),
         photo = photo?.redactedCopy(),
         relations = relations.asSequence().redactedCopies().toMutableList(),
-        sipAddress = sipAddress?.redactedCopy(),
+        sipAddress = @Suppress("Deprecation") sipAddress?.redactedCopy(),
         websites = websites.asSequence().redactedCopies().toMutableList(),
 
         customDataEntities = customDataEntities.mapValues {
@@ -573,7 +588,7 @@ internal data class TempRawContact(
     override var emails: MutableList<Email>,
     override var events: MutableList<Event>,
     override var groupMemberships: MutableList<GroupMembership>,
-    override var ims: MutableList<Im>,
+    @Deprecated(DEPRECATED_IM) override var ims: MutableList<@Suppress("Deprecation") Im>,
     override var name: Name?,
     override var nickname: Nickname?,
     override var note: Note?,
@@ -582,7 +597,7 @@ internal data class TempRawContact(
     override var phones: MutableList<Phone>,
     override var photo: Photo?,
     override var relations: MutableList<Relation>,
-    override var sipAddress: SipAddress?,
+    @Deprecated(DEPRECATED_SIP_ADDRESS) override var sipAddress: @Suppress("Deprecation") SipAddress?,
     override var websites: MutableList<Website>,
     override val customDataEntities: MutableMap<String, ImmutableCustomDataEntityHolder>,
 
@@ -605,7 +620,7 @@ internal data class TempRawContact(
         emails = emails.toList(),
         events = events.toList(),
         groupMemberships = groupMemberships.toList(),
-        ims = ims.toList(),
+        ims = @Suppress("Deprecation") ims.toList(),
         name = name,
         nickname = nickname,
         note = note,
@@ -614,7 +629,7 @@ internal data class TempRawContact(
         phones = phones.toList(),
         photo = photo,
         relations = relations.toList(),
-        sipAddress = sipAddress,
+        sipAddress = @Suppress("Deprecation") sipAddress,
         websites = websites.toList(),
         customDataEntities = customDataEntities.toMap(), // send a shallow copy
 
@@ -632,7 +647,7 @@ internal data class TempRawContact(
         emails = emails.asSequence().redactedCopies().toMutableList(),
         events = events.asSequence().redactedCopies().toMutableList(),
         groupMemberships = groupMemberships.asSequence().redactedCopies().toMutableList(),
-        ims = ims.asSequence().redactedCopies().toMutableList(),
+        ims = @Suppress("Deprecation") ims.asSequence().redactedCopies().toMutableList(),
         name = name?.redactedCopy(),
         nickname = nickname?.redactedCopy(),
         options = options?.redactedCopy(),
@@ -640,7 +655,7 @@ internal data class TempRawContact(
         phones = phones.asSequence().redactedCopies().toMutableList(),
         photo = photo?.redactedCopy(),
         relations = relations.asSequence().redactedCopies().toMutableList(),
-        sipAddress = sipAddress?.redactedCopy(),
+        sipAddress = @Suppress("Deprecation") sipAddress?.redactedCopy(),
         websites = websites.asSequence().redactedCopies().toMutableList(),
 
         customDataEntities = customDataEntities.mapValues {
