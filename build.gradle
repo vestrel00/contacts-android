@@ -12,7 +12,7 @@ buildscript {
                 ],
 
                 kotlin   : [
-                        coroutines: '1.7.1'
+                        coroutines: '1.10.1'
                 ],
 
                 libraries: [
