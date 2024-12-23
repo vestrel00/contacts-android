@@ -52,7 +52,7 @@ sealed interface EmailEntity : DataEntityWithTypeAndLabel<Type> {
 
         internal companion object {
 
-            fun fromValue(value: Int?): Type? = values().find { it.value == value }
+            fun fromValue(value: Int?): Type? = entries.find { it.value == value }
         }
     }
 }
@@ -100,6 +100,7 @@ sealed interface MutableEmailEntity : EmailEntity, MutableDataEntityWithTypeAndL
 /**
  * An existing immutable [EmailEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class Email internal constructor(
 
@@ -145,6 +146,7 @@ data class Email internal constructor(
 /**
  * An existing mutable [EmailEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class MutableEmail internal constructor(
 

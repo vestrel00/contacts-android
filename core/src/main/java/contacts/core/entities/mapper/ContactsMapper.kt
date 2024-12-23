@@ -197,7 +197,7 @@ private fun CursorHolder<AbstractDataField>.updateRawContact(
         GroupMembership ->
             groupMembershipMapper().nonBlankValueOrNull?.let(rawContact.groupMemberships::add)
 
-        Im -> imMapper().nonBlankValueOrNull?.let(rawContact.ims::add)
+        Im -> @Suppress("Deprecation") imMapper().nonBlankValueOrNull?.let(rawContact.ims::add)
         Name -> nameMapper().nonBlankValueOrNull?.let { rawContact.name = it }
         Nickname -> nicknameMapper().nonBlankValueOrNull?.let { rawContact.nickname = it }
         Note -> noteMapper().nonBlankValueOrNull?.let { rawContact.note = it }
@@ -208,7 +208,10 @@ private fun CursorHolder<AbstractDataField>.updateRawContact(
         Phone -> phoneMapper().nonBlankValueOrNull?.let(rawContact.phones::add)
         Photo -> photoMapper().nonBlankValueOrNull?.let { rawContact.photo = it }
         Relation -> relationMapper().nonBlankValueOrNull?.let(rawContact.relations::add)
-        SipAddress -> sipAddressMapper().nonBlankValueOrNull?.let { rawContact.sipAddress = it }
+        SipAddress -> @Suppress("Deprecation") sipAddressMapper().nonBlankValueOrNull?.let {
+            rawContact.sipAddress = it
+        }
+
         Website -> websiteMapper().nonBlankValueOrNull?.let(rawContact.websites::add)
         is Custom -> updateRawContactCustomData(customDataRegistry, rawContact, mimeType)
         Unknown -> {

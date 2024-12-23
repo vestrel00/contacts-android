@@ -43,7 +43,6 @@ interface Groups {
     val contactsApi: Contacts
 }
 
-@Suppress("FunctionName")
 internal fun Groups(contacts: Contacts): Groups = GroupsImpl(contacts)
 
 private class GroupsImpl(override val contactsApi: Contacts) : Groups {

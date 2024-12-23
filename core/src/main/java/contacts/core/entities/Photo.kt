@@ -52,6 +52,7 @@ sealed interface PhotoEntity : DataEntity {
 /**
  * An existing immutable [PhotoEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class Photo internal constructor(
 

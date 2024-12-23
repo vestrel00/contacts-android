@@ -171,7 +171,6 @@ interface DataDelete : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun DataDelete(contacts: Contacts, isProfile: Boolean): DataDelete = DataDeleteImpl(
     contacts, isProfile
 )

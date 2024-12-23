@@ -13,30 +13,31 @@ sealed interface NewDataEntityFactory<out E : DataEntity> {
     fun create(): E
 }
 
-object NewAddressFactory : NewDataEntityFactory<NewAddress> {
+data object NewAddressFactory : NewDataEntityFactory<NewAddress> {
     override fun create() = NewAddress()
 }
 
-object NewEmailFactory : NewDataEntityFactory<NewEmail> {
+data object NewEmailFactory : NewDataEntityFactory<NewEmail> {
     override fun create() = NewEmail()
 }
 
-object NewEventFactory : NewDataEntityFactory<NewEvent> {
+data object NewEventFactory : NewDataEntityFactory<NewEvent> {
     override fun create() = NewEvent()
 }
 
-object NewImFactory : NewDataEntityFactory<NewIm> {
+@Suppress("Deprecation")
+data object NewImFactory : NewDataEntityFactory<NewIm> {
     override fun create() = NewIm()
 }
 
-object NewPhoneFactory : NewDataEntityFactory<NewPhone> {
+data object NewPhoneFactory : NewDataEntityFactory<NewPhone> {
     override fun create() = NewPhone()
 }
 
-object NewRelationFactory : NewDataEntityFactory<NewRelation> {
+data object NewRelationFactory : NewDataEntityFactory<NewRelation> {
     override fun create() = NewRelation()
 }
 
-object NewWebsiteFactory : NewDataEntityFactory<NewWebsite> {
+data object NewWebsiteFactory : NewDataEntityFactory<NewWebsite> {
     override fun create() = NewWebsite()
 }

@@ -37,6 +37,7 @@ object GoogleContactsFields : AbstractCustomDataFieldSet<GoogleContactsField>() 
 
 sealed class GoogleContactsField(columnName: ColumnName) : AbstractCustomDataField(columnName)
 
+@ConsistentCopyVisibility
 data class FileAsField internal constructor(private val columnName: ColumnName) :
     GoogleContactsField(columnName) {
 
@@ -53,6 +54,7 @@ class FileAsFields internal constructor() : AbstractCustomDataFieldSet<FileAsFie
     override val forMatching: Set<FileAsField> = setOf(Name)
 }
 
+@ConsistentCopyVisibility
 data class UserDefinedField internal constructor(private val columnName: ColumnName) :
     GoogleContactsField(columnName) {
 

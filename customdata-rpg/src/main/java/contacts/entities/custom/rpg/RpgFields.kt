@@ -36,6 +36,7 @@ object RpgFields : AbstractCustomDataFieldSet<RpgField>() {
 
 sealed class RpgField(columnName: ColumnName) : AbstractCustomDataField(columnName)
 
+@ConsistentCopyVisibility
 data class RpgProfessionField internal constructor(private val columnName: ColumnName) :
     RpgField(columnName) {
 
@@ -53,6 +54,7 @@ class RpgProfessionFields internal constructor() :
     override val forMatching: Set<RpgProfessionField> = setOf(Title)
 }
 
+@ConsistentCopyVisibility
 data class RpgStatsField internal constructor(private val columnName: ColumnName) :
     RpgField(columnName) {
 

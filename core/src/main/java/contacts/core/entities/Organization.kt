@@ -116,6 +116,7 @@ sealed interface MutableOrganizationEntity : OrganizationEntity, MutableDataEnti
 /**
  * An existing immutable [OrganizationEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class Organization internal constructor(
 
@@ -174,6 +175,7 @@ data class Organization internal constructor(
 /**
  * An existing mutable [OrganizationEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class MutableOrganization internal constructor(
 

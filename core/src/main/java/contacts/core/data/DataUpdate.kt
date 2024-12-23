@@ -179,7 +179,6 @@ interface DataUpdate : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun DataUpdate(contacts: Contacts, isProfile: Boolean): DataUpdate = DataUpdateImpl(
     contacts, isProfile
 )

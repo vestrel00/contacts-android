@@ -156,7 +156,6 @@ interface ProfileDelete : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun ProfileDelete(contacts: Contacts): ProfileDelete = ProfileDeleteImpl(contacts)
 
 private class ProfileDeleteImpl(

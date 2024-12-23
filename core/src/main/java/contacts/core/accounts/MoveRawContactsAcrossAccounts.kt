@@ -226,6 +226,7 @@ interface MoveRawContactsAcrossAccounts : CrudApi {
     override fun redactedCopy(): MoveRawContactsAcrossAccounts
 
     // We could use a Pair but it's too generic. We have more control this way.
+    @ConsistentCopyVisibility
     data class Entry internal constructor(
 
         /**
@@ -364,7 +365,6 @@ interface MoveRawContactsAcrossAccounts : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun MoveRawContactsAcrossAccounts(contacts: Contacts): MoveRawContactsAcrossAccounts =
     MoveRawContactsAcrossAccountsImpl(contacts)
 

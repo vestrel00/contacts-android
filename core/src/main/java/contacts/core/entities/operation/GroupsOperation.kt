@@ -12,7 +12,7 @@ private val TABLE = Table.Groups
 /**
  * Builds [ContentProviderOperation]s for [Table.Groups].
  */
-internal class GroupsOperation constructor(private val callerIsSyncAdapter: Boolean) {
+internal class GroupsOperation(private val callerIsSyncAdapter: Boolean) {
 
     fun insert(group: NewGroup): ContentProviderOperation = newInsert(TABLE, callerIsSyncAdapter)
         .withValue(GroupsFields.Title, group.title)

@@ -184,7 +184,6 @@ interface BlockedNumbersInsert : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun BlockedNumbersInsert(contacts: Contacts): BlockedNumbersInsert =
     BlockedNumbersInsertImpl(contacts, BlockedNumbersPrivileges(contacts.applicationContext))
 

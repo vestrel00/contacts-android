@@ -25,29 +25,29 @@ internal sealed class Table<out T : Field>(protected val uri: Uri) {
     /**
      * See [ContactsContract.Data].
      */
-    object Data : ContactsContractTable<AbstractDataField>(ContactsContract.Data.CONTENT_URI)
+    data object Data : ContactsContractTable<AbstractDataField>(ContactsContract.Data.CONTENT_URI)
 
     /**
      * See [ContactsContract.RawContacts].
      */
-    object RawContacts : ContactsContractTable<RawContactsField>(
+    data object RawContacts : ContactsContractTable<RawContactsField>(
         ContactsContract.RawContacts.CONTENT_URI
     )
 
     /**
      * See [ContactsContract.Contacts].
      */
-    object Contacts : ContactsContractTable<ContactsField>(ContactsContract.Contacts.CONTENT_URI)
+    data object Contacts : ContactsContractTable<ContactsField>(ContactsContract.Contacts.CONTENT_URI)
 
     /**
      * See [ContactsContract.Groups].
      */
-    object Groups : ContactsContractTable<GroupsField>(ContactsContract.Groups.CONTENT_URI)
+    data object Groups : ContactsContractTable<GroupsField>(ContactsContract.Groups.CONTENT_URI)
 
     /**
      * See [ContactsContract.AggregationExceptions].
      */
-    object AggregationExceptions : ContactsContractTable<AggregationExceptionsField>(
+    data object AggregationExceptions : ContactsContractTable<AggregationExceptionsField>(
         ContactsContract.AggregationExceptions.CONTENT_URI
     )
 
@@ -56,8 +56,8 @@ internal sealed class Table<out T : Field>(protected val uri: Uri) {
      */
     // [ANDROID X] @RequiresApi (not using annotation to avoid dependency on androidx.annotation)
     @TargetApi(Build.VERSION_CODES.N)
-    object BlockedNumbers :
+    data object BlockedNumbers :
         Table<BlockedNumbersField>(BlockedNumberContract.BlockedNumbers.CONTENT_URI)
 
-    object SimContacts : Table<SimContactsField>(Uri.parse("content://icc/adn"))
+    data object SimContacts : Table<SimContactsField>(Uri.parse("content://icc/adn"))
 }

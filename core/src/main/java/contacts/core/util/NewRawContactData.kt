@@ -1,24 +1,9 @@
 package contacts.core.util
 
 import android.accounts.Account
-import contacts.core.entities.NewAddress
-import contacts.core.entities.NewCustomDataEntity
-import contacts.core.entities.NewDataEntity
-import contacts.core.entities.NewEmail
-import contacts.core.entities.NewEvent
-import contacts.core.entities.NewGroupMembership
-import contacts.core.entities.NewIm
-import contacts.core.entities.NewName
-import contacts.core.entities.NewNickname
-import contacts.core.entities.NewNote
-import contacts.core.entities.NewOptions
-import contacts.core.entities.NewOrganization
-import contacts.core.entities.NewPhone
-import contacts.core.entities.NewRawContact
-import contacts.core.entities.NewRelation
-import contacts.core.entities.NewSipAddress
-import contacts.core.entities.NewWebsite
-import contacts.core.entities.removeAll
+import contacts.core.DEPRECATED_IM
+import contacts.core.DEPRECATED_SIP_ADDRESS
+import contacts.core.entities.*
 import contacts.core.redactedCopyOrThis
 
 /**
@@ -158,6 +143,8 @@ fun NewRawContact.removeAllGroupMemberships() {
 /**
  * Adds the given [im] to [NewRawContact.ims].
  */
+@Deprecated(DEPRECATED_IM)
+@Suppress("Deprecation")
 fun NewRawContact.addIm(im: NewIm) {
     ims.add(im.redactedCopyOrThis(isRedacted))
 }
@@ -165,6 +152,8 @@ fun NewRawContact.addIm(im: NewIm) {
 /**
  * Adds a new IM (configured by [configureIm]) to [NewRawContact.ims].
  */
+@Deprecated(DEPRECATED_IM)
+@Suppress("Deprecation")
 fun NewRawContact.addIm(configureIm: NewIm.() -> Unit) {
     addIm(NewIm().apply(configureIm))
 }
@@ -176,6 +165,8 @@ fun NewRawContact.addIm(configureIm: NewIm.() -> Unit) {
  * be removed. Set [byReference] to true to remove all instances that are **equal by reference
  * (same object)**.
  */
+@Deprecated(DEPRECATED_IM)
+@Suppress("Deprecation")
 @JvmOverloads
 fun NewRawContact.removeIm(im: NewIm, byReference: Boolean = false) {
     ims.removeAll(im, byReference)
@@ -184,6 +175,8 @@ fun NewRawContact.removeIm(im: NewIm, byReference: Boolean = false) {
 /**
  * Clears [NewRawContact.ims].
  */
+@Deprecated(DEPRECATED_IM)
+@Suppress("Deprecation")
 fun NewRawContact.removeAllIms() {
     ims.clear()
 }
@@ -330,6 +323,8 @@ fun NewRawContact.removeAllRelations() {
 /**
  * Sets the [NewRawContact.sipAddress] to the given [sipAddress].
  */
+@Deprecated(DEPRECATED_SIP_ADDRESS)
+@Suppress("Deprecation")
 fun NewRawContact.setSipAddress(sipAddress: NewSipAddress?) {
     this.sipAddress = sipAddress?.redactedCopyOrThis(isRedacted)
 }
@@ -337,6 +332,8 @@ fun NewRawContact.setSipAddress(sipAddress: NewSipAddress?) {
 /**
  * Sets the [NewRawContact.sipAddress] (configured by [configureSipAddress]) to a new address.
  */
+@Deprecated(DEPRECATED_SIP_ADDRESS)
+@Suppress("Deprecation")
 fun NewRawContact.setSipAddress(configureSipAddress: NewSipAddress.() -> Unit) {
     setSipAddress(NewSipAddress().apply(configureSipAddress))
 }
@@ -382,7 +379,7 @@ fun NewRawContact.data(): Sequence<NewDataEntity> = sequence {
     yieldAll(emails)
     yieldAll(events)
     // Group memberships are implicitly read-only.
-    yieldAll(ims)
+    yieldAll(@Suppress("Deprecation") ims)
     name?.also { yield(it) }
     nickname?.also { yield(it) }
     note?.also { yield(it) }
@@ -390,13 +387,13 @@ fun NewRawContact.data(): Sequence<NewDataEntity> = sequence {
     yieldAll(phones)
     // Photo is implicitly read-only.
     yieldAll(relations)
-    sipAddress?.also { yield(it) }
+    @Suppress("Deprecation") sipAddress?.also { yield(it) }
     yieldAll(websites)
 
     yieldAll(
         customDataEntities.values
             .flatMap { it.entities }
-            .filterIsInstance(NewCustomDataEntity::class.java)
+            .filterIsInstance<NewCustomDataEntity>()
     )
 }
 

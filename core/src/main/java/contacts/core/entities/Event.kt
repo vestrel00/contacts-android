@@ -78,7 +78,7 @@ sealed interface EventEntity : DataEntityWithTypeAndLabel<Type> {
 
         internal companion object {
 
-            fun fromValue(value: Int?): Type? = values().find { it.value == value }
+            fun fromValue(value: Int?): Type? = entries.find { it.value == value }
         }
     }
 }
@@ -130,6 +130,7 @@ sealed interface MutableEventEntity : EventEntity, MutableDataEntityWithTypeAndL
 /**
  * An existing immutable [EventEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class Event internal constructor(
 
@@ -175,6 +176,7 @@ data class Event internal constructor(
 /**
  * An existing mutable [EventEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class MutableEvent internal constructor(
 
@@ -227,6 +229,7 @@ data class NewEvent @JvmOverloads constructor(
 /**
  * An Event date that may or may not have a year.
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class EventDate internal constructor(
 

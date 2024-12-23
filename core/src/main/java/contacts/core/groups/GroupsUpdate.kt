@@ -171,7 +171,6 @@ interface GroupsUpdate : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun GroupsUpdate(contacts: Contacts): GroupsUpdate = GroupsUpdateImpl(contacts)
 
 private class GroupsUpdateImpl(

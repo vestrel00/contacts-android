@@ -92,6 +92,7 @@ sealed interface ExistingSimContactEntity : SimContactEntity, ExistingEntity {
 /**
  * An existing immutable [SimContactEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class SimContact internal constructor(
 
@@ -126,6 +127,7 @@ data class SimContact internal constructor(
 /**
  * An existing mutable [SimContactEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class MutableSimContact internal constructor(
 

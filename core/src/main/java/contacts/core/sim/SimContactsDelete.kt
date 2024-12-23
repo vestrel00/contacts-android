@@ -120,7 +120,6 @@ interface SimContactsDelete : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun SimContactsDelete(contacts: Contacts): SimContactsDelete =
     SimContactsDeleteImpl(contacts)
 

@@ -16,7 +16,7 @@ internal fun MimeType.fields(
     MimeType.Email -> Fields.Email
     MimeType.Event -> Fields.Event
     MimeType.GroupMembership -> Fields.GroupMembership
-    MimeType.Im -> Fields.Im
+    MimeType.Im -> @Suppress("Deprecation") Fields.Im
     MimeType.Name -> Fields.Name
     MimeType.Nickname -> Fields.Nickname
     MimeType.Note -> Fields.Note
@@ -24,7 +24,7 @@ internal fun MimeType.fields(
     MimeType.Phone -> Fields.Phone
     MimeType.Photo -> Fields.Photo
     MimeType.Relation -> Fields.Relation
-    MimeType.SipAddress -> Fields.SipAddress
+    MimeType.SipAddress -> @Suppress("Deprecation") Fields.SipAddress
     MimeType.Website -> Fields.Website
     is MimeType.Custom -> customDataRegistry.entryOf(this).fieldSet
     MimeType.Unknown -> EmptyDataFields

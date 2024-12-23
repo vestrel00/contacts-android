@@ -202,7 +202,6 @@ interface GroupsDelete : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun GroupsDelete(contacts: Contacts): GroupsDelete = GroupsDeleteImpl(contacts)
 
 private class GroupsDeleteImpl(

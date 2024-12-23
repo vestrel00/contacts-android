@@ -57,6 +57,7 @@ sealed interface BlockedNumberEntity : Entity {
 /**
  * An existing immutable [BlockedNumberEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class BlockedNumber internal constructor(
 

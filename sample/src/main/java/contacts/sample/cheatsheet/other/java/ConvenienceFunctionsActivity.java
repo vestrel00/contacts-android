@@ -11,8 +11,6 @@ import contacts.core.util.*;
 public class ConvenienceFunctionsActivity extends Activity {
 
     void getSetRawContactDataThroughContact(Contact contact) {
-        List<Email> contactEmailList = ContactDataKt.emailList(contact);
-
         NewEmail newEmail = new NewEmail();
         newEmail.setAddress("test@email.com");
         newEmail.setType(EmailEntity.Type.WORK);

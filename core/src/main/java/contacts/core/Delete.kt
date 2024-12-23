@@ -303,7 +303,6 @@ interface Delete : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun Delete(contacts: Contacts): Delete = DeleteImpl(contacts)
 
 private class DeleteImpl(

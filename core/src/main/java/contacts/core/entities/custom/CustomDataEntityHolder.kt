@@ -40,6 +40,7 @@ sealed class AbstractCustomDataEntityHolder : Redactable {
  * This should actually be internal as it is of no use to consumers but this is referenced in an
  * interface (RawContactEntity)... At least we can make the the properties internal.
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class ImmutableCustomDataEntityHolder internal constructor(
     override val entities: MutableList<ImmutableCustomDataEntity>,
@@ -83,6 +84,7 @@ private fun MutableList<ImmutableCustomDataEntity>.toMutableListOfCustomDataEnti
  * This should actually be internal as it is of no use to consumers but this is referenced in an
  * interface (RawContactEntity)... At least we can make the the properties internal.
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class CustomDataEntityHolder internal constructor(
     override val entities: MutableList<CustomDataEntity>,

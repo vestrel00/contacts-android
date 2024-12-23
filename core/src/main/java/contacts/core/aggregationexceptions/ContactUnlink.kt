@@ -85,7 +85,6 @@ interface ContactUnlink : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun ContactUnlink(contacts: Contacts): ContactUnlink = ContactUnlinkImpl(contacts)
 
 private class ContactUnlinkImpl(

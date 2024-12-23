@@ -78,6 +78,7 @@ sealed interface MutableNicknameEntity : NicknameEntity, MutableDataEntity {
 /**
  * An existing immutable [NicknameEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class Nickname internal constructor(
 
@@ -117,6 +118,7 @@ data class Nickname internal constructor(
 /**
  * An existing mutable [NicknameEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class MutableNickname internal constructor(
 

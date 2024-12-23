@@ -80,7 +80,7 @@ sealed interface PhoneEntity : DataEntityWithTypeAndLabel<Type> {
 
         internal companion object {
 
-            fun fromValue(value: Int?): Type? = values().find { it.value == value }
+            fun fromValue(value: Int?): Type? = entries.find { it.value == value }
         }
     }
 }
@@ -129,6 +129,7 @@ sealed interface MutablePhoneEntity : PhoneEntity, MutableDataEntityWithTypeAndL
 /**
  * An existing immutable [PhoneEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class Phone internal constructor(
 
@@ -177,6 +178,7 @@ data class Phone internal constructor(
 /**
  * An existing mutable [PhoneEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class MutablePhone internal constructor(
 

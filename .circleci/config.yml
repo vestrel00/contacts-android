@@ -1,15 +1,17 @@
 version: 2.1
 orbs:
-  android: circleci/android@2.3.0
+  android: circleci/android@3.0.2
 jobs:
   build:
     executor:
-      name: android/android-machine
-      tag: 2023.06.1
+      name: android/android_machine
+      resource_class: large
+      tag: default
     steps:
       - checkout
-      - android/restore-gradle-cache
-      - android/restore-build-cache
+      - android/accept_licenses
+      - android/restore_gradle_cache
+      - android/restore_build_cache
       - run:
           name: Build all variants
           command: |

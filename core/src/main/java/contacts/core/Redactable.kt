@@ -98,6 +98,7 @@ private const val REDACTED_CHAR = "*"
 // FIXME? Preserve spaces, tabs, and newlines?
 internal fun String.redactString(): String = REDACTED_CHAR.repeat(length)
 
+// The Int receiver is unused but it is still useful in providing scope for this named extension.
 internal fun Int.redactInt(): Int = 0
 
 internal fun Collection<String>.redactStrings(): List<String> = map { it.redactString() }

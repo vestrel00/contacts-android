@@ -393,7 +393,6 @@ interface RawContactsQuery : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun RawContactsQuery(
     contacts: Contacts, isProfile: Boolean
 ): RawContactsQuery = RawContactsQueryImpl(contacts, isProfile)
@@ -489,6 +488,7 @@ private class RawContactsQueryImpl(
 
         // I know static analysis checks here detect "Condition 'xxx' is always true when reached.
         // However, this is more readable and explicit IMO so we'll keep it this way =)
+        @Suppress("KotlinConstantConditions")
         rawContactsWhere = if (accountsWhere != null && where != null) {
             accountsWhere and where
         } else if (accountsWhere != null && where == null) {

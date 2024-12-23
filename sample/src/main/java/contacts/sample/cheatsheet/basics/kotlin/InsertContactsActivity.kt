@@ -33,6 +33,7 @@ class InsertContactsActivity : Activity() {
                 if (groupMembership != null) {
                     addGroupMembership(groupMembership)
                 }
+                @Suppress("Deprecation")
                 addIm {
                     data = "im@aol.com"
                     protocol = ImEntity.Protocol.CUSTOM
@@ -66,6 +67,7 @@ class InsertContactsActivity : Activity() {
                     name = "Bro"
                     type = RelationEntity.Type.BROTHER
                 }
+                @Suppress("Deprecation")
                 setSipAddress {
                     sipAddress = "sip:user@domain:port"
                 }

@@ -81,6 +81,7 @@ sealed interface MutableRpgProfessionEntity : RpgProfessionEntity, MutableCustom
 /**
  * An existing immutable [RpgProfessionEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class RpgProfession internal constructor(
 
@@ -121,6 +122,7 @@ data class RpgProfession internal constructor(
 /**
  * An existing mutable [RpgProfessionEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class MutableRpgProfession internal constructor(
 

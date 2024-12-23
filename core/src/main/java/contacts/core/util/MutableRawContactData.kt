@@ -1,5 +1,7 @@
 package contacts.core.util
 
+import contacts.core.DEPRECATED_IM
+import contacts.core.DEPRECATED_SIP_ADDRESS
 import contacts.core.entities.*
 import contacts.core.redactedCopyOrThis
 
@@ -133,6 +135,8 @@ fun MutableRawContact.removeAllGroupMemberships() {
 /**
  * Adds the given [im] to [MutableRawContact.ims].
  */
+@Deprecated(DEPRECATED_IM)
+@Suppress("Deprecation")
 fun MutableRawContact.addIm(im: MutableImEntity) {
     ims.add(im.redactedCopyOrThis(isRedacted))
 }
@@ -140,6 +144,8 @@ fun MutableRawContact.addIm(im: MutableImEntity) {
 /**
  * Adds a new IM (configured by [configureIm]) to [MutableRawContact.ims].
  */
+@Deprecated(DEPRECATED_IM)
+@Suppress("Deprecation")
 fun MutableRawContact.addIm(configureIm: NewIm.() -> Unit) {
     addIm(NewIm().apply(configureIm))
 }
@@ -151,6 +157,8 @@ fun MutableRawContact.addIm(configureIm: NewIm.() -> Unit) {
  * be removed. Set [byReference] to true to remove all instances that are **equal by reference
  * (same object)**.
  */
+@Deprecated(DEPRECATED_IM)
+@Suppress("Deprecation")
 @JvmOverloads
 fun MutableRawContact.removeIm(im: MutableImEntity, byReference: Boolean = false) {
     ims.removeAll(im, byReference)
@@ -159,6 +167,8 @@ fun MutableRawContact.removeIm(im: MutableImEntity, byReference: Boolean = false
 /**
  * Clears [MutableRawContact.ims].
  */
+@Deprecated(DEPRECATED_IM)
+@Suppress("Deprecation")
 fun MutableRawContact.removeAllIms() {
     ims.clear()
 }
@@ -305,6 +315,8 @@ fun MutableRawContact.removeAllRelations() {
 /**
  * Sets the [MutableRawContact.sipAddress] to the given [sipAddress].
  */
+@Deprecated(DEPRECATED_SIP_ADDRESS)
+@Suppress("Deprecation")
 fun MutableRawContact.setSipAddress(sipAddress: MutableSipAddressEntity?) {
     this.sipAddress = sipAddress?.redactedCopyOrThis(isRedacted)
 }
@@ -312,6 +324,8 @@ fun MutableRawContact.setSipAddress(sipAddress: MutableSipAddressEntity?) {
 /**
  * Sets the [MutableRawContact.sipAddress] (configured by [configureSipAddress]) to a new address.
  */
+@Deprecated(DEPRECATED_SIP_ADDRESS)
+@Suppress("Deprecation")
 fun MutableRawContact.setSipAddress(configureSipAddress: NewSipAddress.() -> Unit) {
     setSipAddress(NewSipAddress().apply(configureSipAddress))
 }

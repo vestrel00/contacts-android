@@ -62,6 +62,7 @@ open class DataEntityView<E : DataEntity> @JvmOverloads constructor(
     private val dataDeleteButton: View?
 
     init {
+        @Suppress("LeakingThis")
         inflate(context, layoutRes, this)
 
         dataField = findViewById(R.id.dataField)

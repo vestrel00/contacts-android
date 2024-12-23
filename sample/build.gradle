@@ -6,11 +6,10 @@ plugins {
 android {
     namespace 'contacts.sample'
 
-    compileSdkVersion versions.android.compileSdk
-
     defaultConfig {
-        minSdkVersion versions.android.minSdk
-        targetSdkVersion versions.android.targetSdk
+        minSdk versions.android.minSdk
+        targetSdk versions.android.targetSdk
+        compileSdk versions.android.compileSdk
     }
 
     compileOptions {
@@ -43,7 +42,7 @@ dependencies {
     implementation project(':permissions')
     implementation project(':ui')
 
-    implementation libraries.kotlin.coroutines
-    implementation libraries.kotlin.coroutinesAndroid
+    implementation "$libraries.kotlin.coroutines"
+    implementation "$libraries.kotlin.coroutinesAndroid"
 
 }

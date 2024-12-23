@@ -1,3 +1,5 @@
+@file:Suppress("Deprecation")
+
 package contacts.core.entities.mapper
 
 import contacts.core.entities.SipAddress

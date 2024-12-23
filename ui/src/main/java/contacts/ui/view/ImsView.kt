@@ -1,3 +1,5 @@
+@file:Suppress("Deprecation")
+
 package contacts.ui.view
 
 import android.content.Context
@@ -19,7 +21,7 @@ class ImsView @JvmOverloads constructor(
     context, attributeSet, defStyleAttr,
     dataFactory = NewImFactory,
     dataViewFactory = ImViewFactory,
-    defaultUnderlyingDataTypes = ImEntity.Protocol.values().filter { !it.isCustomType }
+    defaultUnderlyingDataTypes = ImEntity.Protocol.entries.filter { !it.isCustomType }
 )
 
 private object ImViewFactory :

@@ -78,6 +78,7 @@ sealed interface MutableWebsiteEntity : WebsiteEntity, MutableDataEntity {
 /**
  * An existing immutable [WebsiteEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class Website internal constructor(
 
@@ -117,6 +118,7 @@ data class Website internal constructor(
 /**
  * An existing mutable [WebsiteEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class MutableWebsite internal constructor(
 

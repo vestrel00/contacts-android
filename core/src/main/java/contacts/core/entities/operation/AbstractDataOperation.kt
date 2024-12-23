@@ -35,7 +35,7 @@ import contacts.core.util.toSqlValue
  *   processed. This is a more optimal, recommended way of including all fields.
  * - not null but empty, then data will be skipped (no-op).
  */
-abstract class AbstractDataOperation<F : DataField, E : DataEntity> constructor(
+abstract class AbstractDataOperation<F : DataField, E : DataEntity>(
     callerIsSyncAdapter: Boolean,
     isProfile: Boolean,
     // Null include field set mean include checks are disabled.

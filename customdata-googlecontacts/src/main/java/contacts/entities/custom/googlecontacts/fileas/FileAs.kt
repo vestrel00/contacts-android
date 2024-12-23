@@ -77,6 +77,7 @@ sealed interface MutableFileAsEntity : FileAsEntity, MutableCustomDataEntity {
 /**
  * An existing immutable [FileAsEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class FileAs internal constructor(
 
@@ -117,6 +118,7 @@ data class FileAs internal constructor(
 /**
  * An existing mutable [FileAsEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class MutableFileAs internal constructor(
 

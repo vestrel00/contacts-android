@@ -5,8 +5,13 @@ package contacts.core
 import android.annotation.TargetApi
 import android.os.Build
 import android.provider.BlockedNumberContract
-import android.provider.ContactsContract.*
+import android.provider.ContactsContract.AggregationExceptions
+import android.provider.ContactsContract.CommonDataKinds
 import android.provider.ContactsContract.Contacts
+import android.provider.ContactsContract.Data
+import android.provider.ContactsContract.Groups
+import android.provider.ContactsContract.PhoneLookup
+import android.provider.ContactsContract.RawContacts
 import contacts.core.AbstractCustomDataField.ColumnName
 import contacts.core.ContactsFields.all
 import contacts.core.Fields.all
@@ -125,6 +130,7 @@ sealed class AbstractDataFieldSet<out T : AbstractDataField> : FieldSet<T>() {
     abstract val forMatching: Set<T>
 }
 
+@ConsistentCopyVisibility
 data class GenericDataField internal constructor(
     override val columnName: String,
     override val required: Boolean
@@ -147,7 +153,7 @@ data class GenericDataField internal constructor(
  * an object instead of a class, then [AddressFields.City] (and all other fields) will not be
  * visible to Java consumers via this object.
  */
-object Fields : AbstractDataFieldSet<AbstractDataField>() {
+data object Fields : AbstractDataFieldSet<AbstractDataField>() {
 
     @JvmField
     val Address = AddressFields()
@@ -174,6 +180,7 @@ object Fields : AbstractDataFieldSet<AbstractDataField>() {
     @JvmField
     val GroupMembership = GroupMembershipFields()
 
+    @Deprecated(DEPRECATED_IM)
     @JvmField
     val Im = ImFields()
 
@@ -209,6 +216,7 @@ object Fields : AbstractDataFieldSet<AbstractDataField>() {
     @JvmField
     val Relation = RelationFields()
 
+    @Deprecated(DEPRECATED_SIP_ADDRESS)
     @JvmField
     val SipAddress = SipAddressFields()
 
@@ -236,7 +244,7 @@ object Fields : AbstractDataFieldSet<AbstractDataField>() {
             addAll(Email.all)
             addAll(Event.all)
             addAll(GroupMembership.all)
-            addAll(Im.all)
+            addAll(@Suppress("Deprecation") Im.all)
             add(IsPrimary)
             add(IsSuperPrimary)
             add(MimeType)
@@ -254,7 +262,7 @@ object Fields : AbstractDataFieldSet<AbstractDataField>() {
 
             addAll(RawContact.all)
             addAll(Relation.all)
-            addAll(SipAddress.all)
+            addAll(@Suppress("Deprecation") SipAddress.all)
             addAll(Website.all)
         }
     }
@@ -268,7 +276,7 @@ object Fields : AbstractDataFieldSet<AbstractDataField>() {
             addAll(Email.forMatching)
             addAll(Event.forMatching)
             addAll(GroupMembership.forMatching)
-            addAll(Im.forMatching)
+            addAll(@Suppress("Deprecation") Im.forMatching)
             // add(IsPrimary) not included
             // add(IsSuperPrimary) not included
             // add(MimeType) not included
@@ -280,7 +288,7 @@ object Fields : AbstractDataFieldSet<AbstractDataField>() {
             addAll(Photo.forMatching)
             addAll(RawContact.forMatching)
             addAll(Relation.forMatching)
-            addAll(SipAddress.forMatching)
+            addAll(@Suppress("Deprecation") SipAddress.forMatching)
             addAll(Website.forMatching)
         }.toSet() // ensure that this is not modifiable at runtime
     }
@@ -324,7 +332,7 @@ val F = Fields
  * The set of data fields that are required to properly resolve
  * [contacts.core.entities.ExistingContactEntity.primaryPhotoHolder].
  */
-object PrimaryPhotoHolderFields : AbstractDataFieldSet<AbstractDataField>() {
+data object PrimaryPhotoHolderFields : AbstractDataFieldSet<AbstractDataField>() {
 
     override val all by lazy {
         setOf(
@@ -354,7 +362,7 @@ object PrimaryPhotoHolderFields : AbstractDataFieldSet<AbstractDataField>() {
  * The set of data fields that are required, internally by this library, to be included in all
  * query results.
  */
-object RequiredDataFields : AbstractDataFieldSet<AbstractDataField>() {
+data object RequiredDataFields : AbstractDataFieldSet<AbstractDataField>() {
 
     override val all by lazy {
         setOf(
@@ -392,6 +400,7 @@ object RequiredDataFields : AbstractDataFieldSet<AbstractDataField>() {
 
 // region Joined Data Fields
 
+@ConsistentCopyVisibility
 data class DataContactsField internal constructor(
     override val columnName: String,
     override val required: Boolean = false
@@ -477,6 +486,7 @@ class DataContactsOptionsFields internal constructor() : AbstractDataFieldSet<Da
     override val forMatching = emptySet<DataContactsField>()
 }
 
+@ConsistentCopyVisibility
 data class DataRawContactsField internal constructor(
     override val columnName: String,
     override val required: Boolean = false
@@ -503,13 +513,14 @@ sealed class DataField : AbstractDataField() {
     internal abstract val mimeType: MimeType
 }
 
-internal object EmptyDataFields : AbstractDataFieldSet<DataField>() {
+internal data object EmptyDataFields : AbstractDataFieldSet<DataField>() {
 
     override val all = emptySet<DataField>()
 
     override val forMatching = emptySet<DataField>()
 }
 
+@ConsistentCopyVisibility
 data class AddressField internal constructor(override val columnName: String) : DataField() {
     override val mimeType: MimeType = MimeType.Address
 }
@@ -560,6 +571,7 @@ class AddressFields internal constructor() : AbstractDataFieldSet<AddressField>(
     }
 }
 
+@ConsistentCopyVisibility
 data class EmailField internal constructor(override val columnName: String) : DataField() {
     override val mimeType: MimeType = MimeType.Email
 }
@@ -585,6 +597,7 @@ class EmailFields internal constructor() : AbstractDataFieldSet<EmailField>() {
     }
 }
 
+@ConsistentCopyVisibility
 data class EventField internal constructor(override val columnName: String) : DataField() {
     override val mimeType: MimeType = MimeType.Event
 }
@@ -608,6 +621,7 @@ class EventFields internal constructor() : AbstractDataFieldSet<EventField>() {
     override val forMatching = emptySet<EventField>()
 }
 
+@ConsistentCopyVisibility
 data class GroupMembershipField internal constructor(override val columnName: String) :
     DataField() {
     override val mimeType: MimeType = MimeType.GroupMembership
@@ -626,23 +640,27 @@ class GroupMembershipFields internal constructor() : AbstractDataFieldSet<GroupM
     override val forMatching = emptySet<GroupMembershipField>()
 }
 
+@ConsistentCopyVisibility
 data class ImField internal constructor(override val columnName: String) : DataField() {
     override val mimeType: MimeType = MimeType.Im
 }
 
 class ImFields internal constructor() : AbstractDataFieldSet<ImField>() {
 
+    @Deprecated(DEPRECATED_IM)
     @JvmField
-    val Protocol = ImField(CommonDataKinds.Im.PROTOCOL)
+    val Protocol = ImField(@Suppress("Deprecation") CommonDataKinds.Im.PROTOCOL)
 
+    @Deprecated(DEPRECATED_IM)
     @JvmField
-    val CustomProtocol = ImField(CommonDataKinds.Im.CUSTOM_PROTOCOL)
+    val CustomProtocol = ImField(@Suppress("Deprecation") CommonDataKinds.Im.CUSTOM_PROTOCOL)
 
+    @Deprecated(DEPRECATED_IM)
     @JvmField
-    val Data = ImField(CommonDataKinds.Im.DATA)
+    val Data = ImField(@Suppress("Deprecation") CommonDataKinds.Im.DATA)
 
     override val all by lazy {
-        setOf(Protocol, CustomProtocol, Data)
+        @Suppress("Deprecation") setOf(Protocol, CustomProtocol, Data)
     }
 
     override val forMatching by lazy {
@@ -655,10 +673,11 @@ class ImFields internal constructor() : AbstractDataFieldSet<ImField>() {
         // a (user input) text to a (constant) number. Perhaps it has an index table containing
         // a mapping of the Protocol number to its localized text? Or maybe it performs a query
         // on the text to find the corresponding Protocol number?
-        setOf(Data /*, Protocol */)
+        @Suppress("Deprecation") setOf(Data /*, Protocol */)
     }
 }
 
+@ConsistentCopyVisibility
 data class NameField internal constructor(override val columnName: String) : DataField() {
     override val mimeType: MimeType = MimeType.Name
 }
@@ -707,6 +726,7 @@ class NameFields internal constructor() : AbstractDataFieldSet<NameField>() {
     }
 }
 
+@ConsistentCopyVisibility
 data class NicknameField internal constructor(override val columnName: String) : DataField() {
     override val mimeType: MimeType = MimeType.Nickname
 }
@@ -726,6 +746,7 @@ class NicknameFields internal constructor() : AbstractDataFieldSet<NicknameField
     }
 }
 
+@ConsistentCopyVisibility
 data class NoteField internal constructor(override val columnName: String) : DataField() {
     override val mimeType: MimeType = MimeType.Note
 }
@@ -745,6 +766,7 @@ class NoteFields internal constructor() : AbstractDataFieldSet<NoteField>() {
     }
 }
 
+@ConsistentCopyVisibility
 data class OrganizationField internal constructor(override val columnName: String) :
     DataField() {
     override val mimeType: MimeType = MimeType.Organization
@@ -787,6 +809,7 @@ class OrganizationFields internal constructor() : AbstractDataFieldSet<Organizat
     }
 }
 
+@ConsistentCopyVisibility
 data class PhoneField internal constructor(override val columnName: String) : DataField() {
     override val mimeType: MimeType = MimeType.Phone
 }
@@ -815,6 +838,7 @@ class PhoneFields internal constructor() : AbstractDataFieldSet<PhoneField>() {
     }
 }
 
+@ConsistentCopyVisibility
 data class PhotoField internal constructor(override val columnName: String) :
     DataField() {
     override val mimeType: MimeType = MimeType.Photo
@@ -840,6 +864,7 @@ class PhotoFields internal constructor() : AbstractDataFieldSet<PhotoField>() {
     override val forMatching = emptySet<PhotoField>()
 }
 
+@ConsistentCopyVisibility
 data class RelationField internal constructor(override val columnName: String) : DataField() {
     override val mimeType: MimeType = MimeType.Relation
 }
@@ -865,17 +890,20 @@ class RelationFields internal constructor() : AbstractDataFieldSet<RelationField
     override val forMatching = emptySet<RelationField>()
 }
 
+@ConsistentCopyVisibility
 data class SipAddressField internal constructor(override val columnName: String) : DataField() {
     override val mimeType: MimeType = MimeType.SipAddress
 }
 
 class SipAddressFields internal constructor() : AbstractDataFieldSet<SipAddressField>() {
 
+    @Deprecated(DEPRECATED_SIP_ADDRESS)
     @JvmField
-    val SipAddress = SipAddressField(CommonDataKinds.SipAddress.SIP_ADDRESS)
+    val SipAddress =
+        SipAddressField(@Suppress("Deprecation") CommonDataKinds.SipAddress.SIP_ADDRESS)
 
     override val all by lazy {
-        setOf(SipAddress)
+        @Suppress("Deprecation") setOf(SipAddress)
     }
 
     // The GeneralMatch algorithm of the Contacts Provider does not match any of these fields.
@@ -884,6 +912,7 @@ class SipAddressFields internal constructor() : AbstractDataFieldSet<SipAddressF
     override val forMatching = emptySet<SipAddressField>()
 }
 
+@ConsistentCopyVisibility
 data class WebsiteField internal constructor(override val columnName: String) : DataField() {
     override val mimeType: MimeType = MimeType.Website
 }
@@ -1106,6 +1135,7 @@ abstract class AbstractCustomDataFieldSet<out T : AbstractCustomDataField> :
 
 // region RawContacts Table Fields
 
+@ConsistentCopyVisibility
 data class RawContactsField internal constructor(
     override val columnName: String,
     override val required: Boolean = false
@@ -1114,7 +1144,7 @@ data class RawContactsField internal constructor(
 /**
  * Fields for RawContacts table operations.
  */
-object RawContactsFields : FieldSet<RawContactsField>() {
+data object RawContactsFields : FieldSet<RawContactsField>() {
 
     @JvmField
     val Id = RawContactsField(RawContacts._ID, required = true)
@@ -1173,7 +1203,7 @@ object RawContactsFields : FieldSet<RawContactsField>() {
  * The set of raw contacts fields that are required, internally by this library, to be included in
  * all query results.
  */
-object RequiredRawContactsFields : FieldSet<RawContactsField>() {
+data object RequiredRawContactsFields : FieldSet<RawContactsField>() {
 
     override val all by lazy {
         setOf(RawContactsFields.Id, RawContactsFields.ContactId)
@@ -1221,6 +1251,7 @@ class RawContactsOptionsFields internal constructor() : FieldSet<RawContactsFiel
 
 // region Contacts Table Fields
 
+@ConsistentCopyVisibility
 data class ContactsField internal constructor(
     override val columnName: String,
     override val required: Boolean = false
@@ -1229,7 +1260,7 @@ data class ContactsField internal constructor(
 /**
  * Fields for Contacts table operations.
  */
-object ContactsFields : FieldSet<ContactsField>() {
+data object ContactsFields : FieldSet<ContactsField>() {
 
     @JvmField
     val Id = ContactsField(Contacts._ID, required = true)
@@ -1318,6 +1349,7 @@ class ContactsOptionsFields internal constructor() : FieldSet<ContactsField>() {
 
 // region PhoneLookup Table Fields
 
+@ConsistentCopyVisibility
 data class PhoneLookupField internal constructor(
     override val columnName: String,
     override val required: Boolean = false
@@ -1326,7 +1358,7 @@ data class PhoneLookupField internal constructor(
 /**
  * Fields for PhoneLookup table operations.
  */
-object PhoneLookupFields : FieldSet<PhoneLookupField>() {
+data object PhoneLookupFields : FieldSet<PhoneLookupField>() {
 
     // This actually contains the Contact ID
     internal val Id = PhoneLookupField(PhoneLookup._ID)
@@ -1347,6 +1379,7 @@ object PhoneLookupFields : FieldSet<PhoneLookupField>() {
 
 // region Groups Table Fields
 
+@ConsistentCopyVisibility
 data class GroupsField internal constructor(
     override val columnName: String,
     override val required: Boolean = false
@@ -1355,7 +1388,7 @@ data class GroupsField internal constructor(
 /**
  * Fields for Groups table operations.
  */
-object GroupsFields : FieldSet<GroupsField>() {
+data object GroupsFields : FieldSet<GroupsField>() {
 
     @JvmField
     val Id = GroupsField(Groups._ID, required = true)
@@ -1415,13 +1448,14 @@ object GroupsFields : FieldSet<GroupsField>() {
 
 // region AggregationExceptions Table Fields
 
+@ConsistentCopyVisibility
 data class AggregationExceptionsField internal constructor(override val columnName: String) :
     Field()
 
 /**
  * Fields for AggregationExceptions table operations.
  */
-internal object AggregationExceptionsFields : FieldSet<AggregationExceptionsField>() {
+internal data object AggregationExceptionsFields : FieldSet<AggregationExceptionsField>() {
 
     val Type = AggregationExceptionsField(AggregationExceptions.TYPE)
 
@@ -1438,6 +1472,7 @@ internal object AggregationExceptionsFields : FieldSet<AggregationExceptionsFiel
 
 // region Blocked Number Table Fields
 
+@ConsistentCopyVisibility
 data class BlockedNumbersField internal constructor(
     override val columnName: String,
     override val required: Boolean = false
@@ -1448,7 +1483,7 @@ data class BlockedNumbersField internal constructor(
  */
 // [ANDROID X] @RequiresApi (not using annotation to avoid dependency on androidx.annotation)
 @TargetApi(Build.VERSION_CODES.N)
-object BlockedNumbersFields : FieldSet<BlockedNumbersField>() {
+data object BlockedNumbersFields : FieldSet<BlockedNumbersField>() {
 
     @JvmField
     val Id = BlockedNumbersField(BlockedNumberContract.BlockedNumbers.COLUMN_ID, required = true)
@@ -1476,6 +1511,7 @@ object BlockedNumbersFields : FieldSet<BlockedNumbersField>() {
 
 // region SIM Table Fields
 
+@ConsistentCopyVisibility
 data class SimContactsField internal constructor(
     override val columnName: String,
     override val required: Boolean = false
@@ -1487,7 +1523,7 @@ data class SimContactsField internal constructor(
 // Given that we are not adding include, where, and orderBy, functions in SIM queries due to
 // projection, selection, and order not being supported, there is no need to expose this to
 // consumers.
-internal object SimContactsFields : FieldSet<SimContactsField>() {
+internal data object SimContactsFields : FieldSet<SimContactsField>() {
 
     val Id = SimContactsField("_id", required = true)
 

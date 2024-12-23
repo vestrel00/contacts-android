@@ -31,6 +31,7 @@ internal fun CursorHolder<AbstractDataField>.eventCursor() =
 internal fun CursorHolder<AbstractDataField>.groupMembershipCursor() =
     GroupMembershipCursor(cursor, includeFields?.let(Fields.GroupMembership::intersect))
 
+@Suppress("Deprecation")
 internal fun CursorHolder<AbstractDataField>.imCursor() =
     ImCursor(cursor, includeFields?.let(Fields.Im::intersect))
 
@@ -62,6 +63,7 @@ internal fun CursorHolder<AbstractDataField>.photoCursor() =
 internal fun CursorHolder<AbstractDataField>.relationCursor() =
     RelationCursor(cursor, includeFields?.let(Fields.Relation::intersect))
 
+@Suppress("Deprecation")
 internal fun CursorHolder<AbstractDataField>.sipAddressCursor() =
     SipAddressCursor(cursor, includeFields?.let(Fields.SipAddress::intersect))
 

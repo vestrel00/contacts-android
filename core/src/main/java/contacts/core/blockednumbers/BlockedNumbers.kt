@@ -73,7 +73,6 @@ interface BlockedNumbers {
 /**
  * Creates a new [BlockedNumbers] instance.
  */
-@Suppress("FunctionName")
 internal fun BlockedNumbers(contacts: Contacts): BlockedNumbers =
     BlockedNumbersImpl(BlockedNumbersPrivileges(contacts.applicationContext), contacts)
 

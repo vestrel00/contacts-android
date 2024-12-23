@@ -477,7 +477,6 @@ interface PhoneLookupQuery : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun PhoneLookupQuery(contacts: Contacts): PhoneLookupQuery = PhoneLookupQueryImpl(contacts)
 
 private class PhoneLookupQueryImpl(

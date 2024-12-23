@@ -56,7 +56,7 @@ sealed interface GenderEntity : CustomDataEntityWithTypeAndLabel<Type> {
 
         internal companion object {
 
-            fun fromValue(value: Int?): Type? = values().find { it.value == value }
+            fun fromValue(value: Int?): Type? = entries.find { it.value == value }
         }
     }
 }
@@ -97,6 +97,7 @@ sealed interface MutableGenderEntity : GenderEntity, MutableCustomDataEntityWith
 /**
  * An existing immutable [GenderEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class Gender internal constructor(
 
@@ -136,6 +137,7 @@ data class Gender internal constructor(
 /**
  * An existing mutable [GenderEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class MutableGender internal constructor(
 

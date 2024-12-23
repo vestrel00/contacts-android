@@ -28,7 +28,6 @@ interface SimCardInfo {
     val contactsApi: Contacts
 }
 
-@Suppress("FunctionName")
 internal fun SimCardInfo(contactsApi: Contacts): SimCardInfo = SimCardInfoImpl(contactsApi)
 
 private class SimCardInfoImpl(override val contactsApi: Contacts) : SimCardInfo {

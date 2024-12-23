@@ -28,6 +28,7 @@ class InsertProfileActivity : Activity() {
                 date = EventDate.from(1990, 0, 1)
                 type = EventEntity.Type.BIRTHDAY
             }
+            @Suppress("Deprecation")
             addIm {
                 data = "im@aol.com"
                 protocol = ImEntity.Protocol.CUSTOM
@@ -61,6 +62,7 @@ class InsertProfileActivity : Activity() {
                 name = "Bro"
                 type = RelationEntity.Type.BROTHER
             }
+            @Suppress("Deprecation")
             setSipAddress {
                 sipAddress = "sip:user@domain:port"
             }

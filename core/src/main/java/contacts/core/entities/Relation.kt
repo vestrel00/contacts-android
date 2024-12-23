@@ -59,7 +59,7 @@ sealed interface RelationEntity : DataEntityWithTypeAndLabel<Type> {
 
         internal companion object {
 
-            fun fromValue(value: Int?): Type? = values().find { it.value == value }
+            fun fromValue(value: Int?): Type? = entries.find { it.value == value }
         }
     }
 }
@@ -107,6 +107,7 @@ sealed interface MutableRelationEntity : RelationEntity, MutableDataEntityWithTy
 /**
  * An existing immutable [RelationEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class Relation internal constructor(
 
@@ -152,6 +153,7 @@ data class Relation internal constructor(
 /**
  * An existing mutable [RelationEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class MutableRelation internal constructor(
 

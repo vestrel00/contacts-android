@@ -234,7 +234,6 @@ interface GroupsQuery : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun GroupsQuery(contacts: Contacts): GroupsQuery = GroupsQueryImpl(contacts)
 
 private class GroupsQueryImpl(

@@ -1,9 +1,39 @@
 package contacts.core.entities.mapper
 
-import contacts.core.*
+import contacts.core.AbstractDataField
+import contacts.core.BlockedNumbersField
+import contacts.core.ContactsException
+import contacts.core.ContactsField
+import contacts.core.GroupsField
+import contacts.core.RawContactsField
+import contacts.core.SimContactsField
 import contacts.core.entities.*
-import contacts.core.entities.cursor.*
+import contacts.core.entities.cursor.CursorHolder
+import contacts.core.entities.cursor.addressCursor
+import contacts.core.entities.cursor.blockedNumbersCursor
+import contacts.core.entities.cursor.contactsCursor
+import contacts.core.entities.cursor.dataContactsCursor
+import contacts.core.entities.cursor.dataContactsOptionsCursor
+import contacts.core.entities.cursor.emailCursor
+import contacts.core.entities.cursor.eventCursor
+import contacts.core.entities.cursor.groupMembershipCursor
+import contacts.core.entities.cursor.groupsCursor
+import contacts.core.entities.cursor.imCursor
+import contacts.core.entities.cursor.nameCursor
+import contacts.core.entities.cursor.nicknameCursor
+import contacts.core.entities.cursor.noteCursor
+import contacts.core.entities.cursor.optionsCursor
+import contacts.core.entities.cursor.organizationCursor
+import contacts.core.entities.cursor.phoneCursor
+import contacts.core.entities.cursor.photoCursor
+import contacts.core.entities.cursor.rawContactsCursor
+import contacts.core.entities.cursor.rawContactsOptionsCursor
+import contacts.core.entities.cursor.relationCursor
+import contacts.core.entities.cursor.simContactCursor
+import contacts.core.entities.cursor.sipAddressCursor
+import contacts.core.entities.cursor.websiteCursor
 import contacts.core.entities.custom.CustomDataRegistry
+import contacts.core.intersect
 
 // region EntityCursor<AbstractDataField>
 
@@ -24,7 +54,8 @@ internal fun CursorHolder<AbstractDataField>.eventMapper(): DataEntityMapper<Eve
 internal fun CursorHolder<AbstractDataField>.groupMembershipMapper(): DataEntityMapper<GroupMembership> =
     GroupMembershipMapper(groupMembershipCursor())
 
-internal fun CursorHolder<AbstractDataField>.imMapper(): DataEntityMapper<Im> = ImMapper(imCursor())
+internal fun CursorHolder<AbstractDataField>.imMapper(): DataEntityMapper<@Suppress("Deprecation") Im> =
+    ImMapper(imCursor())
 
 internal fun CursorHolder<AbstractDataField>.nameMapper(): DataEntityMapper<Name> =
     NameMapper(nameCursor())
@@ -50,7 +81,7 @@ internal fun CursorHolder<AbstractDataField>.photoMapper(): DataEntityMapper<Pho
 internal fun CursorHolder<AbstractDataField>.relationMapper(): DataEntityMapper<Relation> =
     RelationMapper(relationCursor())
 
-internal fun CursorHolder<AbstractDataField>.sipAddressMapper(): DataEntityMapper<SipAddress> =
+internal fun CursorHolder<AbstractDataField>.sipAddressMapper(): DataEntityMapper<@Suppress("Deprecation") SipAddress> =
     SipAddressMapper(sipAddressCursor())
 
 internal fun CursorHolder<AbstractDataField>.websiteMapper(): DataEntityMapper<Website> =

@@ -110,6 +110,7 @@ sealed interface MutableUserDefinedEntity : UserDefinedEntity, MutableCustomData
 /**
  * An existing immutable [UserDefinedEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class UserDefined internal constructor(
 
@@ -153,6 +154,7 @@ data class UserDefined internal constructor(
 /**
  * An existing mutable [UserDefinedEntity].
  */
+@ConsistentCopyVisibility
 @Parcelize
 data class MutableUserDefined internal constructor(
 

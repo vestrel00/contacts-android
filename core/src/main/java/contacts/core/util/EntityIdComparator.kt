@@ -23,7 +23,7 @@ class EntityIdComparator : Comparator<Entity> {
             compareTo(other)
         } else if (this == null && other != null) {
             1
-        } else if (this != null && other == null) {
+        } else if (this != null /* && other == null this condition is always true so lint complains */) {
             -1
         } else {
             0

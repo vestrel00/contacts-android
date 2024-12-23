@@ -29,7 +29,7 @@ sealed interface PhotoData {
  */
 internal sealed interface PhotoDataOperation {
     class SetPhoto(val photoData: PhotoData) : PhotoDataOperation
-    object RemovePhoto : PhotoDataOperation
+    data object RemovePhoto : PhotoDataOperation
 }
 
 internal fun PhotoData.bytes(): ByteArray = when (this) {

@@ -580,7 +580,6 @@ interface BroadQuery : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun BroadQuery(contacts: Contacts): BroadQuery = BroadQueryImpl(contacts)
 
 private class BroadQueryImpl(

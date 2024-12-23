@@ -69,7 +69,6 @@ interface BlockedNumbersPrivileges {
     fun canReadAndWrite(): Boolean
 }
 
-@Suppress("FunctionName")
 internal fun BlockedNumbersPrivileges(context: Context): BlockedNumbersPrivileges =
     BlockedNumbersPrivilegesImpl(context.applicationContext)
 

@@ -19,7 +19,7 @@ class RelationsView @JvmOverloads constructor(
     context, attributeSet, defStyleAttr,
     dataFactory = NewRelationFactory,
     dataViewFactory = RelationViewFactory,
-    defaultUnderlyingDataTypes = RelationEntity.Type.values().filter { !it.isCustomType }
+    defaultUnderlyingDataTypes = RelationEntity.Type.entries.filter { !it.isCustomType }
 )
 
 private object RelationViewFactory :

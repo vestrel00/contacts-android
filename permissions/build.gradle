@@ -9,11 +9,10 @@ apply from: "$rootDir/jitpack-publish.gradle"
 android {
     namespace 'contacts.permissions'
 
-    compileSdkVersion versions.android.compileSdk
-
     defaultConfig {
-        minSdkVersion versions.android.minSdk
-        targetSdkVersion versions.android.targetSdk
+        minSdk versions.android.minSdk
+        targetSdk versions.android.targetSdk
+        compileSdk versions.android.compileSdk
     }
 
     compileOptions {
@@ -29,7 +28,6 @@ android {
 dependencies {
     implementation project(':core')
 
-    implementation libraries.tedpermissions
-    implementation libraries.kotlin.coroutines
-
+    implementation "$libraries.tedpermissions"
+    implementation "$libraries.kotlin.coroutines"
 }
