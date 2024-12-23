@@ -8,7 +8,9 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
-import android.widget.ListView.*
+import android.widget.ListView.CHOICE_MODE_MULTIPLE
+import android.widget.ListView.CHOICE_MODE_NONE
+import android.widget.ListView.CHOICE_MODE_SINGLE
 import contacts.async.accounts.findWithContext
 import contacts.core.entities.Group
 import contacts.permissions.accounts.queryWithPermission
@@ -79,12 +81,12 @@ class AccountsActivity : BaseActivity() {
     }
 
     override fun finish() {
-        setResult(RESULT_OK, Intent().also { intent ->
-            intent.putParcelableArrayListExtra(SELECTED_ACCOUNTS, ArrayList(selectedAccounts))
-            intent.putParcelableArrayListExtra(SELECTED_GROUPS, ArrayList(
+        setResult(RESULT_OK, Intent().also { resultIntent ->
+            resultIntent.putParcelableArrayListExtra(SELECTED_ACCOUNTS, ArrayList(selectedAccounts))
+            resultIntent.putParcelableArrayListExtra(SELECTED_GROUPS, ArrayList(
                 selectedAccountGroups.flatMap { it.value }
             ))
-            intent.requestTag = intent.requestTag
+            resultIntent.requestTag = intent.requestTag
         })
         super.finish()
     }
