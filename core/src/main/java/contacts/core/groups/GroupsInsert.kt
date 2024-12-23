@@ -185,7 +185,6 @@ interface GroupsInsert : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun GroupsInsert(contacts: Contacts): GroupsInsert = GroupsInsertImpl(contacts)
 
 private class GroupsInsertImpl(

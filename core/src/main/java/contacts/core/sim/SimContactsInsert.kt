@@ -194,7 +194,6 @@ interface SimContactsInsert : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun SimContactsInsert(contacts: Contacts): SimContactsInsert =
     SimContactsInsertImpl(contacts)
 

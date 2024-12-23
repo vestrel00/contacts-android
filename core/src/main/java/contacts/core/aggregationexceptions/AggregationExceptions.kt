@@ -30,7 +30,6 @@ interface AggregationExceptions {
 /**
  * Creates a new [AggregationExceptions] instance.
  */
-@Suppress("FunctionName")
 internal fun AggregationExceptions(contacts: Contacts): AggregationExceptions =
     AggregationExceptionsImpl(contacts)
 

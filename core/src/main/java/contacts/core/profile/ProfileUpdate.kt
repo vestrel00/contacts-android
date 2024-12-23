@@ -312,7 +312,6 @@ interface ProfileUpdate : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun ProfileUpdate(contacts: Contacts): ProfileUpdate = ProfileUpdateImpl(contacts)
 
 private class ProfileUpdateImpl(

@@ -277,7 +277,6 @@ interface ProfileQuery : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun ProfileQuery(contacts: Contacts): ProfileQuery = ProfileQueryImpl(contacts)
 
 private class ProfileQueryImpl(

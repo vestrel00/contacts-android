@@ -120,7 +120,6 @@ interface SimCardMaxCharacterLimits {
     fun clearCachedNameAndNumberMaxLengths()
 }
 
-@Suppress("FunctionName")
 internal fun SimCardMaxCharacterLimits(contactsApi: Contacts): SimCardMaxCharacterLimits =
     SimCardMaxCharacterLimitsImpl(
         contactsApi,

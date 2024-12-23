@@ -60,7 +60,6 @@ interface Profile {
     val contactsApi: Contacts
 }
 
-@Suppress("FunctionName")
 internal fun Profile(contacts: Contacts): Profile = ProfileImpl(contacts)
 
 private class ProfileImpl(override val contactsApi: Contacts) : Profile {

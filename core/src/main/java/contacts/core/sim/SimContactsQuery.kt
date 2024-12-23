@@ -128,7 +128,6 @@ interface SimContactsQuery : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun SimContactsQuery(contacts: Contacts): SimContactsQuery = SimContactsQueryImpl(contacts)
 
 private class SimContactsQueryImpl(

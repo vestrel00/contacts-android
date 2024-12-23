@@ -165,7 +165,6 @@ interface AccountsQuery : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun AccountsQuery(contacts: Contacts): AccountsQuery =
     AccountsQueryImpl(
         contacts,

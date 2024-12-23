@@ -39,7 +39,6 @@ interface ContactsPermissions {
     }
 }
 
-@Suppress("FunctionName")
 internal fun ContactsPermissions(context: Context): ContactsPermissions =
     ContactsPermissionsImpl(context.applicationContext)
 

@@ -369,7 +369,6 @@ interface ProfileInsert : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun ProfileInsert(contacts: Contacts): ProfileInsert = ProfileInsertImpl(contacts)
 
 private class ProfileInsertImpl(

@@ -197,7 +197,6 @@ interface BlockedNumbersQuery : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun BlockedNumbersQuery(contacts: Contacts): BlockedNumbersQuery =
     BlockedNumbersQueryImpl(contacts, BlockedNumbersPrivileges(contacts.applicationContext))
 

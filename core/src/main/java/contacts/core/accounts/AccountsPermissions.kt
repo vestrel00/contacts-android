@@ -28,7 +28,6 @@ interface AccountsPermissions {
     }
 }
 
-@Suppress("FunctionName")
 internal fun AccountsPermissions(context: Context): AccountsPermissions =
     AccountsPermissionsImpl(context.applicationContext)
 

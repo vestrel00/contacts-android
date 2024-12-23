@@ -365,7 +365,6 @@ interface MoveRawContactsAcrossAccounts : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun MoveRawContactsAcrossAccounts(contacts: Contacts): MoveRawContactsAcrossAccounts =
     MoveRawContactsAcrossAccountsImpl(contacts)
 

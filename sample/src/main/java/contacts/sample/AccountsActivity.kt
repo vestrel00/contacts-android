@@ -79,12 +79,12 @@ class AccountsActivity : BaseActivity() {
     }
 
     override fun finish() {
-        setResult(RESULT_OK, Intent().also {
-            it.putParcelableArrayListExtra(SELECTED_ACCOUNTS, ArrayList(selectedAccounts))
-            it.putParcelableArrayListExtra(SELECTED_GROUPS, ArrayList(
+        setResult(RESULT_OK, Intent().also { intent ->
+            intent.putParcelableArrayListExtra(SELECTED_ACCOUNTS, ArrayList(selectedAccounts))
+            intent.putParcelableArrayListExtra(SELECTED_GROUPS, ArrayList(
                 selectedAccountGroups.flatMap { it.value }
             ))
-            it.requestTag = intent.requestTag
+            intent.requestTag = intent.requestTag
         })
         super.finish()
     }

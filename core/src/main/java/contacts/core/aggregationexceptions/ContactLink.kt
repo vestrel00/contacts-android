@@ -126,7 +126,6 @@ interface ContactLink : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun ContactLink(contacts: Contacts): ContactLink = ContactLinkImpl(contacts)
 
 private class ContactLinkImpl(

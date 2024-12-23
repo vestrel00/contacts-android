@@ -3,13 +3,10 @@ package contacts.core
 import android.content.ContentResolver
 import contacts.core.util.query
 
-@Suppress("FunctionName")
 internal fun <T : Field> Include(vararg fields: T) = Include(fields.asSequence())
 
-@Suppress("FunctionName")
 internal fun <T : Field> Include(fields: Collection<T>) = Include(fields.asSequence())
 
-@Suppress("FunctionName")
 internal fun <T : Field> Include(fields: Sequence<T>): Include<T> = Include(
     // The call toSet is important because it gets rid of duplicates. We can also call
     // distinct() but then we can't call toTypedArray after it. And no, this is not more
@@ -18,7 +15,6 @@ internal fun <T : Field> Include(fields: Sequence<T>): Include<T> = Include(
     fields.toSet()
 )
 
-@Suppress("FunctionName")
 internal fun <T : Field> Include(fieldSet: FieldSet<T>) = Include(fieldSet.all)
 
 /**

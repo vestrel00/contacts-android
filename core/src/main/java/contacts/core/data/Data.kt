@@ -45,7 +45,6 @@ interface Data {
     val contactsApi: Contacts
 }
 
-@Suppress("FunctionName")
 internal fun Data(contacts: Contacts, isProfile: Boolean): Data = DataImpl(contacts, isProfile)
 
 private class DataImpl(

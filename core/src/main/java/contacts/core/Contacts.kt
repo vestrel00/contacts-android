@@ -200,7 +200,6 @@ interface Contacts {
  * Creates a new [Contacts] instance.
  */
 @JvmOverloads
-@Suppress("FunctionName")
 fun Contacts(
     context: Context,
     callerIsSyncAdapter: Boolean = false,

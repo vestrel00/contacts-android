@@ -469,7 +469,6 @@ interface Query : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun Query(contacts: Contacts): Query = QueryImpl(contacts)
 
 private class QueryImpl(

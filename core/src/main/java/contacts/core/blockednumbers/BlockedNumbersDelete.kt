@@ -167,7 +167,6 @@ interface BlockedNumbersDelete : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun BlockedNumbersDelete(contacts: Contacts): BlockedNumbersDelete =
     BlockedNumbersDeleteImpl(contacts, BlockedNumbersPrivileges(contacts.applicationContext))
 

@@ -247,7 +247,6 @@ interface SimContactsUpdate : CrudApi {
     }
 }
 
-@Suppress("FunctionName")
 internal fun SimContactsUpdate(contacts: Contacts): SimContactsUpdate =
     SimContactsUpdateImpl(contacts)
 

@@ -37,7 +37,6 @@ interface Accounts {
 /**
  * Creates a new [Accounts] instance for Profile or non-Profile operations.
  */
-@Suppress("FunctionName")
 internal fun Accounts(contacts: Contacts): Accounts = AccountsImpl(contacts)
 
 private class AccountsImpl(
