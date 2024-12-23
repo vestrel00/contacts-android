@@ -17,7 +17,7 @@ buildscript {
 
                 libraries: [
                         // Used only by permissions module!
-                        tedpermissions: '3.3.0'
+                        tedpermissions: '3.4.2'
                 ]
         ]
 
