@@ -34,7 +34,7 @@ as the AOSP Android Contacts app and Google Contacts app, this library is for yo
 
 - 📜 [Documentation][github-pages]
 - 🚉 [Current Release - 0.3.2](https://github.com/vestrel00/contacts-android/releases/tag/0.3.2)
-- 🚂 [Upcoming Release - 0.3.3](https://github.com/vestrel00/contacts-android/discussions/349)
+- 🚂 [Upcoming Release - 0.4.0](https://github.com/vestrel00/contacts-android/discussions/349)
 - ℹ️ [Project Status][project-status]
 - 🗺 [Project Roadmap][project-roadmap]
 - 💌 [Why use this library?][why-use-this]
@@ -86,7 +86,7 @@ The `core` module provides,
   for production-safe logging that upholds user data privacy laws to meet GDPR guidelines 
   _(this is not legal advice)_
 - ✅ [Full **in-depth documentation/guides**][github-pages].
-- ✅ Full **Java interoptibilty**
+- ✅ Full **Java interoperability**
 - ✅ Core APIs have **zero dependency**
 - ✅ Clean separation between **Contacts vs RawContacts**
 - ✅ Clear distinction between truly deeply immutable, mutable, new, and existing entities allowing for **thread safety and JetPack compose optimizations**
@@ -534,15 +534,8 @@ If you use Proguard and the `async` and/or `permissions` modules, then you may n
     limitations under the License.
 
 [project-roadmap]: https://github.com/vestrel00/contacts-android/wiki/Project-Roadmap
-[project-status]: https://github.com/vestrel00/contacts-android/discussions/284
+[project-status]: https://github.com/vestrel00/contacts-android/discussions/284#discussioncomment-11923170
 [why-use-this]: https://github.com/vestrel00/contacts-android/wiki/Why-use-this-library%3F
-[compare-other-libs]: https://github.com/vestrel00/contacts-android/wiki/Why-use-this-library%3F#how-does-this-library-compare-to-other-contacts-libraries
-[discussions]: https://github.com/vestrel00/contacts-android/discussions
-[releases]: https://github.com/vestrel00/contacts-android/releases
 [github-pages]: https://vestrel00.github.io/contacts-android/
-[medium-blog]: https://proandroiddev.com/android-contacts-reborn-19985c73ad43
-[devto-blog]: https://dev.to/vestrel00/i-spent-3-years-writing-an-android-contacts-api-in-kotlin-with-java-interop-what-ive-learned-54hp
-[reddit-blog]: https://www.reddit.com/r/androiddev/comments/rz370s/i_dedicated_3_years_to_building_this_android/
-[youtube-sao]: https://youtu.be/NlRve_B1RA0
 [contacts-provider]: https://developer.android.com/guide/topics/providers/contacts-provider
 [coroutines-proguard]: https://github.com/Kotlin/kotlinx.coroutines/blob/master/kotlinx-coroutines-core/jvm/resources/META-INF/proguard/coroutines.pro
