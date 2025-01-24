@@ -92,6 +92,16 @@ internal fun <T : ExistingDataEntity> CursorHolder<AbstractDataField>.dataEntity
     mimeType: MimeType,
     customDataRegistry: CustomDataRegistry
 ): DataEntityMapper<T> = when (mimeType) {
+    // Check custom mimetype first to allow for overriding built-in mimetypes.
+    is MimeType.Custom -> {
+        val customDataEntry = customDataRegistry.entryOf(mimeType)
+        customDataEntry.mapperFactory
+            .create(
+                cursor,
+                // Only include custom data fields assigned by this entry.
+                includeFields?.let(customDataEntry.fieldSet::intersect)
+            )
+    }
     MimeType.Address -> addressMapper()
     MimeType.Email -> emailMapper()
     MimeType.Event -> eventMapper()
@@ -106,16 +116,6 @@ internal fun <T : ExistingDataEntity> CursorHolder<AbstractDataField>.dataEntity
     MimeType.Relation -> relationMapper()
     MimeType.SipAddress -> sipAddressMapper()
     MimeType.Website -> websiteMapper()
-    is MimeType.Custom -> {
-        val customDataEntry = customDataRegistry.entryOf(mimeType)
-        customDataEntry.mapperFactory
-            .create(
-                cursor,
-                // Only include custom data fields assigned by this entry.
-                includeFields?.let(customDataEntry.fieldSet::intersect)
-            )
-    }
-
     MimeType.Unknown -> throw ContactsException(
         "No entity mapper for mime type ${mimeType.value}"
     )

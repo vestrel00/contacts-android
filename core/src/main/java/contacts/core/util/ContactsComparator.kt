@@ -127,6 +127,27 @@ private fun AbstractDataField.compare(
     rhs: Contact,
     ignoreCase: Boolean
 ): Int = when (this) {
+
+    // CUSTOM
+    // Check custom mimetype first to allow for overriding built-in mimetypes.
+    is AbstractCustomDataField -> {
+        if (customDataRegistry == null) {
+            // Custom data is unhandled if registry is not provided.
+            0
+        } else {
+            val mimeType = customDataRegistry.mimeTypeOf(this)
+
+            val fieldMapper = customDataRegistry.entryOf(mimeType).fieldMapper
+
+            val lhsCustomDataEntities = lhs.customDataSequenceOf(mimeType)
+            val rhsCustomDataEntities = rhs.customDataSequenceOf(mimeType)
+
+            lhsCustomDataEntities.compareTo(ignoreCase, rhsCustomDataEntities) {
+                fieldMapper.valueOf(this, it)
+            }
+        }
+    }
+
     // ADDRESS
     Fields.Address.Type -> lhs.addresses().compareTo(ignoreCase, rhs.addresses()) {
         it.type?.ordinal?.toString()
@@ -390,25 +411,6 @@ private fun AbstractDataField.compare(
     // WEBSITE
     Fields.Website.Url -> lhs.websites().compareTo(ignoreCase, rhs.websites()) {
         it.url
-    }
-
-    // CUSTOM
-    is AbstractCustomDataField -> {
-        if (customDataRegistry == null) {
-            // Custom data is unhandled if registry is not provided.
-            0
-        } else {
-            val mimeType = customDataRegistry.mimeTypeOf(this)
-
-            val fieldMapper = customDataRegistry.entryOf(mimeType).fieldMapper
-
-            val lhsCustomDataEntities = lhs.customDataSequenceOf(mimeType)
-            val rhsCustomDataEntities = rhs.customDataSequenceOf(mimeType)
-
-            lhsCustomDataEntities.compareTo(ignoreCase, rhsCustomDataEntities) {
-                fieldMapper.valueOf(this, it)
-            }
-        }
     }
 
     else -> 0 // Treat unhandled fields as equals instead of throwing an exception.

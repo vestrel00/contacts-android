@@ -3,7 +3,13 @@ package contacts.core.entities.custom
 import contacts.core.AbstractCustomDataField
 import contacts.core.AbstractCustomDataFieldSet
 import contacts.core.Contacts
-import contacts.core.entities.*
+import contacts.core.entities.CustomDataEntity
+import contacts.core.entities.ExistingCustomDataEntity
+import contacts.core.entities.MimeType
+import contacts.core.entities.MutableRawContact
+import contacts.core.entities.NewRawContact
+import contacts.core.entities.RawContactEntity
+import contacts.core.entities.removeAll
 
 /**
  * Registry of custom data components, enabling queries, inserts, updates, and deletes for custom
@@ -86,6 +92,7 @@ class CustomDataRegistry {
                 entityHolder.entities.clear()
                 entityHolder.entities.add(customDataEntity)
             }
+
             CustomDataCountRestriction.NO_LIMIT -> {
                 entityHolder.entities.add(customDataEntity)
             }
@@ -163,6 +170,8 @@ class CustomDataRegistry {
         @Suppress("UNCHECKED_CAST")
         return entityHolder?.entities?.toList() as? List<T> ?: emptyList()
     }
+
+    internal fun entryOfExists(mimeTypeValue: String): Boolean = entryMap[mimeTypeValue] != null
 
     internal fun entryOf(mimeType: MimeType.Custom) = entryOf(mimeType.value)
 
