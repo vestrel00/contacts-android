@@ -618,10 +618,11 @@ private fun Contacts.updateOperationsForRawContact(
         ?.let(operations::add)
 
     // Process custom data first to allow for overriding built-in data kinds.
-    // This can also be placed at the end instead of here at the beginning because operations for
-    // built-in data kinds is skipped based on the registered custom data kinds, which has
-    // nothing to do with this block of code. However, this follows the pattern of checking custom
-    // data first =)
+    // Note that this can also be placed at the end instead of here at the beginning because
+    // operations for built-in data kinds is skipped based on the registered custom data kinds,
+    // which has nothing to do with this block of code. However, this follows the pattern used
+    // throughout the codebase of checking custom data first, which makes more logical sense
+    // even if technically unnecessary.
     operations.addAll(
         rawContact.customDataUpdateInsertOrDeleteOperations(
             callerIsSyncAdapter = callerIsSyncAdapter,

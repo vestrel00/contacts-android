@@ -7,7 +7,28 @@ import contacts.core.ContactsField
 import contacts.core.GroupsField
 import contacts.core.RawContactsField
 import contacts.core.SimContactsField
-import contacts.core.entities.*
+import contacts.core.entities.Address
+import contacts.core.entities.BlockedNumber
+import contacts.core.entities.Contact
+import contacts.core.entities.Email
+import contacts.core.entities.Event
+import contacts.core.entities.ExistingDataEntity
+import contacts.core.entities.Group
+import contacts.core.entities.GroupMembership
+import contacts.core.entities.Im
+import contacts.core.entities.MimeType
+import contacts.core.entities.Name
+import contacts.core.entities.Nickname
+import contacts.core.entities.Note
+import contacts.core.entities.Options
+import contacts.core.entities.Organization
+import contacts.core.entities.Phone
+import contacts.core.entities.Photo
+import contacts.core.entities.Relation
+import contacts.core.entities.SimContact
+import contacts.core.entities.SipAddress
+import contacts.core.entities.TempRawContact
+import contacts.core.entities.Website
 import contacts.core.entities.cursor.CursorHolder
 import contacts.core.entities.cursor.addressCursor
 import contacts.core.entities.cursor.blockedNumbersCursor
@@ -93,6 +114,10 @@ internal fun <T : ExistingDataEntity> CursorHolder<AbstractDataField>.dataEntity
     customDataRegistry: CustomDataRegistry
 ): DataEntityMapper<T> = when (mimeType) {
     // Check custom mimetype first to allow for overriding built-in mimetypes.
+    // Note that this can also be placed at the end instead of here at the beginning because
+    // 'mimeType' can only be custom or one of the built-in mimetypes. However, this follows the
+    // pattern used throughout the codebase of checking custom data first, which makes more logical
+    // sense even if technically unnecessary.
     is MimeType.Custom -> {
         val customDataEntry = customDataRegistry.entryOf(mimeType)
         customDataEntry.mapperFactory
@@ -102,6 +127,7 @@ internal fun <T : ExistingDataEntity> CursorHolder<AbstractDataField>.dataEntity
                 includeFields?.let(customDataEntry.fieldSet::intersect)
             )
     }
+
     MimeType.Address -> addressMapper()
     MimeType.Email -> emailMapper()
     MimeType.Event -> eventMapper()

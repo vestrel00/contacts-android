@@ -36,6 +36,10 @@ private fun ExistingDataEntity.dataOperation(
     // Not requiring an 'else' branch.
     when (mimeType) {
         // Check custom mimetype first to allow for overriding built-in mimetypes.
+        // Note that this can also be placed at the end instead of here at the beginning because
+        // 'mimeType' can only be custom or one of the built-in mimetypes. However, this follows the
+        // pattern used throughout the codebase of checking custom data first, which makes more
+        // logical sense even if technically unnecessary.
         is MimeType.Custom -> {
             val customDataEntry = customDataRegistry
                 // Smart cast doesn't work here like this because mimeType has a custom getter. We can fix
