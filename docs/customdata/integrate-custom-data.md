@@ -38,6 +38,8 @@ Here are the steps, in chronological order, on how to define and use your own cu
 
 > ℹ️ Maybe someday someone with code generation experience (or I'll learn how to do it), will create
 > annotations and annotation processors to eliminate having to manually write this stuff =)
+> There's actually an issue for this if anyone wants to take it!
+> https://github.com/vestrel00/contacts-android/issues/210
 
 To help illustrate the above steps, we'll use the `HandleName` and `Gender` custom data provided in
 this library's `customdata-handlename` and `customdata-gender` respectively as an example.
@@ -87,10 +89,11 @@ mimetype values, then changing them could result in "data loss". Old rows in the
 be compatible if the mimetype value changes. You can certainly perform migrations by creating a new
 custom data altogether and migrating your old custom data to your new one.
 
-**Do not use built-in mimetypes!** The Contacts Provider has predefined the mimetypes for all of the
-common data kinds it supports (e.g. email). Make sure that your custom data does not use any of
-those. You can take a look at built-in mimetypes in `contacs.core.entities.MimeType.kt`. But, here
-they are for your convenience =)
+#### Be aware of built-in mimetypes!
+
+In general, it is recommended to **avoid using built-in mimetypes!** The Contacts Provider has 
+predefined the mimetypes for all of the common data kinds it supports (e.g. email). You can take a 
+look at built-in mimetypes in `contacs.core.entities.MimeType.kt`. Here they are for reference...
 
 | **Builtin data kind** | **mimetype**                                |
 |-----------------------|---------------------------------------------|
@@ -108,6 +111,19 @@ they are for your convenience =)
 | Relation              | "vnd.android.cursor.item/relation"          |
 | SipAddress            | "vnd.android.cursor.item/sip_address"       |
 | Website               | "vnd.android.cursor.item/website"           |
+
+#### Overriding built-in mimetypes
+
+This API allows you to override the behavior of built-in mimetypes. However, as previously mentioned,
+this practice is NOT RECOMMENDED. Overriding built-in mimetypes for use in your own apps may work
+just fine in your own apps BUT may result in unexpected behavior when other apps such as AOSP or
+Google Contacts display and/or modify the overridden data.
+
+In case you really want to override a built-in mimetype, simply use one of the mimetypes shown in 
+the above table as your custom data's mimetype. This library provides prebuilt custom data that
+overrides a built-in mimetype, which you may use in your own apps or just for reference.
+
+- [Integrate the multiple notes custom data](./../customdata/integrate-multiple-notes-custom-data.md)
 
 ## 2. Define the entities
 
@@ -734,7 +750,7 @@ like this,
         viewStreamItemActivity="viewstream_activity_name"
         viewStreamItemPhotoActivity="viewphotostream_activity_name">
     <ContactsDataKind
-        android:mimeType="MIMEtype"
+        android:mimeType="mimetype"
         android:icon="icon_resources"
         android:summaryColumn="column_name"
         android:detailColumn="column_name" />

@@ -51,6 +51,7 @@ nav:
     - 'Integrate the Google Contacts custom data': customdata/integrate-googlecontacts-custom-data.md
     - 'Integrate the Gender custom data': customdata/integrate-gender-custom-data.md
     - 'Integrate the Handle Name custom data': customdata/integrate-handlename-custom-data.md
+    - 'Integrate the Multiple Notes custom data': customdata/integrate-multiple-notes-custom-data.md
     - 'Integrate the Pokemon custom data': customdata/integrate-pokemon-custom-data.md
     - 'Integrate the RPG custom data': customdata/integrate-rpg-custom-data.md
   - 'Groups':
