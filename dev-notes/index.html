@@ -3269,7 +3269,9 @@ with an Account and are synced).</p>
 <li>Contact With Local RawContact: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50</li>
 <li>Contact With Synced RawContact: 2059i6f5de8460f7f227e</li>
 </ul>
-<p>The Contact with synced RawContact uses the RawContact's <code>SOURCE_ID</code> as part of its lookup key.</p>
+<p>The Contact with synced RawContact uses the RawContact's <code>SOURCE_ID</code> as <strong>part</strong> of its lookup key.
+Notice that the <code>sourceId</code> value (i.e. 6f5de8460f7f227e) is NOT exactly the same as the <code>lookupKey</code>
+(i.e. 2059i6f5de8460f7f227e)!</p>
 <p>The Contact with unsynced, device-only, local RawContact has a much longer (or shorter e.g. 0r62-2A2C2E)
 lookup key and starts with "0r<RawContact ID>-" and all characters after it are in uppercase. The 
 other thing to notice is that the "55" in "0r55-" seems to be the same as the RawContact ID (I did 
@@ -3468,7 +3470,7 @@ device to Account) and vice versa. Is the lookup key of the Contact affected?</p
 <div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>#### Contacts table
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>Contact id: 58, lookupKey: 2059i4abd4a8f8ff89642
 </span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>#### RawContacts table
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>RawContact id: 55, contactId: 58, sourceId: 2059i4abd4a8f8ff89642
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>RawContact id: 55, contactId: 58, sourceId: 4abd4a8f8ff89642
 </span></code></pre></div>
 <p>The lookup key changed (since the RawContact's source ID has been assigned the value that came from
 the sync adapter) but the Contact ID remained the same! In this case, loading a reference to
