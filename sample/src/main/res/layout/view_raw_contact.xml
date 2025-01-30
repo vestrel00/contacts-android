@@ -37,6 +37,14 @@
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
     </RelativeLayout>
 
+    <!-- Source Id -->
+    <TextView
+        android:id="@+id/source_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+
     <!-- Name -->
     <TextView
         android:layout_width="match_parent"

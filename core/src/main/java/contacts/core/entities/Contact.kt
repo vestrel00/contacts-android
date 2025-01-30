@@ -4,7 +4,7 @@ import android.net.Uri
 import contacts.core.redactedCopies
 import contacts.core.util.isProfileId
 import kotlinx.parcelize.Parcelize
-import java.util.*
+import java.util.Date
 
 /**
  * [Entity] that holds data modeling columns in the Contacts table.
@@ -220,11 +220,6 @@ sealed interface ExistingContactEntity : ContactEntity, ExistingEntity {
      * than just a row in a table. It is the unique identifier used by local and remote sync
      * adapters to identify an aggregate contact.
      *
-     * Actually, it seems like the Contact lookup key is a reference to a RawContact (or all of its
-     * constituent RawContacts). RawContacts have a reference to the parent Contact via the
-     * Contact ID. Similarly, the parent Contact has a reference to all of its constituent
-     * RawContacts via the lookup key.
-     *
      * ## When to use Contact lookup key vs Contact ID?
      *
      * Use the **Contact lookup key** when you need to save a reference to a Contact that you want
@@ -259,6 +254,15 @@ sealed interface ExistingContactEntity : ContactEntity, ExistingEntity {
      * Note that if the lookup key is a reference to a linked Contact (a Contact with two or more
      * constituent RawContacts), and the linked Contact is unlinked, then the query will return
      * multiple Contacts.
+     *
+     * ## The [lookupKey] vs [RawContactEntity.sourceId]
+     *
+     * RawContacts do not have a lookup key. It is exclusive to Contacts. However, RawContacts
+     *  associated with an Account that have a SyncAdapter typically have a non-null value in the
+     * [RawContactEntity.sourceId], which is typically used as **part** of the
+     * parent [ExistingContactEntity.lookupKey]. For example, a RawContact that has a sourceId of
+     * 6f5de8460f7f227e belongs to a Contact that has a lookup key of 2059i6f5de8460f7f227e. Notice
+     * that the value of the sourceId is not exactly the same as the value of the lookup key!
      */
     val lookupKey: String?
 

@@ -37,9 +37,6 @@ fun ExistingRawContactEntity.contact(
     contacts: Contacts,
     cancel: () -> Boolean = { false }
 ): Contact? = contacts.getContactIdFromRawContactsTable(id)?.let { contactIdFromDb ->
-    // Note that we do not need to use the Contact lookup key because we are fetching the latest
-    // Contact ID value from database anyways. Lookup by ID (a number) is faster than lookup by
-    // lookup key (String/Text).
     contacts.findContactWithId(contactIdFromDb, cancel)
 }
 

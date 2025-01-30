@@ -30,19 +30,16 @@ Unlike the Contact ID, the lookup key's components (it can be more than one if t
 one constituent RawContact) is the same across devices (for contacts that are associated
 with an Account and are synced). The lookup key points to a person entity rather than just a row 
 in a table. It is the unique identifier used by local and remote sync adapters to identify an 
-aggregate contact. 
+aggregate contact.
 
-> ℹ️ Actually, it seems like the Contact lookup key is a reference to a RawContact (or all of its
-> constituent RawContacts). RawContacts have a reference to the parent Contact via the Contact ID. 
-> Similarly, the parent Contact has a reference to all of its constituent RawContacts via the 
-> lookup key.
+> ℹ️ RawContacts do not have a lookup key. It is exclusive to Contacts. However, RawContacts 
+> associated with an Account that have a SyncAdapter typically have a non-null value in the 
+> `ContactsContract.SyncColumns.SOURCE_ID` column, which is typically used as **part** of the 
+> parent Contact's lookup key. For example, a RawContact that has a sourceId of 6f5de8460f7f227e 
+> belongs to a Contact that has a lookup key of 2059i6f5de8460f7f227e. Notice that the value of the
+> sourceId is not exactly the same as the value of the lookup key!
 
-Note that RawContacts do not have a lookup key. It is exclusive to Contacts. However, RawContacts 
-associated with an Account that have a SyncAdapter typically have a non-null value in the 
-`ContactsContract.SyncColumns.SOURCE_ID` column, which is typically used as a component in the 
-parent Contact's lookup key.
-
-> ⚠️Setting the RawContact's `SOURCE_ID` to a different value will change the lookup key of the
+> ⚠️ Setting the RawContact's `SOURCE_ID` to a different value will change the lookup key of the
 > parent Contact, which may break existing shortcuts!
 
 ## When to use Contact lookup key vs Contact ID?
@@ -172,7 +169,7 @@ Contact id: 55, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A
 Contact id: 56, lookupKey: 2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
 #### RawContacts table
 RawContact id: 55, contactId: 55, sourceId: null, displayNamePrimary: Contact With Local RawContact
-RawContact id: 56, contactId: 56, sourceId: 2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
+RawContact id: 56, contactId: 56, sourceId: 6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
 ```
 
 There are two Contacts each having one RawContact.
@@ -182,7 +179,9 @@ Notice that the lookup keys are a bit different.
 - Contact With Local RawContact: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50
 - Contact With Synced RawContact: 2059i6f5de8460f7f227e
 
-The Contact with synced RawContact uses te RawContact's `SOURCE_ID` as part of its lookup key.
+The Contact with synced RawContact uses the RawContact's `SOURCE_ID` as **part** of its lookup key.
+Notice that the `sourceId` value (i.e. 6f5de8460f7f227e) is NOT exactly the same as the `lookupKey`
+(i.e. 2059i6f5de8460f7f227e)!
 
 The Contact with unsynced, device-only, local RawContact has a much longer (or shorter e.g. 0r62-2A2C2E)
 lookup key and starts with "0r<RawContact ID>-" and all characters after it are in uppercase. The

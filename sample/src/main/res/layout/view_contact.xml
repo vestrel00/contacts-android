@@ -44,6 +44,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+        <TextView
+            android:id="@+id/lookupKey"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tableRowId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
 
     <!-- RawContacts -->

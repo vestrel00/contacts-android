@@ -1,9 +1,13 @@
 package contacts.core.util
 
-import contacts.core.*
+import contacts.core.Contacts
+import contacts.core.Fields
+import contacts.core.Include
+import contacts.core.contentResolver
 import contacts.core.entities.Contact
 import contacts.core.entities.ExistingDataEntity
 import contacts.core.entities.cursor.dataCursor
+import contacts.core.equalTo
 
 /**
  * Returns the [Contact] with the [ExistingDataEntity.contactId].
@@ -30,9 +34,6 @@ import contacts.core.entities.cursor.dataCursor
 @JvmOverloads
 fun ExistingDataEntity.contact(contacts: Contacts, cancel: () -> Boolean = { false }): Contact? =
     contacts.getContactIdFromDataTable(id)?.let { contactIdFromDb ->
-        // Note that we do not need to use the Contact lookup key because we are fetching the latest
-        // Contact ID value from database anyways. Lookup by ID (a number) is faster than lookup by
-        // lookup key (String/Text).
         contacts.findContactWithId(contactIdFromDb, cancel)
     }
 

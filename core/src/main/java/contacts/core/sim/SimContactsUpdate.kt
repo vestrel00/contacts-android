@@ -61,7 +61,7 @@ import contacts.core.sim.SimContactsUpdate.Result.FailureReason
  * ```
  *
  * **IMPORTANT!** The current entry in the SIM table is not updated based on the ID. Instead, the
- * name AND number are used to lookup the entry to update. Continuing the example above, if you
+ * name AND number are used to find the entry to update. Continuing the example above, if you
  * need to make another update, then you must use the modified copy as the current,
  *
  * In Kotlin,

@@ -169,7 +169,9 @@ Notice that the lookup keys are a bit different.
 - Contact With Local RawContact: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50
 - Contact With Synced RawContact: 2059i6f5de8460f7f227e
 
-The Contact with synced RawContact uses the RawContact's `SOURCE_ID` as part of its lookup key.
+The Contact with synced RawContact uses the RawContact's `SOURCE_ID` as **part** of its lookup key.
+Notice that the `sourceId` value (i.e. 6f5de8460f7f227e) is NOT exactly the same as the `lookupKey`
+(i.e. 2059i6f5de8460f7f227e)!
 
 The Contact with unsynced, device-only, local RawContact has a much longer (or shorter e.g. 0r62-2A2C2E)
 lookup key and starts with "0r<RawContact ID>-" and all characters after it are in uppercase. The 
@@ -349,7 +351,7 @@ After associating the local RawContact to an Account...
 #### Contacts table
 Contact id: 58, lookupKey: 2059i4abd4a8f8ff89642
 #### RawContacts table
-RawContact id: 55, contactId: 58, sourceId: 2059i4abd4a8f8ff89642
+RawContact id: 55, contactId: 58, sourceId: 4abd4a8f8ff89642
 ```
 
 The lookup key changed (since the RawContact's source ID has been assigned the value that came from

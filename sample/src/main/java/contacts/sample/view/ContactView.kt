@@ -14,7 +14,12 @@ import contacts.async.profile.commitWithContext
 import contacts.async.profile.findWithContext
 import contacts.async.util.contactWithContext
 import contacts.core.Contacts
-import contacts.core.entities.*
+import contacts.core.entities.ContactEntity
+import contacts.core.entities.ExistingContactEntity
+import contacts.core.entities.ExistingRawContactEntity
+import contacts.core.entities.NewOptions
+import contacts.core.entities.NewRawContact
+import contacts.core.entities.RawContactEntity
 import contacts.core.util.lookupKeyIn
 import contacts.core.util.shareVCardIntent
 import contacts.permissions.deleteWithPermission
@@ -125,6 +130,8 @@ class ContactView @JvmOverloads constructor(
     private val displayNamePrimaryView: TextView
     private val displayNameAltView: TextView
     private val lastUpdatedView: TextView
+    private val tableRowIdView: TextView
+    private val lookupKeyView: TextView
 
     // RawContacts
     // [ANDROID X] Not using RecyclerView to avoid dependency on androidx.recyclerview.
@@ -149,6 +156,8 @@ class ContactView @JvmOverloads constructor(
         displayNamePrimaryView = findViewById(R.id.displayNamePrimary)
         displayNameAltView = findViewById(R.id.displayNameAlt)
         lastUpdatedView = findViewById(R.id.lastUpdated)
+        tableRowIdView = findViewById(R.id.tableRowId)
+        lookupKeyView = findViewById(R.id.lookupKey)
 
         rawContactsView = findViewById(R.id.rawContacts)
     }
@@ -321,6 +330,15 @@ class ContactView @JvmOverloads constructor(
         displayNamePrimaryView.text = "Display name primary: ${contact?.displayNamePrimary}"
         displayNameAltView.text = "Display name alt: ${contact?.displayNameAlt}"
         lastUpdatedView.text = "Last updated: ${contact?.lastUpdatedTimestamp}"
+
+        val lookupKey: String? = if (contact != null && contact is ExistingContactEntity) {
+            contact.lookupKey
+        } else {
+            null
+        }
+        lookupKeyView.text = "Lookup key: $lookupKey"
+
+        tableRowIdView.text = "Contacts table row id: ${contact?.idOrNull}"
     }
 
     private fun setRawContactsView(

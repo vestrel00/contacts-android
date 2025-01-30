@@ -192,8 +192,9 @@ sealed interface RawContactEntity : Entity {
      * > source id. This indicates to the sync adapter that a new contact needs to be created
      * > server-side and its ID stored in the corresponding SOURCE_ID field on the phone.
      *
-     * The source ID will be null if the RawContact is not associated/managed by an [account] that
-     * has a sync adapter that assigns a non-null value to it.
+     * Additionally, the **source ID will and should be null** if the RawContact is not
+     * associated/managed by an [account] that has a sync adapter that assigns a non-null value to
+     * it.
      *
      * ## Not guaranteed to be immediate!
      *
@@ -222,11 +223,18 @@ sealed interface RawContactEntity : Entity {
      * Do NOT mess with this unless you know exactly what you are doing. Otherwise, it MAY cause
      * issues with syncing with respect to the Account's sync adapter and remote servers/databases.
      *
-     * ## Other things to note
-     *
      * Surprisingly, setting/modifying this value does not require
      * [android.provider.ContactsContract.CALLER_IS_SYNCADAPTER] to be set to true. This means that
      * regular applications can set/modify it... The best we can do is document this.
+     *
+     * ## The [ExistingContactEntity.lookupKey] vs [sourceId]
+     *
+     * RawContacts do not have a lookup key. It is exclusive to Contacts. However, RawContacts
+     *  associated with an Account that have a SyncAdapter typically have a non-null value in the
+     * [RawContactEntity.sourceId], which is typically used as **part** of the
+     * parent [ExistingContactEntity.lookupKey]. For example, a RawContact that has a sourceId of
+     * 6f5de8460f7f227e belongs to a Contact that has a lookup key of 2059i6f5de8460f7f227e. Notice
+     * that the value of the sourceId is not exactly the same as the value of the lookup key!
      */
     val sourceId: String?
 
