@@ -302,16 +302,8 @@ sealed interface ExistingRawContactEntity : RawContactEntity, ExistingEntity {
      * display name will be the email. When a [Name] is inserted, the Contacts Provider
      * automatically updates the [ExistingRawContactEntity.displayNamePrimary].
      *
-     * If data rows suitable to be a [ExistingRawContactEntity.displayNamePrimary] are not
-     * available, it will be null.
-     *
-     * Data suitable to be the raw contact's display name are;
-     *
-     * - [Organization]
-     * - [Email]
-     * - [Name]
-     * - [Nickname]
-     * - [Phone]
+     * Display name sources are specified in `ContactsContract.DisplayNameSources`. In order of
+     * increasing priority; [Email], [Phone], [Organization], [Nickname], and [Name].
      *
      * ## [ContactEntity.displayNamePrimary] vs [ExistingRawContactEntity.displayNamePrimary]
      *

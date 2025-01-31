@@ -27,11 +27,14 @@ public class QueryContactsAdvancedActivity extends Activity {
         return !result.isEmpty() ? result.get(0) : null;
     }
 
-    List<Contact> getContactByLookupKey(String lookupKey) {
+    List<Contact> getContactByLookupKey(String lookupKey, long contactId) {
         return ContactsFactory.create(this)
                 .query()
                 .where(
-                        lookupKeyIn(Fields.Contact, lookupKey)
+                        or(
+                                equalTo(Fields.Contact.Id, contactId),
+                                lookupKeyIn(Fields.Contact, lookupKey)
+                        )
                 )
                 .find();
     }

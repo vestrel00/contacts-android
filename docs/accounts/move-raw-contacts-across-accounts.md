@@ -229,6 +229,8 @@ _Yes, like all other behaviors of this API, this is the same as Google Contacts.
 This means that references to Contact IDs and lookup keys, RawContact IDs and source IDs may become 
 invalid. Shortcuts using aforementioned properties may break after performing this operation.
 
+> ℹ️ For more info, read [Contact lookup key vs ID](./../entities/about-contact-lookup-key.md).
+
 ## (Raw)Contact links (AggregationExceptions) are copied over
 
 For example, if there are two or more RawContacts that are linked to the same Contact, moving one

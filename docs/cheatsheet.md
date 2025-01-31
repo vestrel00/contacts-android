@@ -175,10 +175,10 @@ heading explore each API in full detail. You may also find these samples in the 
             .where { Contact.Id equalTo contactId }
             .find()
             .firstOrNull()
-    
-        fun getContactByLookupKey(lookupKey: String): List<Contact> = Contacts(this)
+
+        fun getContactByLookupKey(lookupKey: String, contactId: Long): List<Contact> = Contacts(this)
             .query()
-            .where { Contact.lookupKeyIn(lookupKey) }
+            .where { Contact.lookupKeyIn(lookupKey)?.or(Contact.Id equalTo contactId) }
             .find()
     
         fun getAllContactsForAGoogleAccount(): List<Contact> = Contacts(this)
@@ -254,12 +254,15 @@ heading explore each API in full detail. You may also find these samples in the 
                     .find();
             return !result.isEmpty() ? result.get(0) : null;
         }
-    
-        List<Contact> getContactByLookupKey(String lookupKey) {
+        
+        List<Contact> getContactByLookupKey(String lookupKey, long contactId) {
             return ContactsFactory.create(this)
                     .query()
                     .where(
-                            lookupKeyIn(Fields.Contact, lookupKey)
+                            or(
+                                    equalTo(Fields.Contact.Id, contactId),
+                                    lookupKeyIn(Fields.Contact, lookupKey)
+                            )
                     )
                     .find();
         }

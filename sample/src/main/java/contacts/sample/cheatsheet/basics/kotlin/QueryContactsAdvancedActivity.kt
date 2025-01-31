@@ -14,9 +14,9 @@ class QueryContactsAdvancedActivity : Activity() {
         .find()
         .firstOrNull()
 
-    fun getContactByLookupKey(lookupKey: String): List<Contact> = Contacts(this)
+    fun getContactByLookupKey(lookupKey: String, contactId: Long): List<Contact> = Contacts(this)
         .query()
-        .where { Contact.lookupKeyIn(lookupKey) }
+        .where { Contact.lookupKeyIn(lookupKey)?.or(Contact.Id equalTo contactId) }
         .find()
 
     fun getAllContactsForAGoogleAccount(): List<Contact> = Contacts(this)

@@ -761,6 +761,9 @@ private fun Contacts.findMatchingContactIds(
     match: Match, searchString: String, cancel: () -> Boolean
 ): Set<Long> = contentResolver.query(
     ContactsContract.PhoneLookup.CONTENT_FILTER_URI
+        // Note that CALLER_IS_SYNCADAPTER probably does not really matter for queries but might as
+        // well be consistent...
+        .forSyncAdapter(callerIsSyncAdapter)
         .buildUpon()
         .appendEncodedPath(Uri.encode(searchString))
         .let {

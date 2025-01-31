@@ -51,6 +51,11 @@ fetch after some period of time.
 - Saving to an external database, preferences, or files.
 - Creating shortcuts.
 
+> ⚠️ The lookup key may change if it's constituent RawContacts that are not associated with an 
+> Account (local, unsynced, source id is null) gets its primary display name source updated
+> (name, email, or phone). Therefore, it is recommended to use the Contact ID as a fallback
+> in case the lookup key has changed.
+
 Use the **Contact ID** for everything else.
 
 - Performing read/write operations in the same function call or session in your app.
@@ -73,60 +78,64 @@ For more info, read [Include only certain fields for read and write operations](
 
 ## How to get Contacts using lookup keys?
 
+There are several ways to do this...
+
+#### Using the `LookupQuery`
+
+TODO https://github.com/vestrel00/contacts-android/issues/364
+
+#### Using the `Query` API
+
+You may also use the `Query` API to achieve the same result. However, in this case, using the 
+Contact ID is necessary in order to ensure the lookup succeeds (in case the lookup key changes).
+
 Use the `decomposedLookupKeys` functions in `contacts.core.util.ContactLookupKey.kt` to get contacts 
-by lookup key,
+by lookup key and id,
 
 ```kotlin
-val contacts = query.where { decomposedLookupKeys(lookupKeys) whereOr { Contact.LookupKey contains it } }.find()
+val contacts = query.where { (decomposedLookupKeys(lookupKey) whereOr { Contact.LookupKey contains it })?.or(Contact.Id equalTo id) }.find()
 ```
 
 Or use the `lookupKeyIn` extensions in `contacts.core.util.ContactLookupKey.kt` to get contacts
-by lookup key,
+by lookup key and id,
 
 ```kotlin
-val contacts = query.where { Contact.lookupKeyIn(lookupKeys) }.find()
+val contacts = query.where { Contact.lookupKeyIn(lookupKeys)?.or(Contact.Id equalTo id) }.find()
 ```
 
-For an explanation on why you should use those functions instead of the lookup key directly,
-read the function documentation.
+> ℹ️ For an explanation on why you should use those functions instead of the lookup key directly,
+> read the function documentation.
 
-Note that if the lookup key is a reference to a linked Contact (a Contact with two or more
-constituent RawContacts), and the linked Contact is unlinked, then the query will return
-multiple Contacts.
+> ⚠️ Queries that only use the lookup key may fail to get a contact whose lookup key has changed.
+> On the other hand, queries that only use the Contact ID may fail to get a contact whose ID has
+> changed. You must use both lookup key and ID when using the `Query` API. If you only have the 
+> lookup key, use the `LookupQuery` API.
+
+> ℹ️ Note that if the lookup key or id is a reference to a linked Contact (a Contact with two or more
+> constituent RawContacts), and the linked Contact is unlinked, then the query will return
+> multiple Contacts.
 
 > ℹ️ For more info, read [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
 
-## Moving RawContacts between accounts and the lookup key
+## Updating local, device-only contacts and the lookup key
 
-Moving a RawContact to a different Account will cause the Contact lookup key to change. 
-In these cases, the changes to the lookup key will only be applied after the Contacts Provider and 
-sync adapters sync the changes. This means that the local changes are not immediately applied.
+The ContactsProvider may assign a different value to the Contact lookup key if it's constituent
+RawContacts that are not associated with an Account (local, unsynced, source id is null) gets its
+primary display name source updated. _Display name sources are specified in `ContactsContract.DisplayNameSources`.
+In order of increasing priority; email, phone, organization, nickname, and name._
 
-> ℹ️ For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
+However, the IDs remain the same.
 
-Moving a RawContact from one Account to another will result in a failed query using lookup keys.
-
-For example, using the default AOSP Contacts app or the Google Contacts app...
-
-1. View a contact's details.
-2. Create a shortcut to it in the home screen (launcher).
-   - This shortcut uses the Contact lookup key (not the ID) to form a lookup URI.
-3. Move the RawContact to a different Account.
-4. Tap the shortcut in the home screen (launcher).
-
-Both Contacts apps will say that the Contact no longer exist or has been removed. This is not a bug.
-It is expected behavior due to the way the Contacts Provider works.
-
-> ℹ️ For more info, read [Move RawContacts across Accounts](./../accounts/move-raw-contacts-across-accounts.md).
+Therefore, it is still possible to get the contacts after updating using IDs.
 
 ## Linking/unlinking contacts and the lookup key
 
-Linking and unlinking RawContacts will change the value of the lookup key. However, as discussed
-in prior sections, you are still able to use the lookup key to find the aggregate Contact even
-though the Contact ID has changed.
+Linking and unlinking RawContacts will cause the lookup key to change as the RawContact's source ids
+get combined and separated respectively. However, the intrinsic values contained within the lookup 
+key remains the same. The Contact IDs may also change as Contacts get deleted and created when 
+linking and unlinking respectively.
 
-Linking/unlinking contacts will result in a successful lookup using lookup keys prior to the
-Account change.
+Therefore, it is still possible to get the contacts after linking/unlinking using the lookup key.
 
 For example, using the default AOSP Contacts app or the Google Contacts app...
 
@@ -141,6 +150,29 @@ For example, using the default AOSP Contacts app or the Google Contacts app...
 In both cases, the shortcut successfully opens the correct aggregate Contact.
 
 > ℹ️ For more info on linking/unlinking, read [Link unlink Contacts](./../other/link-unlink-contacts.md).
+
+## Moving RawContacts between accounts and the lookup key
+
+Moving a RawContact to a different Account will cause the lookup key and IDs to change.
+
+> ℹ️ Note that in these cases, the changes to the lookup key will only be applied after the Contacts
+> Provider and sync adapters sync the changes. This means that the local changes are not immediately
+> applied. For more info, read [Sync contact data across devices](./../entities/sync-contact-data.md).
+
+Therefore, it is no longer possible to get the contacts after moving using the lookup key or IDs.
+
+For example, using the default AOSP Contacts app or the Google Contacts app...
+
+1. View a contact's details.
+2. Create a shortcut to it in the home screen (launcher).
+    - This shortcut uses the Contact lookup key (not the ID) to form a lookup URI.
+3. Move the RawContact to a different Account.
+4. Tap the shortcut in the home screen (launcher).
+
+Both Contacts apps will say that the Contact no longer exist or has been removed. This is not a bug.
+It is expected behavior due to the way the Contacts Provider works.
+
+> ℹ️ For more info, read [Move RawContacts across Accounts](./../accounts/move-raw-contacts-across-accounts.md).
 
 ------------------------
 
@@ -216,56 +248,7 @@ Notice,
 
 The most important part to notice is that the lookup keys get combined.
 
-The lookup uri is required to build a `Contacts.CONTENT_LOOKUP_URI`...
-
-```java
-/**
- * A content:// style URI for this table that should be used to create
- * shortcuts or otherwise create long-term links to contacts. This URI
- * should always be followed by a "/" and the contact's {@link #LOOKUP_KEY}.
- * It can optionally also have a "/" and last known contact ID appended after
- * that. This "complete" format is an important optimization and is highly recommended.
- * <p>
- * As long as the contact's row ID remains the same, this URI is
- * equivalent to {@link #CONTENT_URI}. If the contact's row ID changes
- * as a result of a sync or aggregation, this URI will look up the
- * contact using indirect information (sync IDs or constituent raw
- * contacts).
- * <p>
- * Lookup key should be appended unencoded - it is stored in the encoded
- * form, ready for use in a URI.
- */
-public static final Uri CONTENT_LOOKUP_URI = Uri.withAppendedPath(CONTENT_URI, "lookup");
-
-/**
- * Build a {@link #CONTENT_LOOKUP_URI} lookup {@link Uri} using the
- * given {@link ContactsContract.Contacts#_ID} and {@link #LOOKUP_KEY}.
- * <p>
- * Returns null if unable to construct a valid lookup URI from the
- * provided parameters.
- */
-public static Uri getLookupUri(long contactId, String lookupKey) {
-    if (TextUtils.isEmpty(lookupKey)) {
-        return null;
-    }
-    return ContentUris.withAppendedId(Uri.withAppendedPath(Contacts.CONTENT_LOOKUP_URI, lookupKey), contactId);
-}
-```
-
-From the lookup uri, we can lookup the Contact row...
-
-```java
-public static Uri lookupContact(ContentResolver resolver, Uri lookupUri) { ... }
-```
-
-Or simply get the Contact ID...
-
-```java
-// code inside `public static Uri lookupContact`
-resolver.query(lookupUri, new String[]{Contacts._ID}, null, null, null)
-```
-
-However, given that the lookup key of the deleted Contact 56 still lives on, it is possible to get
+Given that the lookup key of the deleted Contact 56 still lives on, it is possible to get
 the linked Contact 55 using the lookup key of Contact 56 using our standard query APIs!
 
 ```kotlin
@@ -282,8 +265,7 @@ The above is correct as long as these assumptions hold true;
       differences in pattern between long and short lookup keys. It should be safe to make this
       assumption.
 
-Until the community finds that this assumption is flawed, we'll assume that it is true! For now, we
-can **avoid having to create another API or extensions just for using lookup keys**.
+Until the community finds that this assumption is flawed, we'll assume that it is true! 
 
 **When we unlink**, we get...
 
@@ -353,38 +335,53 @@ So when to use Contact ID vs lookup key?
     - Performing read/write operations that require ID (e.g. Contact photo and options).
 
 Another thing to check is what happens when associating a local RawContact to an Account (move from
-device to Account) and vice versa. Is the lookup key of the Contact affected?
+device to Account) and vice versa. Is the lookup key of the Contact affected? Yes. The Contact,
+RawContacts, and Data rows have been deleted and new rows have been created to replace them! This
+means that all IDs have changed. The Contact lookup key and the RawContacts source ID also changed.
 
-After associating the local RawContact to an Account...
+**Local contact's lookup key may change but row ID remain the same!**
 
+The ContactsProvider may assign a different value to the Contact lookup key if it's constituent
+RawContacts that are not associated with an Account (local, unsynced, source id is null) gets its
+primary display name source updated. Display name sources are specified in `ContactsContract.DisplayNameSources`.
+In order of increasing priority; email, phone, organization, nickname, and name.
+
+This suggests that the lookup key for local contacts depends on the primary display name. It 
+probably uses its hashed value as the value of the lookup key or something like that.
+
+To account for this scenario, ContactsContract provides `Contacts.CONTENT_LOOKUP_URI` and 
+`getLookupUri`...
+
+```java
+/**
+ * A content:// style URI for this table that should be used to create
+ * shortcuts or otherwise create long-term links to contacts. This URI
+ * should always be followed by a "/" and the contact's {@link #LOOKUP_KEY}.
+ * It can optionally also have a "/" and last known contact ID appended after
+ * that. This "complete" format is an important optimization and is highly recommended.
+ * <p>
+ * As long as the contact's row ID remains the same, this URI is
+ * equivalent to {@link #CONTENT_URI}. If the contact's row ID changes
+ * as a result of a sync or aggregation, this URI will look up the
+ * contact using indirect information (sync IDs or constituent raw
+ * contacts).
+ * <p>
+ * Lookup key should be appended unencoded - it is stored in the encoded
+ * form, ready for use in a URI.
+ */
+public static final Uri CONTENT_LOOKUP_URI = Uri.withAppendedPath(CONTENT_URI, "lookup");
+
+/**
+ * Build a {@link #CONTENT_LOOKUP_URI} lookup {@link Uri} using the
+ * given {@link ContactsContract.Contacts#_ID} and {@link #LOOKUP_KEY}.
+ * <p>
+ * Returns null if unable to construct a valid lookup URI from the
+ * provided parameters.
+ */
+public static Uri getLookupUri(long contactId, String lookupKey) {
+    if (TextUtils.isEmpty(lookupKey)) {
+        return null;
+    }
+    return ContentUris.withAppendedId(Uri.withAppendedPath(Contacts.CONTENT_LOOKUP_URI, lookupKey), contactId);
+}
 ```
-#### Contacts table
-Contact id: 58, lookupKey: 2059i4abd4a8f8ff89642
-#### RawContacts table
-RawContact id: 55, contactId: 58, sourceId: 4abd4a8f8ff89642
-```
-
-The lookup key changed (since the RawContact's source ID has been assigned the value that came from
-the sync adapter) but the Contact ID remained the same! In this case, loading a reference to
-the previously local Contact will fail! I verified that this is indeed the behavior of the native
-(AOSP) Contacts app. Moving the RawContact from device to Google using Google Contacts app while
-having Contact details activity opened in the AOSP Contacts app will result in "error Contact does
-not exist" message in the AOSP Contacts app!
-
-> ℹ️ The RawContact and its Data also remained the same in this case.
-
-Removing the account from it results in...
-
-```
-#### Contacts table
-Contact id: 59, lookupKey: 0r58-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50
-#### RawContacts table
-RawContact id: 58, contactId: 59, sourceId: null
-```
-
-The Contact and RawContacts row have been deleted and new rows have been created to replace them!
-I also verified that the Data rows have also been deleted and new rows have been created to
-replace them!
-
-This stuff is not really relevant for lookup key but still good to know for implementing
-moving RawContacts between accounts.

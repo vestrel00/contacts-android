@@ -896,8 +896,8 @@ private fun Contacts.findContactIdsInDataTable(
     searchString: String, cancel: () -> Boolean
 ): Set<Long> = contentResolver.query(
     Uri.withAppendedPath(
-        // Note that CALLER_IS_SYNCADAPTER probably does not really matter for queries but might as well
-        // be consistent...
+        // Note that CALLER_IS_SYNCADAPTER probably does not really matter for queries but might as
+        // well be consistent...
         contentFilterUri.forSyncAdapter(callerIsSyncAdapter),
         Uri.encode(searchString)
     ),

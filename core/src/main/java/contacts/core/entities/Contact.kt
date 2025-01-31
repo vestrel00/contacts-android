@@ -58,16 +58,8 @@ sealed interface ContactEntity : Entity {
      * be the email. When a [Name] is inserted, the Contacts Provider automatically updates the
      * [ContactEntity.displayNamePrimary].
      *
-     * If data rows suitable to be a [ContactEntity.displayNamePrimary] are not available, it will
-     * be null.
-     *
-     * Data suitable to be the contact's display name are;
-     *
-     * - [Organization]
-     * - [Email]
-     * - [Name]
-     * - [Nickname]
-     * - [Phone]
+     * Display name sources are specified in `ContactsContract.DisplayNameSources`. In order of
+     * increasing priority; [Email], [Phone], [Organization], [Nickname], and [Name].
      *
      * ## Display name may change upon data updates
      *

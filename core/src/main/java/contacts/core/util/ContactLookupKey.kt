@@ -4,12 +4,31 @@ import contacts.core.*
 import contacts.core.entities.ExistingContactEntity
 
 /**
- * Returns a [Where] clause for finding Contacts with one of the given [lookupKeys].
+ * Returns a [Where] clause for finding Contacts with one of the given [lookupKeys]. Returns null if
+ * the [lookupKeys] is empty.
  *
- * This will return null if the [lookupKeys] is empty.
+ * For example;
+ *
+ * ```kotlin
+ * val contacts = query.where { Contact.lookupKeyIn(lookupKey) }.find()
+ * ```
  *
  * For more info about why you should use this function instead of directly using
  * [ExistingContactEntity.lookupKey] in queries, read documentation in [decomposedLookupKeys].
+ *
+ * ## Use Contact ID as fallback!
+ *
+ * For example;
+ *
+ * ```kotlin
+ * val contacts = query.where { Contact.lookupKeyIn(lookupKey)?.or(Contact.Id equalTo id) }.find()
+ * ```
+ *
+ * The reason for doing this is because the ContactsProvider may assign a different value to the
+ * Contact lookup key if it's constituent RawContacts that are not associated with an Account
+ * (local, unsynced, source id is null) gets its primary display name source updated. Display name
+ * sources are specified in `ContactsContract.DisplayNameSources`. In order of increasing priority;
+ * email, phone, organization, nickname, and name.
  */
 fun DataContactsFields.lookupKeyIn(vararg lookupKeys: String): Where<DataContactsField>? =
     lookupKeyIn(lookupKeys.asSequence())
@@ -27,12 +46,31 @@ fun DataContactsFields.lookupKeyIn(lookupKeys: Sequence<String>): Where<DataCont
     decomposedLookupKeys(lookupKeys) whereOr { LookupKey contains it }
 
 /**
- * Returns a [Where] clause for finding Contacts with one of the given [lookupKeys].
+ * Returns a [Where] clause for finding Contacts with one of the given [lookupKeys]. Returns null if
+ * the [lookupKeys] is empty.
  *
- * This will return null if the [lookupKeys] is empty.
+ * For example;
+ *
+ * ```kotlin
+ * val contacts = query.where { Contact.lookupKeyIn(lookupKey) }.find()
+ * ```
  *
  * For more info about why you should use this function instead of directly using
  * [ExistingContactEntity.lookupKey] in queries, read documentation in [decomposedLookupKeys].
+ *
+ * ## Use Contact ID as fallback!
+ *
+ * For example;
+ *
+ * ```kotlin
+ * val contacts = query.where { Contact.lookupKeyIn(lookupKey)?.or(Contact.Id equalTo id) }.find()
+ * ```
+ *
+ * The reason for doing this is because the ContactsProvider may assign a different value to the
+ * Contact lookup key if it's constituent RawContacts that are not associated with an Account
+ * (local, unsynced, source id is null) gets its primary display name source updated. Display name
+ * sources are specified in `ContactsContract.DisplayNameSources`. In order of increasing priority;
+ * email, phone, organization, nickname, and name.
  */
 fun ContactsFields.lookupKeyIn(vararg lookupKeys: String): Where<ContactsField>? =
     lookupKeyIn(lookupKeys.asSequence())

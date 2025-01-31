@@ -31,7 +31,12 @@ import contacts.sample.ContactsActivity
  * A [Toast] will be shown if any of the above requirements are not met.
  *
  * Tapping the pinned shortcut will open the [ContactDetailsActivity] to show full contact details.
+ *
+ * ## Thread Safety
+ *
+ * This should be called in a background thread to avoid blocking the UI thread.
  */
+// [ANDROID X] @WorkerThread (not using annotation to avoid dependency on androidx.annotation)
 fun ExistingContactEntity.createPinnedShortcut(context: Context) {
     val lookupKey = lookupKey
     val displayName = displayNamePrimary
@@ -39,19 +44,19 @@ fun ExistingContactEntity.createPinnedShortcut(context: Context) {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
         Toast.makeText(
             context,
-            "Creating pinned Contact shortcuts require API ${Build.VERSION_CODES.O}",
+            "Pinned Contact shortcuts require API ${Build.VERSION_CODES.O}",
             Toast.LENGTH_SHORT
         ).show()
     } else if (lookupKey == null) {
         Toast.makeText(
             context,
-            "Creating pinned Contact shortcuts require the Contact.lookupKey",
+            "Pinned Contact shortcuts require the Contact.lookupKey",
             Toast.LENGTH_SHORT
         ).show()
     } else if (displayName == null) {
         Toast.makeText(
             context,
-            "Creating pinned Contact shortcuts require the Contact.displayNamePrimary",
+            "Pinned Contact shortcuts require the Contact.displayNamePrimary",
             Toast.LENGTH_SHORT
         ).show()
     } else {
