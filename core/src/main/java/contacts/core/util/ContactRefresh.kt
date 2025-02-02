@@ -2,6 +2,7 @@ package contacts.core.util
 
 import contacts.core.Contacts
 import contacts.core.ContactsException
+import contacts.core.LookupQuery
 import contacts.core.entities.Contact
 import contacts.core.entities.ExistingContactEntity
 import contacts.core.entities.MutableContact
@@ -17,28 +18,28 @@ import contacts.core.equalTo
  *
  * ## Contact linking/unlinking and changing Accounts
  *
- * Note that this uses the [ExistingContactEntity.lookupKey] (**if available**) instead of the
- * [ExistingContactEntity.id] to fetch the Contact. The ID may change due to sync or aggregation.
+ * Note that this uses the [ExistingContactEntity.lookupKey] (**if available**) and the
+ * [ExistingContactEntity.id] to fetch the Contact.
+ *
  * You may use this function to refresh a Contact reference that you are holding on to for longer
  * periods of time. For example,
  *
+ * - Creating and loading shortcuts.
  * - Saving/restoring activity/fragment instance state.
  * - Saving to an external database, preferences, or files.
- * - Creating shortcuts.
  *
- * This function will still return the correct Contact. It is able to do this using the
- * [ExistingContactEntity.lookupKey] with query APIs.
+ * The ID or lookup key (for local contacts) may change due to sync or aggregation. However, this
+ * function will still return the correct Contact.
+ *
+ * If the **lookupKey of this instance is null**, then it was probably not included in the query. In
+ * this case, **only the ID will be used, which is not as reliable as the lookup key!**.
  *
  * If the Contact's constituent RawContact(s) changes Accounts, this may return null. This is the
  * same behavior as the AOSP and Google Contacts app.
  *
- * If the lookupKey of this instance is null, then it was probably not included in the query. In
- * this case, the ID will be used instead.
- *
- * **Important!** If this is a reference to a Contact with two or more constituent RawContacts
+ * If this is a reference to a Contact with two or more constituent RawContacts
  * and the Contact has been unlinked (thereby creating separate Contact instances), this will only
- * return one of the Contacts it finds instead of all of the previously linked contacts. Use the
- * [contacts.core.Query] API in conjunction with the lookup key instead of this function.
+ * return one of the Contacts it finds instead of all of the previously linked contacts.
  *
  * ## Permissions
  *
@@ -92,14 +93,15 @@ private fun Contacts.findContactWithLookupKeyOrId(
         .find(cancel)
         .contact
 } else {
-    query()
-        .where {
-            if (lookupKey != null) {
-                Contact.lookupKeyIn(lookupKey)
-            } else {
-                Contact.Id equalTo contactId
-            }
-        }
-        .find(cancel)
-        .firstOrNull()
+    if (lookupKey.isNullOrBlank()) {
+        query()
+            .where { Contact.Id equalTo contactId }
+            .find(cancel)
+            .firstOrNull()
+    } else {
+        lookupQuery()
+            .whereLookupKeyWithIdMatches(LookupQuery.LookupKeyWithId(lookupKey, contactId))
+            .find(cancel)
+            .firstOrNull()
+    }
 }
