@@ -572,12 +572,36 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="How to get Contacts using lookup keys?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-the-lookupquery" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using the LookupQuery
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-the-query-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using the Query API
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
-  <a href="#moving-rawcontacts-between-accounts-and-the-lookup-key" class="md-nav__link">
+  <a href="#updating-local-device-only-contacts-and-the-lookup-key" class="md-nav__link">
     <span class="md-ellipsis">
-      Moving RawContacts between accounts and the lookup key
+      Updating local, device-only contacts and the lookup key
     </span>
   </a>
   
@@ -587,6 +611,15 @@
   <a href="#linkingunlinking-contacts-and-the-lookup-key" class="md-nav__link">
     <span class="md-ellipsis">
       Linking/unlinking contacts and the lookup key
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#moving-rawcontacts-between-accounts-and-the-lookup-key" class="md-nav__link">
+    <span class="md-ellipsis">
+      Moving RawContacts between accounts and the lookup key
     </span>
   </a>
   
@@ -727,6 +760,27 @@
   
   <span class="md-ellipsis">
     Query contacts (advanced)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basics/query-contacts-by-lookup-key/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Query contacts by lookup keys
   </span>
   
 
@@ -2577,12 +2631,36 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="How to get Contacts using lookup keys?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-the-lookupquery" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using the LookupQuery
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-the-query-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using the Query API
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
-  <a href="#moving-rawcontacts-between-accounts-and-the-lookup-key" class="md-nav__link">
+  <a href="#updating-local-device-only-contacts-and-the-lookup-key" class="md-nav__link">
     <span class="md-ellipsis">
-      Moving RawContacts between accounts and the lookup key
+      Updating local, device-only contacts and the lookup key
     </span>
   </a>
   
@@ -2592,6 +2670,15 @@
   <a href="#linkingunlinking-contacts-and-the-lookup-key" class="md-nav__link">
     <span class="md-ellipsis">
       Linking/unlinking contacts and the lookup key
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#moving-rawcontacts-between-accounts-and-the-lookup-key" class="md-nav__link">
+    <span class="md-ellipsis">
+      Moving RawContacts between accounts and the lookup key
     </span>
   </a>
   
@@ -2671,18 +2758,22 @@ sourceId is not exactly the same as the value of the lookup key!</p>
 parent Contact, which may break existing shortcuts!</p>
 </blockquote>
 <h2 id="when-to-use-contact-lookup-key-vs-contact-id">When to use Contact lookup key vs Contact ID?<a class="headerlink" href="#when-to-use-contact-lookup-key-vs-contact-id" title="Permanent link">&para;</a></h2>
-<p>Use the <strong>Contact lookup key</strong> when you need to save a reference to a Contact that you want to 
-fetch after some period of time.</p>
+<p>Use the <strong>Contact lookup key</strong> when you need to save a reference to a Contact and fetch after some
+period of time.</p>
 <ul>
+<li>Creating and loading shortcuts.</li>
 <li>Saving/restoring activity/fragment instance state.</li>
 <li>Saving to an external database, preferences, or files.</li>
-<li>Creating shortcuts.</li>
 </ul>
 <p>Use the <strong>Contact ID</strong> for everything else.</p>
 <ul>
 <li>Performing read/write operations in the same function call or session in your app.</li>
 <li>Performing read/write operations that require ID (e.g. Contact photo and options).</li>
 </ul>
+<p>The reason why lookup keys are used as long-term links to contacts is because Contact IDs and the
+lookup keys themselves may change over time due to linking/unlinking, local contact updates, and
+syncing adapter operations. Lookup keys provide the ability to retrieve contacts even when its ID
+or lookup key itself changes. </p>
 <h2 id="how-to-get-the-contact-lookup-key">How to get the Contact lookup key?<a class="headerlink" href="#how-to-get-the-contact-lookup-key" title="Permanent link">&para;</a></h2>
 <p>Lookup keys are included in queries by default but are not required. This means that if you use do
 not invoke the <code>include</code> function in query APIs, then it will be included in the returned Contacts.
@@ -2693,49 +2784,54 @@ explicitly specify the lookup key,</p>
 <p><code>Contact</code>s instances returned by the query will contain a value in the <code>Contact.lookupKey</code> property.</p>
 <p>For more info, read <a href="../../basics/include-only-desired-data/">Include only certain fields for read and write operations</a>.</p>
 <h2 id="how-to-get-contacts-using-lookup-keys">How to get Contacts using lookup keys?<a class="headerlink" href="#how-to-get-contacts-using-lookup-keys" title="Permanent link">&para;</a></h2>
+<p>There are several ways to do this...</p>
+<h4 id="using-the-lookupquery">Using the <code>LookupQuery</code><a class="headerlink" href="#using-the-lookupquery" title="Permanent link">&para;</a></h4>
+<p>Using this API allows you to get contacts even if their ID or lookup key itself changes.</p>
+<p>To get a contact using a lookup key,</p>
+<div class="language-kotlin highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lookupQuery</span><span class="p">.</span><span class="na">whereLookupKeyMatches</span><span class="p">(</span><span class="n">lookupKey</span><span class="p">).</span><span class="na">find</span><span class="p">()</span>
+</span></code></pre></div>
+<p>For optimization purposes, include the last known ID,</p>
+<div class="language-kotlin highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lookupQuery</span><span class="p">.</span><span class="na">whereLookupKeyWithIdMatches</span><span class="p">(</span><span class="n">LookupQuery</span><span class="p">.</span><span class="na">LookupKeyWithId</span><span class="p">(</span><span class="n">lookupKey</span><span class="p">,</span><span class="w"> </span><span class="n">contactId</span><span class="p">)).</span><span class="na">find</span><span class="p">()</span>
+</span></code></pre></div>
+<blockquote>
+<p>ℹ️ For more info, read <a href="../../basics/query-contacts-by-lookup-key/">Query contacts by lookup key</a>.</p>
+</blockquote>
+<h4 id="using-the-query-api">Using the <code>Query</code> API<a class="headerlink" href="#using-the-query-api" title="Permanent link">&para;</a></h4>
+<p>You may also use the <code>Query</code> API to achieve a similar result. However, in this case, using the 
+Contact ID is necessary in order to ensure the lookup succeeds (in case the lookup key changes).</p>
 <p>Use the <code>decomposedLookupKeys</code> functions in <code>contacts.core.util.ContactLookupKey.kt</code> to get contacts 
-by lookup key,</p>
-<div class="language-kotlin highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="na">where</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">decomposedLookupKeys</span><span class="p">(</span><span class="n">lookupKeys</span><span class="p">)</span><span class="w"> </span><span class="n">whereOr</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Contact</span><span class="p">.</span><span class="na">LookupKey</span><span class="w"> </span><span class="n">contains</span><span class="w"> </span><span class="nb">it</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}.</span><span class="na">find</span><span class="p">()</span>
+by lookup key and id,</p>
+<div class="language-kotlin highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="na">where</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">(</span><span class="n">decomposedLookupKeys</span><span class="p">(</span><span class="n">lookupKey</span><span class="p">)</span><span class="w"> </span><span class="n">whereOr</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Contact</span><span class="p">.</span><span class="na">LookupKey</span><span class="w"> </span><span class="n">contains</span><span class="w"> </span><span class="nb">it</span><span class="w"> </span><span class="p">})</span><span class="o">?.</span><span class="na">or</span><span class="p">(</span><span class="n">Contact</span><span class="p">.</span><span class="na">Id</span><span class="w"> </span><span class="n">equalTo</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="p">}.</span><span class="na">find</span><span class="p">()</span>
 </span></code></pre></div>
 <p>Or use the <code>lookupKeyIn</code> extensions in <code>contacts.core.util.ContactLookupKey.kt</code> to get contacts
-by lookup key,</p>
-<div class="language-kotlin highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="na">where</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Contact</span><span class="p">.</span><span class="na">lookupKeyIn</span><span class="p">(</span><span class="n">lookupKeys</span><span class="p">)</span><span class="w"> </span><span class="p">}.</span><span class="na">find</span><span class="p">()</span>
+by lookup key and id,</p>
+<div class="language-kotlin highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">contacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="na">where</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Contact</span><span class="p">.</span><span class="na">lookupKeyIn</span><span class="p">(</span><span class="n">lookupKeys</span><span class="p">)</span><span class="o">?.</span><span class="na">or</span><span class="p">(</span><span class="n">Contact</span><span class="p">.</span><span class="na">Id</span><span class="w"> </span><span class="n">equalTo</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="p">}.</span><span class="na">find</span><span class="p">()</span>
 </span></code></pre></div>
-<p>For an explanation on why you should use those functions instead of the lookup key directly,
+<blockquote>
+<p>ℹ️ For an explanation on why you should use those functions instead of the lookup key directly,
 read the function documentation.</p>
-<p>Note that if the lookup key is a reference to a linked Contact (a Contact with two or more
+<p>⚠️ Queries that only use the lookup key may fail to get a contact whose lookup key has changed.
+On the other hand, queries that only use the Contact ID may fail to get a contact whose ID has
+changed. You must use both lookup key and ID when using the <code>Query</code> API. If you only have the 
+lookup key, use the <code>LookupQuery</code> API.</p>
+<p>ℹ️ Note that if the lookup key or id is a reference to a linked Contact (a Contact with two or more
 constituent RawContacts), and the linked Contact is unlinked, then the query will return
 multiple Contacts.</p>
-<blockquote>
 <p>ℹ️ For more info, read <a href="../../basics/query-contacts-advanced/">Query contacts (advanced)</a>.</p>
 </blockquote>
-<h2 id="moving-rawcontacts-between-accounts-and-the-lookup-key">Moving RawContacts between accounts and the lookup key<a class="headerlink" href="#moving-rawcontacts-between-accounts-and-the-lookup-key" title="Permanent link">&para;</a></h2>
-<p>Moving a RawContact to a different Account will cause the Contact lookup key to change. 
-In these cases, the changes to the lookup key will only be applied after the Contacts Provider and 
-sync adapters sync the changes. This means that the local changes are not immediately applied.</p>
-<blockquote>
-<p>ℹ️ For more info, read <a href="../sync-contact-data/">Sync contact data across devices</a>.</p>
-</blockquote>
-<p>Moving a RawContact from one Account to another will result in a failed query using lookup keys.</p>
-<p>For example, using the default AOSP Contacts app or the Google Contacts app...</p>
-<ol>
-<li>View a contact's details.</li>
-<li>Create a shortcut to it in the home screen (launcher).</li>
-<li>This shortcut uses the Contact lookup key (not the ID) to form a lookup URI.</li>
-<li>Move the RawContact to a different Account.</li>
-<li>Tap the shortcut in the home screen (launcher).</li>
-</ol>
-<p>Both Contacts apps will say that the Contact no longer exist or has been removed. This is not a bug.
-It is expected behavior due to the way the Contacts Provider works.</p>
-<blockquote>
-<p>ℹ️ For more info, read <a href="../../accounts/move-raw-contacts-across-accounts/">Move RawContacts across Accounts</a>.</p>
-</blockquote>
+<h2 id="updating-local-device-only-contacts-and-the-lookup-key">Updating local, device-only contacts and the lookup key<a class="headerlink" href="#updating-local-device-only-contacts-and-the-lookup-key" title="Permanent link">&para;</a></h2>
+<p>The ContactsProvider may assign a different value to the Contact lookup key if it's constituent
+RawContacts that are not associated with an Account (local, unsynced, source id is null) gets its
+primary display name source updated. <em>Display name sources are specified in <code>ContactsContract.DisplayNameSources</code>.
+In order of increasing priority; email, phone, organization, nickname, and name.</em></p>
+<p>However, the IDs remain the same.</p>
+<p>Therefore, it is still possible to get the contacts after updating using IDs.</p>
 <h2 id="linkingunlinking-contacts-and-the-lookup-key">Linking/unlinking contacts and the lookup key<a class="headerlink" href="#linkingunlinking-contacts-and-the-lookup-key" title="Permanent link">&para;</a></h2>
-<p>Linking and unlinking RawContacts will change the value of the lookup key. However, as discussed
-in prior sections, you are still able to use the lookup key to find the aggregate Contact even
-though the Contact ID has changed.</p>
-<p>Linking/unlinking contacts will result in a successful lookup using lookup keys prior to the
-Account change.</p>
+<p>Linking and unlinking RawContacts will cause the lookup key to change as the RawContact's source ids
+get combined and separated respectively. However, the intrinsic values contained within the lookup 
+key remains the same. The Contact IDs may also change as Contacts get deleted and created when 
+linking and unlinking respectively.</p>
+<p>Therefore, it is still possible to get the contacts after linking/unlinking using the lookup key.</p>
 <p>For example, using the default AOSP Contacts app or the Google Contacts app...</p>
 <ol>
 <li>View a contact's details.</li>
@@ -2751,6 +2847,29 @@ Account change.</p>
 <p>In both cases, the shortcut successfully opens the correct aggregate Contact.</p>
 <blockquote>
 <p>ℹ️ For more info on linking/unlinking, read <a href="../../other/link-unlink-contacts/">Link unlink Contacts</a>.</p>
+</blockquote>
+<h2 id="moving-rawcontacts-between-accounts-and-the-lookup-key">Moving RawContacts between accounts and the lookup key<a class="headerlink" href="#moving-rawcontacts-between-accounts-and-the-lookup-key" title="Permanent link">&para;</a></h2>
+<p>Moving a RawContact to a different Account will cause the lookup key and IDs to change.</p>
+<blockquote>
+<p>ℹ️ Note that in these cases, the changes to the lookup key will only be applied after the Contacts
+Provider and sync adapters sync the changes. This means that the local changes are not immediately
+applied. For more info, read <a href="../sync-contact-data/">Sync contact data across devices</a>.</p>
+</blockquote>
+<p>Therefore, it is no longer possible to get the contacts after moving using the lookup key or IDs.</p>
+<p>For example, using the default AOSP Contacts app or the Google Contacts app...</p>
+<ol>
+<li>View a contact's details.</li>
+<li>Create a shortcut to it in the home screen (launcher).<ul>
+<li>This shortcut uses the Contact lookup key (not the ID) to form a lookup URI.</li>
+</ul>
+</li>
+<li>Move the RawContact to a different Account.</li>
+<li>Tap the shortcut in the home screen (launcher).</li>
+</ol>
+<p>Both Contacts apps will say that the Contact no longer exist or has been removed. This is not a bug.
+It is expected behavior due to the way the Contacts Provider works.</p>
+<blockquote>
+<p>ℹ️ For more info, read <a href="../../accounts/move-raw-contacts-across-accounts/">Move RawContacts across Accounts</a>.</p>
 </blockquote>
 <hr />
 <h2 id="developer-notes-or-for-advanced-users">Developer notes (or for advanced users)<a class="headerlink" href="#developer-notes-or-for-advanced-users" title="Permanent link">&para;</a></h2>
@@ -2770,12 +2889,12 @@ with an Account and are synced).</p>
 for brevity.</p>
 </blockquote>
 <p>Let's take a look at the following Contacts and RawContacts table rows,</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>#### Contacts table
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>Contact id: 55, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50, displayNamePrimary: Contact With Local RawContact
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>Contact id: 56, lookupKey: 2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>#### RawContacts table
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>RawContact id: 55, contactId: 55, sourceId: null, displayNamePrimary: Contact With Local RawContact
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>RawContact id: 56, contactId: 56, sourceId: 6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>#### Contacts table
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>Contact id: 55, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50, displayNamePrimary: Contact With Local RawContact
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>Contact id: 56, lookupKey: 2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>#### RawContacts table
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>RawContact id: 55, contactId: 55, sourceId: null, displayNamePrimary: Contact With Local RawContact
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>RawContact id: 56, contactId: 56, sourceId: 6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
 </span></code></pre></div>
 <p>There are two Contacts each having one RawContact.</p>
 <p>Notice that the lookup keys are a bit different.</p>
@@ -2797,10 +2916,10 @@ the Contacts Provider probably uses these things internally. We also should not 
 an internal Contacts Provider detail we should not rely on BUT is probably relevant when implementing
 sync adapters.</p>
 <p><strong>When we link</strong> the two, we get...</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>Contact id: 55, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50.2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>#### RawContacts table
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>RawContact id: 55, contactId: 55, sorceId: null, displayNamePrimary: Contact With Local RawContact
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>RawContact id: 56, contactId: 55, sourceId: 6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Contact id: 55, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50.2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>#### RawContacts table
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>RawContact id: 55, contactId: 55, sorceId: null, displayNamePrimary: Contact With Local RawContact
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>RawContact id: 56, contactId: 55, sourceId: 6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
 </span></code></pre></div>
 <p>Notice,</p>
 <ul>
@@ -2817,49 +2936,9 @@ sync adapters.</p>
 </li>
 </ul>
 <p>The most important part to notice is that the lookup keys get combined.</p>
-<p>The lookup uri is required to build a <code>Contacts.CONTENT_LOOKUP_URI</code>...</p>
-<div class="language-java highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="cm">/**</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="cm"> * A content:// style URI for this table that should be used to create</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="cm"> * shortcuts or otherwise create long-term links to contacts. This URI</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="cm"> * should always be followed by a &quot;/&quot; and the contact&#39;s {@link #LOOKUP_KEY}.</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="cm"> * It can optionally also have a &quot;/&quot; and last known contact ID appended after</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="cm"> * that. This &quot;complete&quot; format is an important optimization and is highly recommended.</span>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="cm"> * &lt;p&gt;</span>
-</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="cm"> * As long as the contact&#39;s row ID remains the same, this URI is</span>
-</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="cm"> * equivalent to {@link #CONTENT_URI}. If the contact&#39;s row ID changes</span>
-</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="cm"> * as a result of a sync or aggregation, this URI will look up the</span>
-</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="cm"> * contact using indirect information (sync IDs or constituent raw</span>
-</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="cm"> * contacts).</span>
-</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="cm"> * &lt;p&gt;</span>
-</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="cm"> * Lookup key should be appended unencoded - it is stored in the encoded</span>
-</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="cm"> * form, ready for use in a URI.</span>
-</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="cm"> */</span>
-</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Uri</span><span class="w"> </span><span class="n">CONTENT_LOOKUP_URI</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Uri</span><span class="p">.</span><span class="na">withAppendedPath</span><span class="p">(</span><span class="n">CONTENT_URI</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;lookup&quot;</span><span class="p">);</span>
-</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>
-</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="cm">/**</span>
-</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a><span class="cm"> * Build a {@link #CONTENT_LOOKUP_URI} lookup {@link Uri} using the</span>
-</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="cm"> * given {@link ContactsContract.Contacts#_ID} and {@link #LOOKUP_KEY}.</span>
-</span><span id="__span-5-22"><a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="cm"> * &lt;p&gt;</span>
-</span><span id="__span-5-23"><a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a><span class="cm"> * Returns null if unable to construct a valid lookup URI from the</span>
-</span><span id="__span-5-24"><a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a><span class="cm"> * provided parameters.</span>
-</span><span id="__span-5-25"><a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a><span class="cm"> */</span>
-</span><span id="__span-5-26"><a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">Uri</span><span class="w"> </span><span class="nf">getLookupUri</span><span class="p">(</span><span class="kt">long</span><span class="w"> </span><span class="n">contactId</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">lookupKey</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-5-27"><a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">TextUtils</span><span class="p">.</span><span class="na">isEmpty</span><span class="p">(</span><span class="n">lookupKey</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-5-28"><a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
-</span><span id="__span-5-29"><a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-5-30"><a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">ContentUris</span><span class="p">.</span><span class="na">withAppendedId</span><span class="p">(</span><span class="n">Uri</span><span class="p">.</span><span class="na">withAppendedPath</span><span class="p">(</span><span class="n">Contacts</span><span class="p">.</span><span class="na">CONTENT_LOOKUP_URI</span><span class="p">,</span><span class="w"> </span><span class="n">lookupKey</span><span class="p">),</span><span class="w"> </span><span class="n">contactId</span><span class="p">);</span>
-</span><span id="__span-5-31"><a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a><span class="p">}</span>
-</span></code></pre></div>
-<p>From the lookup uri, we can lookup the Contact row...</p>
-<div class="language-java highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">Uri</span><span class="w"> </span><span class="nf">lookupContact</span><span class="p">(</span><span class="n">ContentResolver</span><span class="w"> </span><span class="n">resolver</span><span class="p">,</span><span class="w"> </span><span class="n">Uri</span><span class="w"> </span><span class="n">lookupUri</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span>
-</span></code></pre></div>
-<p>Or simply get the Contact ID...</p>
-<div class="language-java highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">// code inside `public static Uri lookupContact`</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">resolver</span><span class="p">.</span><span class="na">query</span><span class="p">(</span><span class="n">lookupUri</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">String</span><span class="o">[]</span><span class="p">{</span><span class="n">Contacts</span><span class="p">.</span><span class="na">_ID</span><span class="p">},</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span>
-</span></code></pre></div>
-<p>However, given that the lookup key of the deleted Contact 56 still lives on, it is possible to get
+<p>Given that the lookup key of the deleted Contact 56 still lives on, it is possible to get
 the linked Contact 55 using the lookup key of Contact 56 using our standard query APIs!</p>
-<div class="language-kotlin highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="p">.</span><span class="na">where</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Contact</span><span class="p">.</span><span class="na">LookupKey</span><span class="w"> </span><span class="n">contains</span><span class="w"> </span><span class="n">lookupKey</span><span class="w"> </span><span class="p">}</span>
+<div class="language-kotlin highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">.</span><span class="na">where</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Contact</span><span class="p">.</span><span class="na">LookupKey</span><span class="w"> </span><span class="n">contains</span><span class="w"> </span><span class="n">lookupKey</span><span class="w"> </span><span class="p">}</span>
 </span></code></pre></div>
 <p>The above is correct as long as these assumptions hold true;</p>
 <ul>
@@ -2873,15 +2952,14 @@ the linked Contact 55 using the lookup key of Contact 56 using our standard quer
 </ul>
 </li>
 </ul>
-<p>Until the community finds that this assumption is flawed, we'll assume that it is true! For now, we
-can <strong>avoid having to create another API or extensions just for using lookup keys</strong>.</p>
+<p>Until the community finds that this assumption is flawed, we'll assume that it is true! </p>
 <p><strong>When we unlink</strong>, we get...</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>#### Contacts table
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>Contact id: 55, lookupKey: 2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>Contact id: 58, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50, displayNamePrimary: Contact With Local RawContact
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>#### RawContacts table
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>RawContact id: 55, contactId: 58, sourceId: null, displayNamePrimary: Contact With Local RawContact
-</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>RawContact id: 56, contactId: 55, sourceId: 6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>#### Contacts table
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>Contact id: 55, lookupKey: 2059i6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>Contact id: 58, lookupKey: 0r55-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50, displayNamePrimary: Contact With Local RawContact
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>#### RawContacts table
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>RawContact id: 55, contactId: 58, sourceId: null, displayNamePrimary: Contact With Local RawContact
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>RawContact id: 56, contactId: 55, sourceId: 6f5de8460f7f227e, displayNamePrimary: Contact With Synced RawContact
 </span></code></pre></div>
 <p>Notice,</p>
 <ul>
@@ -2969,9 +3047,9 @@ not relying on this mechanism. I'm just pointing out my observations, which coul
 <p>So when to use Contact ID vs lookup key?</p>
 <ul>
 <li>Lookup key: for a reference to a Contact that needs to be loaded after some period of time.<ul>
+<li>Creating and loading shortcuts.</li>
 <li>Saving/restoring activity/fragment instance state.</li>
 <li>Saving to an external database, preferences, or files.</li>
-<li>Creating shortcuts.</li>
 </ul>
 </li>
 <li>ID: for everything else.<ul>
@@ -2981,33 +3059,50 @@ not relying on this mechanism. I'm just pointing out my observations, which coul
 </li>
 </ul>
 <p>Another thing to check is what happens when associating a local RawContact to an Account (move from
-device to Account) and vice versa. Is the lookup key of the Contact affected?</p>
-<p>After associating the local RawContact to an Account...</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>#### Contacts table
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>Contact id: 58, lookupKey: 2059i4abd4a8f8ff89642
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>#### RawContacts table
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>RawContact id: 55, contactId: 58, sourceId: 4abd4a8f8ff89642
+device to Account) and vice versa. Is the lookup key of the Contact affected? Yes. The Contact,
+RawContacts, and Data rows have been deleted and new rows have been created to replace them! This
+means that all IDs have changed. The Contact lookup key and the RawContacts source ID also changed.</p>
+<p><strong>Local contact's lookup key may change but row ID remain the same!</strong></p>
+<p>The ContactsProvider may assign a different value to the Contact lookup key if it's constituent
+RawContacts that are not associated with an Account (local, unsynced, source id is null) gets its
+primary display name source updated. Display name sources are specified in <code>ContactsContract.DisplayNameSources</code>.
+In order of increasing priority; email, phone, organization, nickname, and name.</p>
+<p>This suggests that the lookup key for local contacts depends on the primary display name. It 
+probably uses its hashed value as the value of the lookup key or something like that.</p>
+<p>To account for this scenario, ContactsContract provides <code>Contacts.CONTENT_LOOKUP_URI</code> and 
+<code>getLookupUri</code>...</p>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="cm">/**</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="cm"> * A content:// style URI for this table that should be used to create</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="cm"> * shortcuts or otherwise create long-term links to contacts. This URI</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="cm"> * should always be followed by a &quot;/&quot; and the contact&#39;s {@link #LOOKUP_KEY}.</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="cm"> * It can optionally also have a &quot;/&quot; and last known contact ID appended after</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="cm"> * that. This &quot;complete&quot; format is an important optimization and is highly recommended.</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="cm"> * &lt;p&gt;</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="cm"> * As long as the contact&#39;s row ID remains the same, this URI is</span>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="cm"> * equivalent to {@link #CONTENT_URI}. If the contact&#39;s row ID changes</span>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="cm"> * as a result of a sync or aggregation, this URI will look up the</span>
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="cm"> * contact using indirect information (sync IDs or constituent raw</span>
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="cm"> * contacts).</span>
+</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="cm"> * &lt;p&gt;</span>
+</span><span id="__span-9-14"><a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a><span class="cm"> * Lookup key should be appended unencoded - it is stored in the encoded</span>
+</span><span id="__span-9-15"><a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a><span class="cm"> * form, ready for use in a URI.</span>
+</span><span id="__span-9-16"><a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a><span class="cm"> */</span>
+</span><span id="__span-9-17"><a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Uri</span><span class="w"> </span><span class="n">CONTENT_LOOKUP_URI</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Uri</span><span class="p">.</span><span class="na">withAppendedPath</span><span class="p">(</span><span class="n">CONTENT_URI</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;lookup&quot;</span><span class="p">);</span>
+</span><span id="__span-9-18"><a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a>
+</span><span id="__span-9-19"><a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a><span class="cm">/**</span>
+</span><span id="__span-9-20"><a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a><span class="cm"> * Build a {@link #CONTENT_LOOKUP_URI} lookup {@link Uri} using the</span>
+</span><span id="__span-9-21"><a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a><span class="cm"> * given {@link ContactsContract.Contacts#_ID} and {@link #LOOKUP_KEY}.</span>
+</span><span id="__span-9-22"><a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a><span class="cm"> * &lt;p&gt;</span>
+</span><span id="__span-9-23"><a id="__codelineno-9-23" name="__codelineno-9-23" href="#__codelineno-9-23"></a><span class="cm"> * Returns null if unable to construct a valid lookup URI from the</span>
+</span><span id="__span-9-24"><a id="__codelineno-9-24" name="__codelineno-9-24" href="#__codelineno-9-24"></a><span class="cm"> * provided parameters.</span>
+</span><span id="__span-9-25"><a id="__codelineno-9-25" name="__codelineno-9-25" href="#__codelineno-9-25"></a><span class="cm"> */</span>
+</span><span id="__span-9-26"><a id="__codelineno-9-26" name="__codelineno-9-26" href="#__codelineno-9-26"></a><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">Uri</span><span class="w"> </span><span class="nf">getLookupUri</span><span class="p">(</span><span class="kt">long</span><span class="w"> </span><span class="n">contactId</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">lookupKey</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-9-27"><a id="__codelineno-9-27" name="__codelineno-9-27" href="#__codelineno-9-27"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">TextUtils</span><span class="p">.</span><span class="na">isEmpty</span><span class="p">(</span><span class="n">lookupKey</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-9-28"><a id="__codelineno-9-28" name="__codelineno-9-28" href="#__codelineno-9-28"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+</span><span id="__span-9-29"><a id="__codelineno-9-29" name="__codelineno-9-29" href="#__codelineno-9-29"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-9-30"><a id="__codelineno-9-30" name="__codelineno-9-30" href="#__codelineno-9-30"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">ContentUris</span><span class="p">.</span><span class="na">withAppendedId</span><span class="p">(</span><span class="n">Uri</span><span class="p">.</span><span class="na">withAppendedPath</span><span class="p">(</span><span class="n">Contacts</span><span class="p">.</span><span class="na">CONTENT_LOOKUP_URI</span><span class="p">,</span><span class="w"> </span><span class="n">lookupKey</span><span class="p">),</span><span class="w"> </span><span class="n">contactId</span><span class="p">);</span>
+</span><span id="__span-9-31"><a id="__codelineno-9-31" name="__codelineno-9-31" href="#__codelineno-9-31"></a><span class="p">}</span>
 </span></code></pre></div>
-<p>The lookup key changed (since the RawContact's source ID has been assigned the value that came from
-the sync adapter) but the Contact ID remained the same! In this case, loading a reference to
-the previously local Contact will fail! I verified that this is indeed the behavior of the native
-(AOSP) Contacts app. Moving the RawContact from device to Google using Google Contacts app while
-having Contact details activity opened in the AOSP Contacts app will result in "error Contact does
-not exist" message in the AOSP Contacts app!</p>
-<blockquote>
-<p>ℹ️ The RawContact and its Data also remained the same in this case.</p>
-</blockquote>
-<p>Removing the account from it results in...</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>#### Contacts table
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>Contact id: 59, lookupKey: 0r58-2E4644502A2E50563A503840462E2A404C2A562E4644502A2E50
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>#### RawContacts table
-</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>RawContact id: 58, contactId: 59, sourceId: null
-</span></code></pre></div>
-<p>The Contact and RawContacts row have been deleted and new rows have been created to replace them!
-I also verified that the Data rows have also been deleted and new rows have been created to
-replace them!</p>
-<p>This stuff is not really relevant for lookup key but still good to know for implementing
-moving RawContacts between accounts.</p>
 
 
 

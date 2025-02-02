@@ -18,7 +18,7 @@
         <link rel="prev" href="../query-contacts/">
       
       
-        <link rel="next" href="../query-contacts-by-phone-or-sip/">
+        <link rel="next" href="../query-contacts-by-lookup-key/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -848,6 +848,27 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../query-contacts-by-lookup-key/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Query contacts by lookup keys
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -2869,6 +2890,7 @@ the <code>where</code> function.</p>
 </span></code></pre></div>
 <blockquote>
 <p>ℹ️ For a broader, and more AOSP Contacts app like query, use the <code>BroadQuery</code> API, read <a href="../query-contacts/">Query contacts</a>.</p>
+<p>ℹ️ To query contacts using lookup keys, read <a href="../query-contacts-by-lookup-key/">Query contacts by lookup key</a>.</p>
 <p>ℹ️ For specialized matching of phone numbers and SIP addresses, use the <code>PhoneLookupQuery</code> API; <a href="../query-contacts-by-phone-or-sip/">Query contacts by phone or SIP</a>.</p>
 <p>ℹ️ If you want to query RawContacts directly instead of Contacts, read <a href="../query-raw-contacts/">Query RawContacts</a>.</p>
 <p>ℹ️ If you want to query Data directly instead of Contacts, read <a href="../../data/query-data-sets/">Query specific data kinds</a>.</p>
@@ -2941,7 +2963,7 @@ more optimized query.</p>
 </span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="p">.</span><span class="na">where</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Contact</span><span class="p">.</span><span class="na">Id</span><span class="w"> </span><span class="n">`in`</span><span class="w"> </span><span class="n">contactIds</span><span class="w"> </span><span class="p">}</span>
 </span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="p">.</span><span class="na">find</span><span class="p">()</span>
 </span></code></pre></div>
-<p>To get a Contact by lookup key, read about <a href="../../entities/about-contact-lookup-key/">Contact lookup key vs ID</a>.</p>
+<p>To get Contacts using lookup keys, read <a href="../query-contacts-by-lookup-key/">Query contacts by lookup key</a>.</p>
 <h2 id="specifying-accounts">Specifying Accounts<a class="headerlink" href="#specifying-accounts" title="Permanent link">&para;</a></h2>
 <p>To limit the search to only those contacts associated with one of the given accounts,</p>
 <div class="language-kotlin highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">.</span><span class="na">accounts</span><span class="p">(</span><span class="n">accounts</span><span class="p">)</span>
