@@ -13,20 +13,11 @@ import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.util.*
 
 /**
- * A generalized version of [Query], that lets the Contacts Provider perform the search using its
- * own custom matching algorithm. It allows you to get the exact same search results as the AOSP
- * Contacts app!
- *
- * This type of query is the basis of an app that does a broad search of the Contacts Provider. The
- * technique is useful for apps that want to implement functionality similar to the People app's
- * contact list screen.
- *
- * Custom mimetypes / data are excluded from the search! Use [Query] to search for contacts using
- * custom data.
+ * Uses Contacts Provider's broad search algorithm. This is useful for apps that want to implement
+ * functionality similar to the People app's or AOSP Contacts app's contact list screen.
  *
  * If you need more granularity and customizations when providing matching criteria, use [Query].
- * For example, getting a Contact by ID is not supported by [BroadQuery] but can be achieved by
- * [Query].
+ * For queries using lookup keys, use [LookupQuery].
  *
  * ## How does the matching process work?
  *

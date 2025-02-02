@@ -15,6 +15,8 @@ val query = Contacts(context).query()
 
 > ℹ️ For a broader, and more AOSP Contacts app like query, use the `BroadQuery` API, read [Query contacts](./../basics/query-contacts.md).
 
+> ℹ️ To query contacts using lookup keys, read [Query contacts by lookup key](./query-contacts-by-lookup-key.md).
+
 > ℹ️ For specialized matching of phone numbers and SIP addresses, use the `PhoneLookupQuery` API; [Query contacts by phone or SIP](./../basics/query-contacts-by-phone-or-sip.md).
 
 > ℹ️ If you want to query RawContacts directly instead of Contacts, read [Query RawContacts](./../basics/query-raw-contacts.md).
@@ -103,7 +105,7 @@ val contacts = Contacts(context)
     .find()
 ```
 
-To get a Contact by lookup key, read about [Contact lookup key vs ID](./../entities/about-contact-lookup-key.md).
+To get Contacts using lookup keys, read [Query contacts by lookup key](./query-contacts-by-lookup-key.md).
 
 ## Specifying Accounts
 

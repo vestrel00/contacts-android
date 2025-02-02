@@ -217,35 +217,19 @@ sealed interface ExistingContactEntity : ContactEntity, ExistingEntity {
      * Use the **Contact lookup key** when you need to save a reference to a Contact that you want
      * to fetch after some period of time.
      *
+     * - Creating and loading shortcuts.
      * - Saving/restoring activity/fragment instance state.
      * - Saving to an external database, preferences, or files.
-     * - Creating shortcuts.
      *
      * Use the **Contact ID** for everything else.
      *
      * - Performing read/write operations in the same function call or session in your app.
      * - Performing read/write operations that require ID (e.g. Contact photo and options).
      *
-     * ## How to get Contacts using lookup keys?
-     *
-     * Use the [contacts.core.util.decomposedLookupKeys] to get contacts by lookup key,
-     *
-     * ```kotlin
-     * val contacts = query.where { decomposedLookupKeys(lookupKeys) whereOr { Contact.LookupKey contains it } }.find()
-     * ```
-     *
-     * Or use [contacts.core.util.lookupKeyIn],
-     *
-     * ```kotlin
-     * val contacts = query.where { Contact.lookupKeyIn(lookupKeys) }.find()
-     * ```
-     *
-     * For an explanation on why you should use those functions instead of the lookup key directly,
-     * read the function documentation.
-     *
-     * Note that if the lookup key is a reference to a linked Contact (a Contact with two or more
-     * constituent RawContacts), and the linked Contact is unlinked, then the query will return
-     * multiple Contacts.
+     * The reason why lookup keys are used as long-term links to contacts is because Contact IDs
+     * and the lookup keys themselves may change over time due to linking/unlinking, local contact
+     * updates, and syncing adapter operations. Lookup keys provide the ability to retrieve contacts
+     * even when its ID or lookup key itself changes.
      *
      * ## The [lookupKey] vs [RawContactEntity.sourceId]
      *

@@ -54,6 +54,11 @@ interface Contacts {
     fun broadQuery(): BroadQuery
 
     /**
+     * Returns a new [LookupQuery] instance.
+     */
+    fun lookupQuery(): LookupQuery
+
+    /**
      * Returns a new [PhoneLookupQuery] instance.
      */
     fun phoneLookupQuery(): PhoneLookupQuery
@@ -252,6 +257,8 @@ private class ContactsImpl(
     override fun rawContactsQuery() = RawContactsQuery(this, false)
 
     override fun broadQuery() = BroadQuery(this)
+
+    override fun lookupQuery() = LookupQuery(this)
 
     override fun phoneLookupQuery() = PhoneLookupQuery(this)
 

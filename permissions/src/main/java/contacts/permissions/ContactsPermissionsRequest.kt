@@ -1,6 +1,15 @@
 package contacts.permissions
 
-import contacts.core.*
+import contacts.core.BroadQuery
+import contacts.core.Contacts
+import contacts.core.ContactsPermissions
+import contacts.core.Delete
+import contacts.core.Insert
+import contacts.core.LookupQuery
+import contacts.core.PhoneLookupQuery
+import contacts.core.Query
+import contacts.core.RawContactsQuery
+import contacts.core.Update
 import contacts.permissions.accounts.requestGetAccountsPermission
 
 /**
@@ -43,6 +52,20 @@ suspend fun Contacts.broadQueryWithPermission(): BroadQuery {
     }
 
     return broadQuery()
+}
+
+/**
+ * If [ContactsPermissions.READ_PERMISSION] is not yet granted, suspends the current coroutine,
+ * requests for the permission, and then returns a new [LookupQuery] instance.
+ *
+ * If permission is already granted, then immediately returns a new [LookupQuery] instance.
+ */
+suspend fun Contacts.lookupQueryWithPermission(): LookupQuery {
+    if (!permissions.canQuery()) {
+        requestReadPermission()
+    }
+
+    return lookupQuery()
 }
 
 /**

@@ -22,7 +22,6 @@ public class QueryContactsAdvancedActivity extends Activity {
         Query.Result result = ContactsFactory.create(this)
                 .query()
                 .where(equalTo(Fields.Contact.Id, contactId))
-                .limit(1)
                 .find();
         return !result.isEmpty() ? result.get(0) : null;
     }

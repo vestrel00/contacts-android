@@ -1,21 +1,22 @@
-# Query contacts by phone or SIP
+# Query contacts by lookup key
 
-This library provides the `PhoneLookupQuery` API that performs a highly optimized query using a 
-phone number or SIP address. This will only match EXACT phone numbers or SIP addresses of different
-formatting and variations. There is no partial matching. This is useful for dialer apps that want 
-to implement caller IDs for incoming and outgoing calls.
+This library provides the `LookupQuery` API that uses the `ContactsContract.Contacts.CONTENT_LOOKUP_URI`
+to get contacts using lookup keys, which are typically used in shortcuts or other long-term links 
+to contacts.
 
-An instance of the `PhoneLookupQuery` API is obtained by,
+> ℹ️ For more info about lookup keys, read about [Contact lookup key vs ID](./../entities/about-contact-lookup-key.md)
+
+An instance of the `LookupQuery` API is obtained by,
 
 ```kotlin
-val query = Contacts(context).phoneLookupQuery()
+val query = Contacts(context).lookupQuery()
 ```
 
 > ℹ️ For a broader, and more AOSP Contacts app like query that allows partial matching, use the `BroadQuery` API, read [Query contacts](./../basics/query-contacts.md).
 
 > ℹ️ For a more granular, advanced queries, use the `Query` API; [Query contacts (advanced)](./../basics/query-contacts-advanced.md).
 
-> ℹ️ To query contacts using lookup keys, read [Query contacts by lookup key](./query-contacts-by-lookup-key.md).
+> ℹ️ For specialized matching of phone numbers and SIP addresses, use the `PhoneLookupQuery` API; [Query contacts by phone or SIP](./../basics/query-contacts-by-phone-or-sip.md).
 
 > ℹ️ If you want to query RawContacts directly instead of Contacts, read [Query RawContacts](./../basics/query-raw-contacts.md).
 
@@ -25,19 +26,15 @@ val query = Contacts(context).phoneLookupQuery()
 
 ## A basic query
 
-To get all contacts that have the exact phone number "555-555-5555",
+To get the contact with the given lookup key,
 
 ```kotlin
-val contacts = Contacts(context)
-    .phoneLookupQuery()
-    .whereExactlyMatches("555-555-5555")
+val contact = Contacts(context)
+    .lookupQuery()
+    .whereLookupKeyMatches(lookupKey)
     .find()
+    .firstOrNull()
 ```
-
-The above query will also match contacts that have the following formatting and variations of that
-number, such as "5555555555", "(555) 555-5555", or "+1 (555) 555-5555" _regardless of the normalized
-number stored in the database_. For more info about matching, read up on the 
-[`match` function](./../basics/query-contacts-by-phone-or-sip.md#using-the-match-and-whereexactlymatches-functions-to-specify-matching-criteria)
 
 ## Specifying Accounts
 
@@ -218,62 +215,3 @@ To perform the query with permission, use the extensions provided in the `permis
 For more info, read [Permissions handling using coroutines](./../permissions/permissions-handling-coroutines.md).
 
 You may, of course, use other permission handling libraries or just do it yourself =)
-
-## Custom data support
- 
-The `PhoneLookupQuery` API does not include custom data in the matching process. However, you may still
-use the `include` function with custom data. For more info, read [Query custom data](./../customdata/query-custom-data.md).
-
-##  Using the `match` and `whereExactlyMatches` functions to specify matching criteria
-
-The `PhoneLookupQuery` API lets the Contacts Provider perform the search using its own custom matching
-algorithm via the `whereExactlyMatches` function.
-
-This will only match EXACT phone numbers or SIP addresses of different formatting and variations. 
-There is no partial matching.
-
-There are several different types of matching algorithms that can be used. The type is set via the
-`match` function.
-
-**Custom data are not included in the matching process!** To match custom data, use `Query`.
-
-### Match.PHONE
-
-Match phone numbers. This is useful in cases where you want to implement a caller ID function for 
-incoming and outgoing calls. This is the default.
-
-For example, if there are contacts with the following numbers;
-
-- 123
-- 1234
-- 1234
-- 12345
-
-Searching for "123" will only return the one contact with the number "123". Searching for "1234" 
-will return the contact(s) with the number "1234".
-
-Additionally, this is able to match phone numbers with or without using country codes. For example, 
-the phone number "+923123456789" (country code 92) will be matched using any of the following;
-"03123456789", "923123456789", "+923123456789".
-
-The reverse is partially true. For example, the phone number "03123456789" will be matched using
-"03123456789" or "+923123456789" BUT will NOT be matched using "923123456789".
-
-If a phone number is saved with AND without a country code, then only the contact with the number 
-that matches exactly will be returned. For example, when numbers "+923123456789" and 
-"03123456789" are saved, searching for "03123456789" will return only the contact with that exact 
-number (NOT including the contact with "+923123456789").
-
-> ℹ️ Matching is not strictly based on the `PhoneEntity.normalizedNumber` (E164 representation) if 
-> it is not null. In cases where it is null, matching will be done strictly based on the 
-> `PhoneEntity.number`.
-
-> ⚠️ The matching process/results described here may differ across OEMs and/or Android versions.
-> For more details, read https://github.com/vestrel00/contacts-android/issues/337#issuecomment-1843672903
-
-### Match.SIP
-
-Same as `Match.PHONE` except this matches SIP addresses instead of phone numbers.
-
-> ⚠️ This is only available for API 21 and above. The `Match.PHONE` will be used for API versions 
-> below 21 even if `Match.SIP` is specified.

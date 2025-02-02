@@ -20,15 +20,14 @@ import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.entities.NewOptions
 import contacts.core.entities.NewRawContact
 import contacts.core.entities.RawContactEntity
-import contacts.core.util.lookupKeyIn
 import contacts.core.util.shareVCardIntent
 import contacts.permissions.deleteWithPermission
 import contacts.permissions.insertWithPermission
+import contacts.permissions.lookupQueryWithPermission
 import contacts.permissions.profile.deleteWithPermission
 import contacts.permissions.profile.insertWithPermission
 import contacts.permissions.profile.queryWithPermission
 import contacts.permissions.profile.updateWithPermission
-import contacts.permissions.queryWithPermission
 import contacts.permissions.updateWithPermission
 import contacts.sample.R
 import contacts.ui.view.OptionsView
@@ -194,8 +193,12 @@ class ContactView @JvmOverloads constructor(
     suspend fun loadContactWithLookupKey(
         contacts: Contacts, lookupKey: String, hidePhoneticNameIfEmptyAndDisabled: Boolean
     ): Boolean {
-        val contact = contacts.queryWithPermission().where { Contact.lookupKeyIn(lookupKey) }
-            .findWithContext().firstOrNull()?.mutableCopy()
+        val contact = contacts
+            .lookupQueryWithPermission()
+            .whereLookupKeyMatches(lookupKey)
+            .findWithContext()
+            .firstOrNull()
+            ?.mutableCopy()
 
         setContact(contacts, contact, null, hidePhoneticNameIfEmptyAndDisabled)
 

@@ -44,22 +44,22 @@ aggregate contact.
 
 ## When to use Contact lookup key vs Contact ID?
 
-Use the **Contact lookup key** when you need to save a reference to a Contact that you want to 
-fetch after some period of time.
+Use the **Contact lookup key** when you need to save a reference to a Contact and fetch after some
+period of time.
 
+- Creating and loading shortcuts.
 - Saving/restoring activity/fragment instance state.
 - Saving to an external database, preferences, or files.
-- Creating shortcuts.
-
-> ⚠️ The lookup key may change if it's constituent RawContacts that are not associated with an 
-> Account (local, unsynced, source id is null) gets its primary display name source updated
-> (name, email, or phone). Therefore, it is recommended to use the Contact ID as a fallback
-> in case the lookup key has changed.
 
 Use the **Contact ID** for everything else.
 
 - Performing read/write operations in the same function call or session in your app.
 - Performing read/write operations that require ID (e.g. Contact photo and options).
+
+The reason why lookup keys are used as long-term links to contacts is because Contact IDs and the
+lookup keys themselves may change over time due to linking/unlinking, local contact updates, and
+syncing adapter operations. Lookup keys provide the ability to retrieve contacts even when its ID
+or lookup key itself changes. 
 
 ## How to get the Contact lookup key?
 
@@ -82,11 +82,25 @@ There are several ways to do this...
 
 #### Using the `LookupQuery`
 
-TODO https://github.com/vestrel00/contacts-android/issues/364
+Using this API allows you to get contacts even if their ID or lookup key itself changes.
+
+To get a contact using a lookup key,
+
+```kotlin
+val contacts = lookupQuery.whereLookupKeyMatches(lookupKey).find()
+```
+
+For optimization purposes, include the last known ID,
+
+```kotlin
+val contacts = lookupQuery.whereLookupKeyWithIdMatches(LookupQuery.LookupKeyWithId(lookupKey, contactId)).find()
+```
+
+> ℹ️ For more info, read [Query contacts by lookup key](./../basics/query-contacts-by-lookup-key.md).
 
 #### Using the `Query` API
 
-You may also use the `Query` API to achieve the same result. However, in this case, using the 
+You may also use the `Query` API to achieve a similar result. However, in this case, using the 
 Contact ID is necessary in order to ensure the lookup succeeds (in case the lookup key changes).
 
 Use the `decomposedLookupKeys` functions in `contacts.core.util.ContactLookupKey.kt` to get contacts 
@@ -327,9 +341,9 @@ This means that...
 So when to use Contact ID vs lookup key?
 
 - Lookup key: for a reference to a Contact that needs to be loaded after some period of time.
+    - Creating and loading shortcuts.
     - Saving/restoring activity/fragment instance state.
     - Saving to an external database, preferences, or files.
-    - Creating shortcuts.
 - ID: for everything else.
     - Performing read/write operations in the same function call or session in your app.
     - Performing read/write operations that require ID (e.g. Contact photo and options).

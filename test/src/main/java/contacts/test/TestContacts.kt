@@ -52,6 +52,10 @@ private class TestContacts(private val contactsApi: Contacts) : Contacts {
         TODO("Not yet implemented")
     }
 
+    override fun lookupQuery(): LookupQuery {
+        TODO("Not yet implemented")
+    }
+
     override fun phoneLookupQuery(): PhoneLookupQuery {
         TODO("Not yet implemented")
     }

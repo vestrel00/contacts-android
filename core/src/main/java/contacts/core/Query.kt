@@ -13,7 +13,8 @@ import contacts.core.util.*
  * criteria. All RawContacts of matching Contacts are included in the resulting Contact instances.
  *
  * This provides a great deal of granularity and customizations when providing matching criteria
- * via [where]. For a broader, and more AOSP Contacts app like query, use [BroadQuery].
+ * via [where]. For a broader, and more AOSP Contacts app like query, use [BroadQuery]. For queries
+ * using lookup keys, use [LookupQuery].
  *
  * To get RawContacts directly, use [RawContactsQuery].
  *

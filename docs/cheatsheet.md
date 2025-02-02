@@ -250,7 +250,6 @@ heading explore each API in full detail. You may also find these samples in the 
             Query.Result result = ContactsFactory.create(this)
                     .query()
                     .where(equalTo(Fields.Contact.Id, contactId))
-                    .limit(1)
                     .find();
             return !result.isEmpty() ? result.get(0) : null;
         }
@@ -322,6 +321,67 @@ heading explore each API in full detail. You may also find these samples in the 
                             )
                     )
                     .find();
+        }
+    }
+    ```
+
+### [Query contacts by lookup key](./basics/query-contacts-by-lookup-key.md)
+
+=== "Kotlin"
+
+    ```kotlin
+    package contacts.sample.cheatsheet.basics.kotlin
+    
+    import android.app.Activity
+    import contacts.core.Contacts
+    import contacts.core.LookupQuery
+    import contacts.core.entities.Contact
+    
+    class QueryContactsByLookupKeyActivity : Activity() {
+    
+        fun getContactByLookupKey(lookupKey: String): Contact? =
+            Contacts(this)
+                .lookupQuery()
+                .whereLookupKeyMatches(lookupKey)
+                .find()
+                .firstOrNull()
+    
+        fun getContactByLookupKeyWithId(lookupKey: String, contactId: Long): Contact? =
+            Contacts(this)
+                .lookupQuery()
+                .whereLookupKeyWithIdMatches(LookupQuery.LookupKeyWithId(lookupKey, contactId))
+                .find()
+                .firstOrNull()
+    }
+    ```
+
+=== "Java"
+
+    ```java
+    package contacts.sample.cheatsheet.basics.java;
+    
+    import android.app.Activity;
+    
+    import contacts.core.ContactsFactory;
+    import contacts.core.LookupQuery;
+    import contacts.core.entities.Contact;
+    
+    public class QueryContactsByLookupKeyActivity extends Activity {
+    
+        Contact getContactByLookupKey(String lookupKey) {
+            LookupQuery.Result result = ContactsFactory.create(this)
+                    .lookupQuery()
+                    .whereLookupKeyMatches(lookupKey)
+                    .find();
+            return !result.isEmpty() ? result.get(0) : null;
+        }
+    
+        Contact getContactByLookupKeyWithId(String lookupKey, long contactId) {
+            LookupQuery.Result result = ContactsFactory.create(this)
+                    .lookupQuery()
+                    .whereLookupKeyWithIdMatches(new LookupQuery.LookupKeyWithId(lookupKey, contactId))
+                    .find();
+            return !result.isEmpty() ? result.get(0) : null;
         }
     }
     ```

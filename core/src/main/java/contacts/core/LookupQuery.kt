@@ -2,13 +2,12 @@ package contacts.core
 
 import android.accounts.Account
 import android.content.ContentResolver
+import android.content.ContentUris
 import android.net.Uri
-import android.os.Build
 import android.provider.ContactsContract
-import contacts.core.PhoneLookupQuery.Match
 import contacts.core.entities.Contact
 import contacts.core.entities.Group
-import contacts.core.entities.cursor.phoneLookupCursor
+import contacts.core.entities.cursor.contactsCursor
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.util.contacts
 import contacts.core.util.findContactIdsInDataTable
@@ -20,18 +19,19 @@ import contacts.core.util.query
 import contacts.core.util.toRawContactsWhere
 
 /**
- * Performs a highly optimized query using a phone number or SIP address.
+ * Uses [android.provider.ContactsContract.Contacts.CONTENT_LOOKUP_URI] to get contacts using
+ * lookup keys, which are typically used in shortcuts or other long-term links to contacts.
  *
- * This will only match EXACT phone numbers or SIP addresses of different formatting and
- * variations. There is no partial matching. This is useful for caller IDs in incoming and
- * outgoing calls.
+ * The reason why lookup keys are used as long-term links to contacts is because Contact IDs and the
+ * lookup keys themselves may change over time due to linking/unlinking, local contact updates, and
+ * syncing adapter operations. Lookup keys provide the ability to retrieve contacts even when its ID
+ * or lookup key itself changes.
  *
- * If you need to perform partial matching based on other data than just phone numbers and SIP
- * addresses, use [Query] or [BroadQuery]. For queries using lookup keys, use [LookupQuery].
+ * You may use [Query] to get contacts using lookup keys and ids as well but [LookupQuery] is
+ * simpler and more robust and optimized for the specific purpose of getting contacts using
+ * lookup keys.
  *
- * ## How does the matching process work?
- *
- * See the [Match].
+ * For a broader, and more AOSP Contacts app like query, use [BroadQuery].
  *
  * ## Permissions
  *
@@ -40,32 +40,32 @@ import contacts.core.util.toRawContactsWhere
  *
  * ## Usage
  *
- * Here is an example query that searches for the phone number "123";
+ * Here is an example query that returns the contact with the provided `lookupKey`;
  *
  * In Kotlin,
  *
  * ```kotlin
- * val contacts = phoneLookupQuery.whereExactlyMatches("123").find()
+ * val contacts = lookupQuery.whereLookupKeyMatches(lookupKey).find()
  * ```
  *
  * In Java,
  *
  * ```java
- * List<Contact> contacts = phoneLookupQuery.whereExactlyMatches("123").find();
+ * List<Contact> contacts = lookupQuery.whereLookupKeyMatches(lookupKey).find();
  * ```
  *
  * ## Developer notes
  *
- * This query will typically only return one or a handful of matching contacts. Therefore, it is
- * really not necessary (nor does it make practical sense) to provide filtering and paginating
- * functions; [accounts], [groups], [orderBy], [limit], [offset], and [forceOffsetAndLimit].
+ * This query will typically only be used to get a single contact. Therefore, it is really not
+ * necessary (nor does it make practical sense) to provide filtering and paginating functions;
+ * [accounts], [groups], [orderBy], [limit], [offset], and [forceOffsetAndLimit].
  *
- * However, there may be some edge-cases where there are hundreds of matching contacts as is the
- * case when there are many duplicate contacts. While this practice may violate YAGNI, adding these
- * functions now future-proofs this API and also makes it much similar to the other query APIs;
- * [Query], [BroadQuery], and [LookupQuery].
+ * However, there may be a user of this API that would want to load contacts from hundreds or
+ * thousands of lookup keys. While this practice may violate YAGNI, adding these functions now
+ * future-proofs this API and also makes it much similar to the other query APIs;
+ * [Query], [BroadQuery], and [PhoneLookupQuery].
  */
-interface PhoneLookupQuery : CrudApi {
+interface LookupQuery : CrudApi {
 
     /**
      * Limits the search to only those RawContacts associated with one of the given accounts.
@@ -86,17 +86,17 @@ interface PhoneLookupQuery : CrudApi {
      * increases the time it takes for [find] to complete. Therefore, you should only specify this
      * if you actually need it.
      */
-    fun accounts(vararg accounts: Account?): PhoneLookupQuery
+    fun accounts(vararg accounts: Account?): LookupQuery
 
     /**
-     * See [PhoneLookupQuery.accounts]
+     * See [LookupQuery.accounts]
      */
-    fun accounts(accounts: Collection<Account?>): PhoneLookupQuery
+    fun accounts(accounts: Collection<Account?>): LookupQuery
 
     /**
-     * See [PhoneLookupQuery.accounts]
+     * See [LookupQuery.accounts]
      */
-    fun accounts(accounts: Sequence<Account?>): PhoneLookupQuery
+    fun accounts(accounts: Sequence<Account?>): LookupQuery
 
     /**
      * Limits the search to only those RawContacts associated with at least one of the given groups.
@@ -113,17 +113,17 @@ interface PhoneLookupQuery : CrudApi {
      * increases the time it takes for [find] to complete. Therefore, you should only specify this
      * if you actually need it.
      */
-    fun groups(vararg groups: Group): PhoneLookupQuery
+    fun groups(vararg groups: Group): LookupQuery
 
     /**
-     * See [PhoneLookupQuery.groups]
+     * See [LookupQuery.groups]
      */
-    fun groups(groups: Collection<Group>): PhoneLookupQuery
+    fun groups(groups: Collection<Group>): LookupQuery
 
     /**
-     * See [PhoneLookupQuery.groups]
+     * See [LookupQuery.groups]
      */
-    fun groups(groups: Sequence<Group>): PhoneLookupQuery
+    fun groups(groups: Sequence<Group>): LookupQuery
 
     /**
      * Includes only the given set of [fields] in each of the matching contacts.
@@ -140,7 +140,7 @@ interface PhoneLookupQuery : CrudApi {
      * populated with values from the database. Properties of fields that are not included are
      * guaranteed to be null.
      *
-     * To include RawContact specific properties, use [PhoneLookupQuery.includeRawContactsFields].
+     * To include RawContact specific properties, use [LookupQuery.includeRawContactsFields].
      *
      * ## Performance
      *
@@ -166,22 +166,22 @@ interface PhoneLookupQuery : CrudApi {
      * disable include field checks in the cursors, [contacts.core.util.query] provides a parameter
      * to set the cursor holder's include fields to null.
      */
-    fun include(vararg fields: AbstractDataField): PhoneLookupQuery
+    fun include(vararg fields: AbstractDataField): LookupQuery
 
     /**
-     * See [PhoneLookupQuery.include].
+     * See [LookupQuery.include].
      */
-    fun include(fields: Collection<AbstractDataField>): PhoneLookupQuery
+    fun include(fields: Collection<AbstractDataField>): LookupQuery
 
     /**
-     * See [PhoneLookupQuery.include].
+     * See [LookupQuery.include].
      */
-    fun include(fields: Sequence<AbstractDataField>): PhoneLookupQuery
+    fun include(fields: Sequence<AbstractDataField>): LookupQuery
 
     /**
-     * See [PhoneLookupQuery.include].
+     * See [LookupQuery.include].
      */
-    fun include(fields: Fields.() -> Collection<AbstractDataField>): PhoneLookupQuery
+    fun include(fields: Fields.() -> Collection<AbstractDataField>): LookupQuery
 
     /**
      * Includes [fields] from the RawContacts table corresponding to the following RawContacts
@@ -243,41 +243,65 @@ interface PhoneLookupQuery : CrudApi {
      * disable include field checks in the cursors, [contacts.core.util.query] provides a parameter
      * to set the cursor holder's include fields to null.
      */
-    fun includeRawContactsFields(vararg fields: RawContactsField): PhoneLookupQuery
+    fun includeRawContactsFields(vararg fields: RawContactsField): LookupQuery
 
     /**
-     * See [PhoneLookupQuery.includeRawContactsFields].
+     * See [LookupQuery.includeRawContactsFields].
      */
-    fun includeRawContactsFields(fields: Collection<RawContactsField>): PhoneLookupQuery
+    fun includeRawContactsFields(fields: Collection<RawContactsField>): LookupQuery
 
     /**
-     * See [PhoneLookupQuery.includeRawContactsFields].
+     * See [LookupQuery.includeRawContactsFields].
      */
-    fun includeRawContactsFields(fields: Sequence<RawContactsField>): PhoneLookupQuery
+    fun includeRawContactsFields(fields: Sequence<RawContactsField>): LookupQuery
 
     /**
-     * See [PhoneLookupQuery.includeRawContactsFields].
+     * See [LookupQuery.includeRawContactsFields].
      */
-    fun includeRawContactsFields(fields: RawContactsFields.() -> Collection<RawContactsField>): PhoneLookupQuery
+    fun includeRawContactsFields(fields: RawContactsFields.() -> Collection<RawContactsField>): LookupQuery
 
     /**
-     * Specifies the type of lookup data that should be used in the matching process. This
-     * will affect the search results when [whereExactlyMatches] is used.
+     * Sets the query to search for contacts that match one of the [lookupKeys].
      *
-     * The default is [Match.PHONE].
+     * Empty or blank strings are ignored.
+     *
+     * If you additionally have the contact ID, use [whereLookupKeyWithIdMatches].
      */
-    fun match(match: Match): PhoneLookupQuery
+    fun whereLookupKeyMatches(vararg lookupKeys: String): LookupQuery
 
     /**
-     * Filters the [Contact]s exactly matching the [searchString]. If not specified or null or
-     * empty, then no [Contact]s are returned.
-     *
-     * Specify the type of contact data that should be used in the matching process using the
-     * [match] function.
-     *
-     * **Custom data are not included in the matching process!** To match custom data, use [Query].
+     * See [LookupQuery.whereLookupKeyMatches].
      */
-    fun whereExactlyMatches(searchString: String?): PhoneLookupQuery
+    fun whereLookupKeyMatches(lookupKeys: Collection<String>): LookupQuery
+
+    /**
+     * See [LookupQuery.whereLookupKeyMatches].
+     */
+    fun whereLookupKeyMatches(lookupKeys: Sequence<String>): LookupQuery
+
+    /**
+     * Sets the query to search for contacts that match one of the [lookupKeysWithIds].
+     *
+     * The [LookupKeyWithId.lookupKey] is optionally paired with the last known
+     * [LookupKeyWithId.contactId]. This "complete" format is an important optimization and is
+     * highly recommended.
+     *
+     * Instances with [LookupKeyWithId.lookupKey] being an empty or blank string are ignored. If the
+     * [LookupKeyWithId.contactId] is 0 or less, then only the [LookupKeyWithId.lookupKey] is used.
+     *
+     * If you only have the lookup key, use [whereLookupKeyMatches].
+     */
+    fun whereLookupKeyWithIdMatches(vararg lookupKeysWithIds: LookupKeyWithId): LookupQuery
+
+    /**
+     * See [LookupQuery.whereLookupKeyWithIdMatches].
+     */
+    fun whereLookupKeyWithIdMatches(lookupKeysWithIds: Collection<LookupKeyWithId>): LookupQuery
+
+    /**
+     * See [LookupQuery.whereLookupKeyWithIdMatches].
+     */
+    fun whereLookupKeyWithIdMatches(lookupKeysWithIds: Sequence<LookupKeyWithId>): LookupQuery
 
     /**
      * Orders the [Contact]s using one or more [orderBy]s. If not specified, then contacts are
@@ -315,22 +339,22 @@ interface PhoneLookupQuery : CrudApi {
      * [AddressFields.FormattedAddress] ('data1').
      */
     @SafeVarargs
-    fun orderBy(vararg orderBy: OrderBy<ContactsField>): PhoneLookupQuery
+    fun orderBy(vararg orderBy: OrderBy<ContactsField>): LookupQuery
 
     /**
-     * See [PhoneLookupQuery.orderBy].
+     * See [LookupQuery.orderBy].
      */
-    fun orderBy(orderBy: Collection<OrderBy<ContactsField>>): PhoneLookupQuery
+    fun orderBy(orderBy: Collection<OrderBy<ContactsField>>): LookupQuery
 
     /**
-     * See [PhoneLookupQuery.orderBy].
+     * See [LookupQuery.orderBy].
      */
-    fun orderBy(orderBy: Sequence<OrderBy<ContactsField>>): PhoneLookupQuery
+    fun orderBy(orderBy: Sequence<OrderBy<ContactsField>>): LookupQuery
 
     /**
-     * See [PhoneLookupQuery.orderBy].
+     * See [LookupQuery.orderBy].
      */
-    fun orderBy(orderBy: ContactsFields.() -> Collection<OrderBy<ContactsField>>): PhoneLookupQuery
+    fun orderBy(orderBy: ContactsFields.() -> Collection<OrderBy<ContactsField>>): LookupQuery
 
     /**
      * Limits the maximum number of returned [Contact]s to the given [limit].
@@ -339,7 +363,7 @@ interface PhoneLookupQuery : CrudApi {
      *
      * Some devices do not support this. See [forceOffsetAndLimit].
      */
-    fun limit(limit: Int): PhoneLookupQuery
+    fun limit(limit: Int): LookupQuery
 
     /**
      * Skips results 0 to [offset] (excluding the offset).
@@ -348,7 +372,7 @@ interface PhoneLookupQuery : CrudApi {
      *
      * Some devices do not support this. See [forceOffsetAndLimit].
      */
-    fun offset(offset: Int): PhoneLookupQuery
+    fun offset(offset: Int): LookupQuery
 
     /**
      * If the [limit] and [offset] functions are not supported by the device's database query
@@ -371,7 +395,7 @@ interface PhoneLookupQuery : CrudApi {
      * If the number of entities found do not exceed the [limit] but an [offset] is provided, this
      * is unable to detect/handle events where the [offset] is not supported. Sorry :P
      */
-    fun forceOffsetAndLimit(forceOffsetAndLimit: Boolean): PhoneLookupQuery
+    fun forceOffsetAndLimit(forceOffsetAndLimit: Boolean): LookupQuery
 
     /**
      * Returns a list of [Contact]s matching the preceding query options.
@@ -422,54 +446,19 @@ interface PhoneLookupQuery : CrudApi {
      * **Redacted operations should typically only be used for logging in production!**
      */
     // We have to cast the return type because we are not using recursive generic types.
-    override fun redactedCopy(): PhoneLookupQuery
+    override fun redactedCopy(): LookupQuery
 
     /**
-     * Specifies the type of lookup data that should be used in the matching process.
+     * The [lookupKey] is optionally paired with the last known [contactId]. This "complete"
+     * format is an important optimization and is highly recommended.
+     *
+     * Instances with [lookupKey] being an empty or blank string are ignored. If the [contactId] is 0 or
+     * less, then only the [lookupKey] is used.
      */
-    enum class Match {
-
-        /**
-         * Match phone numbers. This is the default.
-         *
-         * This will only match EXACT phone numbers or SIP addresses of different formatting and
-         * variations. There is no partial matching. This is useful in cases where you want to
-         * implement a caller ID function for incoming and outgoing calls. For example, if there
-         * are contacts with the following numbers;
-         *
-         * - 123
-         * - 1234
-         * - 1234
-         * - 12345
-         *
-         * Searching for "123" will only return the one contact with the number "123". Searching for
-         * "1234" will return the contact(s) with the number "1234".
-         *
-         * Additionally, this is able to match phone numbers with or without using country codes.
-         * For example, the phone number "+923123456789" (country code 92) will be matched using
-         * any of the following; "03123456789", "923123456789", "+923123456789".
-         *
-         * The reverse is true. For example, the phone number "03123456789" will be matched using
-         * any of the following; "03123456789", "923123456789", "+923123456789".
-         *
-         * However, if a phone number is saved with AND without a country code, then only the
-         * contact with the number that matches exactly will be returned. For example, when numbers
-         * "+923123456789" and "03123456789" are saved, searching for "03123456789" will return
-         * only the contact with that exact number (NOT including the contact with "+923123456789").
-         */
-        PHONE,
-
-        /**
-         * Same as [PHONE] except this matches SIP addresses instead of phone numbers.
-         *
-         * ## API version 21+ only
-         *
-         * This is only available for API 21 and above. The [PHONE] will be used for API
-         * versions below 21 even if [SIP] is specified.
-         */
-        // [ANDROID X] @RequiresApi (not using annotation to avoid dependency on androidx.annotation)
-        SIP
-    }
+    data class LookupKeyWithId(
+        val lookupKey: String,
+        val contactId: Long
+    )
 
     /**
      * A list of [Contact]s.
@@ -495,34 +484,32 @@ interface PhoneLookupQuery : CrudApi {
     }
 }
 
-internal fun PhoneLookupQuery(contacts: Contacts): PhoneLookupQuery = PhoneLookupQueryImpl(contacts)
+internal fun LookupQuery(contacts: Contacts): LookupQuery = LookupQueryImpl(contacts)
 
-private class PhoneLookupQueryImpl(
+private class LookupQueryImpl(
     override val contactsApi: Contacts,
 
     private var rawContactsWhere: Where<RawContactsField>? = DEFAULT_RAW_CONTACTS_WHERE,
     private var groupMembershipWhere: Where<GroupMembershipField>? = DEFAULT_GROUP_MEMBERSHIP_WHERE,
     private var include: Include<AbstractDataField>? = null,
     private var includeRawContactsFields: Include<RawContactsField>? = null,
-    private var match: Match = DEFAULT_MATCH,
-    private var searchString: String? = DEFAULT_SEARCH_STRING,
+    private var lookupKeys: MutableSet<LookupQuery.LookupKeyWithId> = mutableSetOf(),
     private var orderBy: CompoundOrderBy<ContactsField> = DEFAULT_ORDER_BY,
     private var limit: Int = DEFAULT_LIMIT,
     private var offset: Int = DEFAULT_OFFSET,
     private var forceOffsetAndLimit: Boolean = DEFAULT_FORCE_OFFSET_AND_LIMIT,
 
     override val isRedacted: Boolean = false
-) : PhoneLookupQuery {
+) : LookupQuery {
 
     override fun toString(): String =
         """
-            PhoneLookupQuery {
+            LookupQuery {
                 rawContactsWhere: $rawContactsWhere
                 groupMembershipWhere: $groupMembershipWhere
                 include: $include
                 includeRawContactsFields: $includeRawContactsFields
-                match: $match
-                searchString: $searchString
+                lookupKeys: $lookupKeys
                 orderBy: $orderBy
                 limit: $limit
                 offset: $offset
@@ -531,7 +518,7 @@ private class PhoneLookupQueryImpl(
             }
         """.trimIndent()
 
-    override fun redactedCopy(): PhoneLookupQuery = PhoneLookupQueryImpl(
+    override fun redactedCopy(): LookupQuery = LookupQueryImpl(
         contactsApi,
 
         // Redact Account information.
@@ -539,9 +526,7 @@ private class PhoneLookupQueryImpl(
         groupMembershipWhere,
         include,
         includeRawContactsFields,
-        match,
-        // Redact search input.
-        searchString?.redact(),
+        lookupKeys,
         orderBy,
         limit,
         offset,
@@ -554,7 +539,7 @@ private class PhoneLookupQueryImpl(
 
     override fun accounts(accounts: Collection<Account?>) = accounts(accounts.asSequence())
 
-    override fun accounts(accounts: Sequence<Account?>): PhoneLookupQuery = apply {
+    override fun accounts(accounts: Sequence<Account?>): LookupQuery = apply {
         rawContactsWhere = accounts.toRawContactsWhere()?.redactedCopyOrThis(isRedacted)
     }
 
@@ -562,7 +547,7 @@ private class PhoneLookupQueryImpl(
 
     override fun groups(groups: Collection<Group>) = groups(groups.asSequence())
 
-    override fun groups(groups: Sequence<Group>): PhoneLookupQuery = apply {
+    override fun groups(groups: Sequence<Group>): LookupQuery = apply {
         val groupIds = groups.map { it.id }
         groupMembershipWhere = if (groupIds.isEmpty()) {
             DEFAULT_GROUP_MEMBERSHIP_WHERE
@@ -575,7 +560,7 @@ private class PhoneLookupQueryImpl(
 
     override fun include(fields: Collection<AbstractDataField>) = include(fields.asSequence())
 
-    override fun include(fields: Sequence<AbstractDataField>): PhoneLookupQuery = apply {
+    override fun include(fields: Sequence<AbstractDataField>): LookupQuery = apply {
         include = if (fields.isEmpty()) {
             null // Set to null to disable include field checks, for optimization purposes.
         } else {
@@ -592,7 +577,7 @@ private class PhoneLookupQueryImpl(
     override fun includeRawContactsFields(fields: Collection<RawContactsField>) =
         includeRawContactsFields(fields.asSequence())
 
-    override fun includeRawContactsFields(fields: Sequence<RawContactsField>): PhoneLookupQuery =
+    override fun includeRawContactsFields(fields: Sequence<RawContactsField>): LookupQuery =
         apply {
             includeRawContactsFields = if (fields.isEmpty()) {
                 null // Set to null to disable include field checks, for optimization purposes.
@@ -605,25 +590,30 @@ private class PhoneLookupQueryImpl(
         fields: RawContactsFields.() -> Collection<RawContactsField>
     ) = includeRawContactsFields(fields(RawContactsFields))
 
-    override fun match(match: Match): PhoneLookupQuery = apply {
-        this.match = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            Match.PHONE
-        } else {
-            match
-        }
-    }
+    override fun whereLookupKeyMatches(vararg lookupKeys: String) =
+        whereLookupKeyMatches(lookupKeys.asSequence())
 
-    override fun whereExactlyMatches(searchString: String?): PhoneLookupQuery = apply {
-        // Yes, I know DEFAULT_SEARCH_STRING is null. This reads better though.
-        this.searchString = (searchString ?: DEFAULT_SEARCH_STRING)?.redactStringOrThis(isRedacted)
-    }
+    override fun whereLookupKeyMatches(lookupKeys: Collection<String>) =
+        whereLookupKeyMatches(lookupKeys.asSequence())
+
+    override fun whereLookupKeyMatches(lookupKeys: Sequence<String>) =
+        whereLookupKeyWithIdMatches(lookupKeys.map { LookupQuery.LookupKeyWithId(it, 0) })
+
+    override fun whereLookupKeyWithIdMatches(vararg lookupKeysWithIds: LookupQuery.LookupKeyWithId) =
+        whereLookupKeyWithIdMatches(lookupKeysWithIds.asSequence())
+
+    override fun whereLookupKeyWithIdMatches(lookupKeysWithIds: Collection<LookupQuery.LookupKeyWithId>) =
+        whereLookupKeyWithIdMatches(lookupKeysWithIds.asSequence())
+
+    override fun whereLookupKeyWithIdMatches(lookupKeysWithIds: Sequence<LookupQuery.LookupKeyWithId>): LookupQuery =
+        apply { lookupKeys.addAll(lookupKeysWithIds.filter { it.lookupKey.isNotBlank() }) }
 
     override fun orderBy(vararg orderBy: OrderBy<ContactsField>) = orderBy(orderBy.asSequence())
 
     override fun orderBy(orderBy: Collection<OrderBy<ContactsField>>) =
         orderBy(orderBy.asSequence())
 
-    override fun orderBy(orderBy: Sequence<OrderBy<ContactsField>>): PhoneLookupQuery = apply {
+    override fun orderBy(orderBy: Sequence<OrderBy<ContactsField>>): LookupQuery = apply {
         this.orderBy = if (orderBy.isEmpty()) {
             DEFAULT_ORDER_BY
         } else {
@@ -634,7 +624,7 @@ private class PhoneLookupQueryImpl(
     override fun orderBy(orderBy: ContactsFields.() -> Collection<OrderBy<ContactsField>>) =
         orderBy(orderBy(ContactsFields))
 
-    override fun limit(limit: Int): PhoneLookupQuery = apply {
+    override fun limit(limit: Int): LookupQuery = apply {
         this.limit = if (limit > 0) {
             limit
         } else {
@@ -642,7 +632,7 @@ private class PhoneLookupQueryImpl(
         }
     }
 
-    override fun offset(offset: Int): PhoneLookupQuery = apply {
+    override fun offset(offset: Int): LookupQuery = apply {
         this.offset = if (offset >= 0) {
             offset
         } else {
@@ -650,13 +640,13 @@ private class PhoneLookupQueryImpl(
         }
     }
 
-    override fun forceOffsetAndLimit(forceOffsetAndLimit: Boolean): PhoneLookupQuery = apply {
+    override fun forceOffsetAndLimit(forceOffsetAndLimit: Boolean): LookupQuery = apply {
         this.forceOffsetAndLimit = forceOffsetAndLimit
     }
 
-    override fun find(): PhoneLookupQuery.Result = find { false }
+    override fun find(): LookupQuery.Result = find { false }
 
-    override fun find(cancel: () -> Boolean): PhoneLookupQuery.Result {
+    override fun find(cancel: () -> Boolean): LookupQuery.Result {
         onPreExecute()
 
         var contacts = if (!permissions.canQuery()) {
@@ -666,7 +656,7 @@ private class PhoneLookupQueryImpl(
                 customDataRegistry,
                 rawContactsWhere, groupMembershipWhere,
                 include, includeRawContactsFields,
-                match, searchString,
+                lookupKeys,
                 orderBy, limit, offset,
                 cancel
             )
@@ -677,7 +667,7 @@ private class PhoneLookupQueryImpl(
             contacts = contacts.offsetAndLimit(offset, limit)
         }
 
-        return PhoneLookupQueryResult(contacts, isLimitBreached)
+        return LookupQueryResult(contacts, isLimitBreached)
             .redactedCopyOrThis(isRedacted)
             .also { onPostExecute(contactsApi, it) }
     }
@@ -689,8 +679,6 @@ private class PhoneLookupQueryImpl(
         val REQUIRED_INCLUDE_RAW_CONTACTS_FIELDS by lazy {
             RawContactsFields.Required.all.asSequence()
         }
-        val DEFAULT_MATCH: Match = Match.PHONE
-        val DEFAULT_SEARCH_STRING: String? = null
         val DEFAULT_ORDER_BY by lazy { CompoundOrderBy(setOf(ContactsFields.Id.asc())) }
         const val DEFAULT_LIMIT = Int.MAX_VALUE
         const val DEFAULT_OFFSET = 0
@@ -704,24 +692,23 @@ private fun Contacts.resolve(
     groupMembershipWhere: Where<GroupMembershipField>?,
     include: Include<AbstractDataField>?,
     includeRawContactsFields: Include<RawContactsField>?,
-    match: Match,
-    searchString: String?,
+    lookupKeys: Set<LookupQuery.LookupKeyWithId>,
     orderBy: CompoundOrderBy<ContactsField>,
     limit: Int,
     offset: Int,
     cancel: () -> Boolean
 ): List<Contact> {
 
-    if (searchString.isNullOrEmpty()) {
+    if (lookupKeys.isEmpty()) {
         return emptyList()
     }
 
     var contactIds: MutableSet<Long>? = null
 
-    // Get Contact Ids exactly matching the searchString from the PhoneLookup table.
+    // Get Contact Ids using the lookup keys.
     if (!cancel()) {
         contactIds = mutableSetOf<Long>().apply {
-            addAll(findMatchingContactIds(match, searchString, cancel))
+            addAll(findMatchingContactIds(lookupKeys, cancel))
         }
 
         // If no match, return empty list.
@@ -776,59 +763,43 @@ private fun Contacts.resolve(
 }
 
 private fun Contacts.findMatchingContactIds(
-    match: Match, searchString: String, cancel: () -> Boolean
-): Set<Long> = contentResolver.query(
-    ContactsContract.PhoneLookup.CONTENT_FILTER_URI
+    lookupKeys: Set<LookupQuery.LookupKeyWithId>, cancel: () -> Boolean
+): Set<Long> {
+    val contactIds = mutableSetOf<Long>();
+
+    for (lookupKey in lookupKeys) {
+        if (cancel()) {
+            break
+        }
+
+        var lookupUri =
+            Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI, lookupKey.lookupKey)
+        if (lookupKey.contactId > 0) {
+            lookupUri = ContentUris.withAppendedId(lookupUri, lookupKey.contactId)
+        }
         // Note that CALLER_IS_SYNCADAPTER probably does not really matter for queries but might as
         // well be consistent...
-        .forSyncAdapter(callerIsSyncAdapter)
-        .buildUpon()
-        .appendEncodedPath(Uri.encode(searchString))
-        .let {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                it.appendQueryParameter(
-                    ContactsContract.PhoneLookup.QUERY_PARAMETER_SIP_ADDRESS,
-                    when (match) {
-                        Match.PHONE -> "0"
-                        Match.SIP -> "1"
-                    }
-                )
-            } else {
-                it
-            }
-        }
-        .build()
-        // Note that CALLER_IS_SYNCADAPTER probably does not really matter for queries but might as well
-        // be consistent...
-        .forSyncAdapter(callerIsSyncAdapter),
-    Include(
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            PhoneLookupFields.ContactId
-        } else {
-            PhoneLookupFields.Id
-        }
-    ),
-    null
-) {
-    val contactIds = mutableSetOf<Long>()
-    val phoneLookupCursor = it.phoneLookupCursor()
-    while (!cancel() && it.moveToNext()) {
-        contactIds.add(
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                phoneLookupCursor.contactId
-            } else {
-                phoneLookupCursor.id
-            }
-        )
-    }
-    contactIds
-} ?: emptySet()
+        lookupUri = lookupUri.forSyncAdapter(callerIsSyncAdapter)
 
-private class PhoneLookupQueryResult private constructor(
+        contentResolver.query(lookupUri, Include(ContactsFields.Id), null) {
+            val ids = mutableSetOf<Long>()
+            val contactsCursor = it.contactsCursor()
+            while (!cancel() && it.moveToNext()) {
+                ids.add(contactsCursor.contactId)
+            }
+            ids
+        }
+            ?.also(contactIds::addAll)
+    }
+
+    return contactIds
+}
+
+private class LookupQueryResult private constructor(
     contacts: List<Contact>,
     override val isLimitBreached: Boolean,
     override val isRedacted: Boolean
-) : ArrayList<Contact>(contacts), PhoneLookupQuery.Result {
+) : ArrayList<Contact>(contacts), LookupQuery.Result {
 
     constructor(contacts: List<Contact>, isLimitBreached: Boolean) : this(
         contacts = contacts,
@@ -838,7 +809,7 @@ private class PhoneLookupQueryResult private constructor(
 
     override fun toString(): String =
         """
-            PhoneLookupQuery.Result {
+            LookupQuery.Result {
                 Number of contacts found: $size
                 First contact: ${firstOrNull()}
                 isLimitBreached: $isLimitBreached
@@ -846,7 +817,7 @@ private class PhoneLookupQueryResult private constructor(
             }
         """.trimIndent()
 
-    override fun redactedCopy(): PhoneLookupQuery.Result = PhoneLookupQueryResult(
+    override fun redactedCopy(): LookupQuery.Result = LookupQueryResult(
         contacts = redactedCopies(),
         isLimitBreached = isLimitBreached,
         isRedacted = true

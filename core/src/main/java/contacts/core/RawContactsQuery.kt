@@ -10,7 +10,7 @@ import contacts.core.util.*
 /**
  * Queries for Profile OR non-Profile (depending on instance) RawContacts.
  *
- * To get Contacts instead, use [Query].
+ * To get Contacts instead, use [Query], [BroadQuery], or [LookupQuery].
  *
  * ## Permissions
  *

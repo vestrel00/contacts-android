@@ -285,9 +285,9 @@ This means that...
 So when to use Contact ID vs lookup key?
 
 - Lookup key: for a reference to a Contact that needs to be loaded after some period of time.
+    - Creating and loading shortcuts.
     - Saving/restoring activity/fragment instance state.
     - Saving to an external database, preferences, or files.
-    - Creating shortcuts.
 - ID: for everything else.
     - Performing read/write operations in the same function call or session in your app.
     - Performing read/write operations that require ID (e.g. Contact photo and options).

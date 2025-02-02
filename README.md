@@ -47,8 +47,8 @@ The `core` module provides,
   _address, email, event, group membership, IM, name, nickname, note, organization, phone, photo, relation, SIP address, and website_
 - ✅ [**Custom data** integration](/docs/customdata/integrate-custom-data.md)
 - ✅ [**Broad queries**](/docs/basics/query-contacts.md) and [**advanced queries**](/docs/basics/query-contacts-advanced.md) of Contacts and RawContacts from zero or more Accounts and/or Groups
+- ✅ [**Queries using lookup keys**](/docs/basics/query-contacts-by-lookup-key.md)
 - ✅ [**Phone lookup queries**](/docs/basics/query-contacts-by-phone-or-sip.md) for specialized matching of phone or SIP
-- ✅ [Contact **lookup keys**](/docs/entities/about-contact-lookup-key.md)
 - ✅ [Include only desired fields](/docs/basics/include-only-desired-data.md) in read/write operations to **optimize CPU and memory**
 - ✅ Powerful, **type-safe query DSL**
 - ✅ **Pagination** using order by, limit, and offset database functions.
