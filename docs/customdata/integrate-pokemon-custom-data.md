@@ -59,7 +59,7 @@ mutableRawContact.addPokemon(contacts) {
 }
 ```
 
-To add a pokemon to a the first RawContact or a Contact,
+To add a pokemon to the first RawContact or a Contact,
 
 ```kotlin
 mutableContact.addPokemon(contacts, mutablePokemon)

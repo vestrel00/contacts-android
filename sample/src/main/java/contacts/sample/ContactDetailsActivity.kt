@@ -127,6 +127,7 @@ class ContactDetailsActivity : BaseActivity() {
                         it > 1
                     } == true
                 }
+
                 Mode.EDIT, Mode.CREATE -> {
                     editMenuItem.isVisible = false
                     saveMenuItem.isVisible = true
@@ -154,11 +155,13 @@ class ContactDetailsActivity : BaseActivity() {
                 Mode.CREATE -> createNewContact()
                 else -> throw IllegalStateException("Save option should not be shown in view mode")
             }
+
             R.id.edit -> mode = Mode.EDIT
             R.id.delete -> when (mode) {
                 Mode.VIEW, Mode.EDIT -> deleteContact()
                 Mode.CREATE -> finish()
             }
+
             R.id.refresh -> refresh()
             R.id.share -> contactView.shareContact()
             R.id.create_shortcut -> {
@@ -167,6 +170,7 @@ class ContactDetailsActivity : BaseActivity() {
                     contact.createPinnedShortcut(this)
                 }
             }
+
             R.id.unlink -> {
                 val contact = contactView.contact
                 if (contact != null && contact is ExistingContactEntity) {
@@ -208,10 +212,12 @@ class ContactDetailsActivity : BaseActivity() {
                 loadContact()
                 contactView.isEnabled = false
             }
+
             Mode.EDIT -> launch {
                 loadContact()
                 contactView.isEnabled = true
             }
+
             Mode.CREATE -> {
                 loadNewContact()
                 contactView.isEnabled = true
