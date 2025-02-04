@@ -4,12 +4,33 @@ import android.accounts.Account
 import android.content.ContentProviderOperation
 import android.content.ContentProviderResult
 import contacts.core.entities.Group
+import contacts.core.entities.MimeType
 import contacts.core.entities.NewRawContact
 import contacts.core.entities.RawContactEntity
 import contacts.core.entities.custom.CustomDataCountRestriction
 import contacts.core.entities.custom.CustomDataRegistry
-import contacts.core.entities.operation.*
-import contacts.core.util.*
+import contacts.core.entities.operation.AddressOperation
+import contacts.core.entities.operation.EmailOperation
+import contacts.core.entities.operation.EventOperation
+import contacts.core.entities.operation.GroupMembershipOperation
+import contacts.core.entities.operation.ImOperation
+import contacts.core.entities.operation.NameOperation
+import contacts.core.entities.operation.NicknameOperation
+import contacts.core.entities.operation.NoteOperation
+import contacts.core.entities.operation.OptionsOperation
+import contacts.core.entities.operation.OrganizationOperation
+import contacts.core.entities.operation.PhoneOperation
+import contacts.core.entities.operation.RawContactsOperation
+import contacts.core.entities.operation.RelationOperation
+import contacts.core.entities.operation.SipAddressOperation
+import contacts.core.entities.operation.WebsiteOperation
+import contacts.core.util.PhotoDataOperation
+import contacts.core.util.applyBatch
+import contacts.core.util.contacts
+import contacts.core.util.isEmpty
+import contacts.core.util.nullIfNotIn
+import contacts.core.util.rawContacts
+import contacts.core.util.setRawContactPhotoDirect
 
 /**
  * Inserts one or more RawContacts and Data.
@@ -908,80 +929,128 @@ private fun Contacts.insertOperationsForRawContact(
         operations.add(insertNewRawContactOperation)
     }
 
+    // Process custom data first to allow for overriding built-in data kinds.
+    // Note that this can also be placed at the end instead of here at the beginning because
+    // operations for built-in data kinds is skipped based on the registered custom data kinds,
+    // which has nothing to do with this block of code. However, this follows the pattern used
+    // throughout the codebase of checking custom data first, which makes more logical sense
+    // even if technically unnecessary.
     operations.addAll(
-        AddressOperation(
+        rawContact.customDataInsertOperations(
             callerIsSyncAdapter = callerIsSyncAdapter,
             isProfile = isProfile,
-            includeFields?.let(Fields.Address::intersect)
-        ).insertForNewRawContact(
-            rawContact.addresses, rawContactIdOpIndex
+            includeFields = includeFields,
+            customDataRegistry = customDataRegistry,
+            rawContactIdOpIndex = rawContactIdOpIndex
         )
     )
 
-    operations.addAll(
-        EmailOperation(
-            callerIsSyncAdapter = callerIsSyncAdapter,
-            isProfile = isProfile,
-            includeFields?.let(Fields.Email::intersect)
-        ).insertForNewRawContact(
-            rawContact.emails, rawContactIdOpIndex
+    // Do not execute built-in operation if the corresponding built-in data kind is being overridden
+    // via custom data.
+    if (!customDataRegistry.entryOfExists(MimeType.Address.value)) {
+        operations.addAll(
+            AddressOperation(
+                callerIsSyncAdapter = callerIsSyncAdapter,
+                isProfile = isProfile,
+                includeFields?.let(Fields.Address::intersect)
+            ).insertForNewRawContact(
+                rawContact.addresses, rawContactIdOpIndex
+            )
         )
-    )
-
-    operations.addAll(
-        EventOperation(
-            callerIsSyncAdapter = callerIsSyncAdapter,
-            isProfile = isProfile,
-            includeFields?.let(Fields.Event::intersect)
-        ).insertForNewRawContact(
-            rawContact.events, rawContactIdOpIndex
-        )
-    )
-
-    operations.addAll(
-        GroupMembershipOperation(
-            callerIsSyncAdapter = callerIsSyncAdapter,
-            isProfile = isProfile,
-            includeFields?.let(Fields.GroupMembership::intersect)
-        ).insertForNewRawContact(
-            rawContact.groupMemberships, accountGroupsMap, rawContactIdOpIndex
-        )
-    )
-
-    @Suppress("Deprecation")
-    operations.addAll(
-        ImOperation(
-            callerIsSyncAdapter = callerIsSyncAdapter,
-            isProfile = isProfile,
-            includeFields?.let(Fields.Im::intersect)
-        ).insertForNewRawContact(rawContact.ims, rawContactIdOpIndex)
-    )
-
-    rawContact.name?.let {
-        NameOperation(
-            callerIsSyncAdapter = callerIsSyncAdapter,
-            isProfile = isProfile,
-            includeFields?.let(Fields.Name::intersect)
-        ).insertForNewRawContact(it, rawContactIdOpIndex)
-            ?.let(operations::add)
     }
 
-    rawContact.nickname?.let {
-        NicknameOperation(
-            callerIsSyncAdapter = callerIsSyncAdapter,
-            isProfile = isProfile,
-            includeFields?.let(Fields.Nickname::intersect)
-        ).insertForNewRawContact(it, rawContactIdOpIndex)
-            ?.let(operations::add)
+    // Do not execute built-in operation if the corresponding built-in data kind is being overridden
+    // via custom data.
+    if (!customDataRegistry.entryOfExists(MimeType.Email.value)) {
+        operations.addAll(
+            EmailOperation(
+                callerIsSyncAdapter = callerIsSyncAdapter,
+                isProfile = isProfile,
+                includeFields?.let(Fields.Email::intersect)
+            ).insertForNewRawContact(
+                rawContact.emails, rawContactIdOpIndex
+            )
+        )
     }
 
-    rawContact.note?.let {
-        NoteOperation(
-            callerIsSyncAdapter = callerIsSyncAdapter,
-            isProfile = isProfile,
-            includeFields?.let(Fields.Note::intersect)
-        ).insertForNewRawContact(it, rawContactIdOpIndex)
-            ?.let(operations::add)
+    // Do not execute built-in operation if the corresponding built-in data kind is being overridden
+    // via custom data.
+    if (!customDataRegistry.entryOfExists(MimeType.Event.value)) {
+        operations.addAll(
+            EventOperation(
+                callerIsSyncAdapter = callerIsSyncAdapter,
+                isProfile = isProfile,
+                includeFields?.let(Fields.Event::intersect)
+            ).insertForNewRawContact(
+                rawContact.events, rawContactIdOpIndex
+            )
+        )
+    }
+
+    // Do not execute built-in operation if the corresponding built-in data kind is being overridden
+    // via custom data.
+    if (!customDataRegistry.entryOfExists(MimeType.GroupMembership.value)) {
+        operations.addAll(
+            GroupMembershipOperation(
+                callerIsSyncAdapter = callerIsSyncAdapter,
+                isProfile = isProfile,
+                includeFields?.let(Fields.GroupMembership::intersect)
+            ).insertForNewRawContact(
+                rawContact.groupMemberships, accountGroupsMap, rawContactIdOpIndex
+            )
+        )
+    }
+
+    // Do not execute built-in operation if the corresponding built-in data kind is being overridden
+    // via custom data.
+    if (!customDataRegistry.entryOfExists(MimeType.Im.value)) {
+        @Suppress("Deprecation")
+        operations.addAll(
+            ImOperation(
+                callerIsSyncAdapter = callerIsSyncAdapter,
+                isProfile = isProfile,
+                includeFields?.let(Fields.Im::intersect)
+            ).insertForNewRawContact(rawContact.ims, rawContactIdOpIndex)
+        )
+    }
+
+    // Do not execute built-in operation if the corresponding built-in data kind is being overridden
+    // via custom data.
+    if (!customDataRegistry.entryOfExists(MimeType.Name.value)) {
+        rawContact.name?.let {
+            NameOperation(
+                callerIsSyncAdapter = callerIsSyncAdapter,
+                isProfile = isProfile,
+                includeFields?.let(Fields.Name::intersect)
+            ).insertForNewRawContact(it, rawContactIdOpIndex)
+                ?.let(operations::add)
+        }
+    }
+
+    // Do not execute built-in operation if the corresponding built-in data kind is being overridden
+    // via custom data.
+    if (!customDataRegistry.entryOfExists(MimeType.Nickname.value)) {
+        rawContact.nickname?.let {
+            NicknameOperation(
+                callerIsSyncAdapter = callerIsSyncAdapter,
+                isProfile = isProfile,
+                includeFields?.let(Fields.Nickname::intersect)
+            ).insertForNewRawContact(it, rawContactIdOpIndex)
+                ?.let(operations::add)
+        }
+    }
+
+    // Do not execute built-in operation if the corresponding built-in data kind is being overridden
+    // via custom data.
+    if (!customDataRegistry.entryOfExists(MimeType.Note.value)) {
+        rawContact.note?.let {
+            NoteOperation(
+                callerIsSyncAdapter = callerIsSyncAdapter,
+                isProfile = isProfile,
+                includeFields?.let(Fields.Note::intersect)
+            ).insertForNewRawContact(it, rawContactIdOpIndex)
+                ?.let(operations::add)
+        }
     }
 
     // Apply the options operations after the group memberships operation.
@@ -989,7 +1058,6 @@ private fun Contacts.insertOperationsForRawContact(
     // Options.starred. If starred is true, the Contacts Provider will automatically add a group
     // membership to the favorites group (if exist). If starred is false, then the favorites group
     // membership will be removed.
-
     rawContact.options?.let {
         OptionsOperation().updateNewRawContactOptions(
             callerIsSyncAdapter = callerIsSyncAdapter,
@@ -1000,62 +1068,71 @@ private fun Contacts.insertOperationsForRawContact(
         )?.let(operations::add)
     }
 
-    rawContact.organization?.let {
-        OrganizationOperation(
-            callerIsSyncAdapter = callerIsSyncAdapter,
-            isProfile = isProfile,
-            includeFields?.let(Fields.Organization::intersect)
-        ).insertForNewRawContact(it, rawContactIdOpIndex)
-            ?.let(operations::add)
+    // Do not execute built-in operation if the corresponding built-in data kind is being overridden
+    // via custom data.
+    if (!customDataRegistry.entryOfExists(MimeType.Organization.value)) {
+        rawContact.organization?.let {
+            OrganizationOperation(
+                callerIsSyncAdapter = callerIsSyncAdapter,
+                isProfile = isProfile,
+                includeFields?.let(Fields.Organization::intersect)
+            ).insertForNewRawContact(it, rawContactIdOpIndex)
+                ?.let(operations::add)
+        }
     }
 
-    operations.addAll(
-        PhoneOperation(
-            callerIsSyncAdapter = callerIsSyncAdapter,
-            isProfile = isProfile,
-            includeFields?.let(Fields.Phone::intersect)
-        ).insertForNewRawContact(rawContact.phones, rawContactIdOpIndex)
-    )
+    // Do not execute built-in operation if the corresponding built-in data kind is being overridden
+    // via custom data.
+    if (!customDataRegistry.entryOfExists(MimeType.Phone.value)) {
+        operations.addAll(
+            PhoneOperation(
+                callerIsSyncAdapter = callerIsSyncAdapter,
+                isProfile = isProfile,
+                includeFields?.let(Fields.Phone::intersect)
+            ).insertForNewRawContact(rawContact.phones, rawContactIdOpIndex)
+        )
+    }
 
     // Photo is intentionally excluded here. Use the ContactPhoto and RawContactPhoto extensions
     // to set full-sized and thumbnail photos.
 
-    operations.addAll(
-        RelationOperation(
-            callerIsSyncAdapter = callerIsSyncAdapter,
-            isProfile = isProfile,
-            includeFields?.let(Fields.Relation::intersect)
-        ).insertForNewRawContact(rawContact.relations, rawContactIdOpIndex)
-    )
-
-    @Suppress("Deprecation")
-    rawContact.sipAddress?.let {
-        SipAddressOperation(
-            callerIsSyncAdapter = callerIsSyncAdapter,
-            isProfile = isProfile,
-            includeFields?.let(Fields.SipAddress::intersect)
-        ).insertForNewRawContact(it, rawContactIdOpIndex)
-            ?.let(operations::add)
+    // Do not execute built-in operation if the corresponding built-in data kind is being overridden
+    // via custom data.
+    if (!customDataRegistry.entryOfExists(MimeType.Relation.value)) {
+        operations.addAll(
+            RelationOperation(
+                callerIsSyncAdapter = callerIsSyncAdapter,
+                isProfile = isProfile,
+                includeFields?.let(Fields.Relation::intersect)
+            ).insertForNewRawContact(rawContact.relations, rawContactIdOpIndex)
+        )
     }
 
-    operations.addAll(
-        WebsiteOperation(
-            callerIsSyncAdapter = callerIsSyncAdapter,
-            isProfile = isProfile,
-            includeFields?.let(Fields.Website::intersect)
-        ).insertForNewRawContact(rawContact.websites, rawContactIdOpIndex)
-    )
+    // Do not execute built-in operation if the corresponding built-in data kind is being overridden
+    // via custom data.
+    if (!customDataRegistry.entryOfExists(MimeType.SipAddress.value)) {
+        @Suppress("Deprecation")
+        rawContact.sipAddress?.let {
+            SipAddressOperation(
+                callerIsSyncAdapter = callerIsSyncAdapter,
+                isProfile = isProfile,
+                includeFields?.let(Fields.SipAddress::intersect)
+            ).insertForNewRawContact(it, rawContactIdOpIndex)
+                ?.let(operations::add)
+        }
+    }
 
-    // Process custom data
-    operations.addAll(
-        rawContact.customDataInsertOperations(
-            callerIsSyncAdapter = callerIsSyncAdapter,
-            isProfile = isProfile,
-            includeFields = includeFields,
-            customDataRegistry = customDataRegistry,
-            rawContactIdOpIndex = rawContactIdOpIndex
+    // Do not execute built-in operation if the corresponding built-in data kind is being overridden
+    // via custom data.
+    if (!customDataRegistry.entryOfExists(MimeType.Website.value)) {
+        operations.addAll(
+            WebsiteOperation(
+                callerIsSyncAdapter = callerIsSyncAdapter,
+                isProfile = isProfile,
+                includeFields?.let(Fields.Website::intersect)
+            ).insertForNewRawContact(rawContact.websites, rawContactIdOpIndex)
         )
-    )
+    }
 
     return operations
 }

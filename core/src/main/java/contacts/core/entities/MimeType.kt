@@ -1,7 +1,6 @@
 package contacts.core.entities
 
 import android.provider.ContactsContract.CommonDataKinds
-import contacts.core.entities.custom.CustomDataException
 import contacts.core.entities.custom.CustomDataRegistry
 
 /**
@@ -83,8 +82,13 @@ sealed class MimeType {
 
     internal companion object {
 
-        fun fromValue(value: String?, customDataRegistry: CustomDataRegistry): MimeType =
-            when (value) {
+        fun fromValue(value: String?, customDataRegistry: CustomDataRegistry): MimeType {
+            // Check custom mimetype first to allow for overriding built-in mimetypes.
+            if (value != null && customDataRegistry.entryOfExists(value)) {
+                return customDataRegistry.entryOf(value).mimeType
+            }
+
+            return when (value) {
                 Address.value -> Address
                 Email.value -> Email
                 Event.value -> Event
@@ -99,13 +103,8 @@ sealed class MimeType {
                 Relation.value -> Relation
                 SipAddress.value -> SipAddress
                 Website.value -> Website
-                null -> Unknown
-                else -> try {
-                    customDataRegistry.entryOf(value).mimeType
-                } catch (cde: CustomDataException) {
-                    // We may encounter custom data but not have a custom data entry for it.
-                    Unknown
-                }
+                else -> Unknown
             }
+        }
     }
 }

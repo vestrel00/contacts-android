@@ -12,6 +12,12 @@ internal fun DataEntity.fields(customDataRegistry: CustomDataRegistry):
 internal fun MimeType.fields(
     customDataRegistry: CustomDataRegistry
 ): AbstractDataFieldSet<DataField> = when (this) {
+    // Check custom mimetype first to allow for overriding built-in mimetypes.
+    // Note that this can also be placed at the end instead of here at the beginning because
+    // 'this' can only be custom or one of the built-in mimetypes. However, this follows the pattern
+    // used throughout the codebase of checking custom data first, which makes more logical sense
+    // even if technically unnecessary.
+    is MimeType.Custom -> customDataRegistry.entryOf(this).fieldSet
     MimeType.Address -> Fields.Address
     MimeType.Email -> Fields.Email
     MimeType.Event -> Fields.Event
@@ -26,6 +32,5 @@ internal fun MimeType.fields(
     MimeType.Relation -> Fields.Relation
     MimeType.SipAddress -> @Suppress("Deprecation") Fields.SipAddress
     MimeType.Website -> Fields.Website
-    is MimeType.Custom -> customDataRegistry.entryOf(this).fieldSet
     MimeType.Unknown -> EmptyDataFields
 }

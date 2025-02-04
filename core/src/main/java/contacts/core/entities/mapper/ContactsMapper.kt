@@ -191,6 +191,12 @@ private fun CursorHolder<AbstractDataField>.updateRawContact(
     // instances must be updated with different pieces of data that each cursor row provides.
     // Do not add blank **data** as it is just noise.
     when (val mimeType = mimeTypeCursor(customDataRegistry).mimeType) {
+        // Check custom mimetype first to allow for overriding built-in mimetypes.
+        // Note that this can also be placed at the end instead of here at the beginning because
+        // 'mimeType' can only be custom or one of the built-in mimetypes. However, this follows the
+        // pattern used throughout the codebase of checking custom data first, which makes more
+        // logical sense even if technically unnecessary.
+        is Custom -> updateRawContactCustomData(customDataRegistry, rawContact, mimeType)
         Address -> addressMapper().nonBlankValueOrNull?.let(rawContact.addresses::add)
         Email -> emailMapper().nonBlankValueOrNull?.let(rawContact.emails::add)
         Event -> eventMapper().nonBlankValueOrNull?.let(rawContact.events::add)
@@ -213,7 +219,6 @@ private fun CursorHolder<AbstractDataField>.updateRawContact(
         }
 
         Website -> websiteMapper().nonBlankValueOrNull?.let(rawContact.websites::add)
-        is Custom -> updateRawContactCustomData(customDataRegistry, rawContact, mimeType)
         Unknown -> {
             // Do nothing
         }
