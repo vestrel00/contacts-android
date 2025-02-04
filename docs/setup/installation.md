@@ -21,6 +21,10 @@ dependencies {
     implementation 'com.github.vestrel00.contacts-android:customdata-gender:<version>'
     implementation 'com.github.vestrel00.contacts-android:customdata-googlecontacts:<version>'
     implementation 'com.github.vestrel00.contacts-android:customdata-handlename:<version>'
+    // Intentionally commented out multiple notes in case someone just copy-pastes this.
+    // Multiple notes custom data overrides the built-in note data kind so users should only 
+    // integrate it if they know exactly what they are doing.
+    // implementation 'com.github.vestrel00.contacts-android:customdata-multiplenotes:<version>'
     implementation 'com.github.vestrel00.contacts-android:customdata-pokemon:<version>'
     implementation 'com.github.vestrel00.contacts-android:customdata-rpg:<version>'
     implementation 'com.github.vestrel00.contacts-android:debug:<version>'
@@ -56,10 +60,14 @@ Here is a brief description of the individual modules you can install.
 - `customdata-gender`: Custom data for [gender](https://en.wikipedia.org/wiki/Gender).
 - `customdata-googlecontacts`: Custom data managed by the [Google Contacts app](https://play.google.com/store/apps/details?id=com.google.android.contacts).
 - `customdata-handlename`: Custom data for [handle](https://techterms.com/definition/handle).
+- `customdata-multiplenotes`: Custom data override for the built-in [note](https://developer.android.com/reference/android/provider/ContactsContract.CommonDataKinds.Note).
 - `customdata-pokemon`: Custom data for [pokemon](https://en.wikipedia.org/wiki/Pokémon).
 - `customdata-rpg`: Custom data for [role playing games (RPG)](https://en.wikipedia.org/wiki/Role-playing_game).
 
-## Installing all modules in one line
+## Installing all modules in one line **NOT RECOMMENDED**
+
+> ⚠️ This is **NOT RECOMMENDED** because starting in version `0.4.0` it would also install
+> the `customdata-multiplenotes` module, which you probably do not want.
 
 To install all modules in a single line,
 

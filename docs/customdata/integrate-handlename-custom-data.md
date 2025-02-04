@@ -56,7 +56,7 @@ mutableRawContact.addHandleName(contacts) {
 }
 ```
 
-To add a handle name to a the first RawContact or a Contact,
+To add a handle name to the first RawContact or a Contact,
 
 ```kotlin
 mutableContact.addHandleName(contacts, mutableHandleName)

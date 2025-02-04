@@ -103,6 +103,7 @@ Also included are some pre-baked goodies to be used as is or just for reference,
 - 🍬 [Gender custom data](/docs/customdata/integrate-gender-custom-data.md)
 - 🍬 [Google Contacts custom data](/docs/customdata/integrate-googlecontacts-custom-data.md)
 - 🍬 [Handle name custom data](/docs/customdata/integrate-handlename-custom-data.md)
+- 🍬 [Multiple notes custom data](/docs/customdata/integrate-multiple-notes-custom-data.md)
 - 🍬 [Pokemon custom data](/docs/customdata/integrate-pokemon-custom-data.md)
 - 🍬 [Role Playing Game (RPG) custom data](/docs/customdata/integrate-rpg-custom-data.md)
 - 🍬 [Rudimentary contacts-integrated UI components](/docs/ui/integrate-rudimentary-contacts-integrated-ui-components.md)
@@ -139,6 +140,10 @@ dependencies {
     implementation 'com.github.vestrel00.contacts-android:customdata-gender:0.3.2'
     implementation 'com.github.vestrel00.contacts-android:customdata-googlecontacts:0.3.2'
     implementation 'com.github.vestrel00.contacts-android:customdata-handlename:0.3.2'
+    // Intentionally commented out multiple notes in case someone just copy-pastes this.
+    // Multiple notes custom data overrides the built-in note data kind so users should only 
+    // integrate it if they know exactly what they are doing.
+    // implementation 'com.github.vestrel00.contacts-android:customdata-multiplenotes:0.3.2'
     implementation 'com.github.vestrel00.contacts-android:customdata-pokemon:0.3.2'
     implementation 'com.github.vestrel00.contacts-android:customdata-rpg:0.3.2'
     implementation 'com.github.vestrel00.contacts-android:debug:0.3.2'
@@ -151,7 +156,7 @@ dependencies {
 
 **The `core` module is really all you need. All other modules are optional.**
 
-To install all modules in a single line,
+To install all modules in a single line **NOT RECOMMENDED**,
 
 ```groovy
 dependencies {
@@ -160,9 +165,12 @@ dependencies {
 }
 ```
 
-> ⚠️ Starting with version 0.2.0, installing all modules in a single line is only supported when 
+> ⚠️ This is **NOT RECOMMENDED** because starting in version `0.4.0` it would also install 
+> the `customdata-multiplenotes` module, which you probably do not want.
+
+> ℹ️ Starting with version 0.2.0, installing all modules in a single line is only supported when 
 > using the [`dependencyResolutionManagement` in `settings.gradle`](https://developer.android.com/studio/build/dependencies#remote-repositories).
-> You are still able to install all modules by specifying them individually. 
+> You are still able to install all modules by specifying them individually.
 
 For more info about the different modules and dependency resolution management, 
 read the [Installation guide](/docs/setup/installation.md).

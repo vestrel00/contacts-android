@@ -1822,6 +1822,151 @@ heading explore each API in full detail. You may also find these samples in the 
         }
     }
     ```
+### [Integrate the Multiple Notes custom data](./customdata/integrate-multiple-notes-custom-data.md)
+
+=== "Kotlin"
+
+    ```kotlin
+    package contacts.sample.cheatsheet.customdata.kotlin
+    
+    import android.app.Activity
+    import contacts.core.*
+    import contacts.core.data.*
+    import contacts.core.entities.*
+    import contacts.core.entities.custom.CustomDataRegistry
+    import contacts.entities.custom.multiplenotes.*
+    
+    class IntegrateMultipleNotesCustomDataActivity : Activity() {
+    
+        val contacts = Contacts(this, false, CustomDataRegistry().register(MultipleNotesRegistration()))
+    
+        fun getContactsWithMultipleNotesCustomData(): List<Contact> = contacts
+            .query()
+            .where { MultipleNotesFields.Note.isNotNull() }
+            .find()
+    
+        fun insertRawContactWithMultipleNotesCustomData(): Insert.Result = contacts
+            .insert()
+            .rawContact {
+                addMultipleNotes(contacts) {
+                    note = "First note"
+                }
+                addMultipleNotes(contacts) {
+                    note = "Second note"
+                }
+            }
+            .commit()
+    
+        fun updateRawContactMultipleNotesCustomData(rawContact: RawContact): Update.Result = contacts
+            .update()
+            .rawContacts(
+                rawContact.mutableCopy {
+                    multipleNotes(contacts).firstOrNull()?.note = "A note"
+                }
+            )
+            .commit()
+    
+        fun deleteMultipleNotesCustomDataFromRawContact(rawContact: RawContact): Update.Result =
+            contacts
+                .update()
+                .rawContacts(
+                    rawContact.mutableCopy {
+                        removeAllMultipleNotes(contacts)
+                    }
+                )
+                .commit()
+    
+        fun getAllMultipleNotes(): List<MultipleNotes> = contacts.data().query().multipleNotes().find()
+    
+        fun updateMultipleNotes(multipleNotes: MutableMultipleNotes): DataUpdate.Result =
+            contacts.data().update().data(multipleNotes).commit()
+    
+        fun deleteMultipleNotes(multipleNotes: MultipleNotes): DataDelete.Result =
+            contacts.data().delete().data(multipleNotes).commit()
+    }
+    ```
+
+=== "Java"
+
+    ```java
+    package contacts.sample.cheatsheet.customdata.java;
+    
+    import static contacts.core.WhereKt.isNotNull;
+    
+    import android.app.Activity;
+    
+    import java.util.List;
+    
+    import contacts.core.*;
+    import contacts.core.data.*;
+    import contacts.core.entities.*;
+    import contacts.core.entities.custom.CustomDataRegistry;
+    import contacts.entities.custom.multiplenotes.*;
+    
+    public class IntegrateMultipleNotesCustomDataActivity extends Activity {
+    
+        Contacts contacts = ContactsFactory.create(
+                this, false, new CustomDataRegistry().register(new MultipleNotesRegistration())
+        );
+    
+        List<Contact> getContactsWithMultipleNotesCustomData() {
+            return contacts
+                    .query()
+                    .where(isNotNull(MultipleNotesFields.Note))
+                    .find();
+        }
+    
+        Insert.Result insertRawContactWithMultipleNotesCustomData() {
+            NewMultipleNotes newMultipleNotes1 = new NewMultipleNotes("First note");
+            NewMultipleNotes newMultipleNotes2 = new NewMultipleNotes("Second note");
+    
+            NewRawContact newRawContact = new NewRawContact();
+            RawContactMultipleNotesKt.addMultipleNotes(newRawContact, contacts, newMultipleNotes1);
+            RawContactMultipleNotesKt.addMultipleNotes(newRawContact, contacts, newMultipleNotes2);
+    
+            return contacts
+                    .insert()
+                    .rawContacts(newRawContact)
+                    .commit();
+        }
+    
+        Update.Result updateRawContactMultipleNotesCustomData(RawContact rawContact) {
+            MutableRawContact mutableRawContact = rawContact.mutableCopy();
+            MutableMultipleNotesEntity mutableMultipleNotes =
+                    RawContactMultipleNotesKt.multipleNotesList(mutableRawContact, contacts).get(0);
+            if (mutableMultipleNotes != null) {
+                mutableMultipleNotes.setNote("A note");
+            }
+    
+            return contacts
+                    .update()
+                    .rawContacts(mutableRawContact)
+                    .commit();
+        }
+    
+        Update.Result deleteMultipleNotesCustomDataFromRawContact(RawContact rawContact) {
+            MutableRawContact mutableRawContact = rawContact.mutableCopy();
+            RawContactMultipleNotesKt.removeAllMultipleNotes(mutableRawContact, contacts);
+    
+            return contacts
+                    .update()
+                    .rawContacts(mutableRawContact)
+                    .commit();
+        }
+    
+        List<MultipleNotes> getAllMultipleNotes() {
+            return MultipleNotesDataQueryKt.multipleNotes(contacts.data().query()).find();
+        }
+    
+        DataUpdate.Result updateMultipleNotes(MutableMultipleNotes multipleNotes) {
+            return contacts.data().update().data(multipleNotes).commit();
+        }
+    
+        DataDelete.Result deleteMultipleNotes(MultipleNotes multipleNotes) {
+            return contacts.data().delete().data(multipleNotes).commit();
+        }
+    }
+    ```
 
 ### [Integrate the Pokemon custom data](./customdata/integrate-pokemon-custom-data.md)
 

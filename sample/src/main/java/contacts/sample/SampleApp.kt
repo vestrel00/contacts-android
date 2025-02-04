@@ -23,7 +23,10 @@ class SampleApp : Application() {
                 GoogleContactsRegistration(),
                 HandleNameRegistration(),
                 PokemonRegistration(),
-                RpgRegistration()
+                RpgRegistration(),
+                // Do not register multiple notes custom data because it overrides the built-in
+                // notes. Only uncomment this for development purposes.
+                // MultipleNotesRegistration(),
             ),
             logger = AndroidLogger(redactMessages = !BuildConfig.DEBUG)
         )

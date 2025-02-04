@@ -115,15 +115,20 @@ look at built-in mimetypes in `contacs.core.entities.MimeType.kt`. Here they are
 #### Overriding built-in mimetypes
 
 This API allows you to override the behavior of built-in mimetypes. However, as previously mentioned,
-this practice is NOT RECOMMENDED. Overriding built-in mimetypes for use in your own apps may work
-just fine in your own apps BUT may result in unexpected behavior when other apps such as AOSP or
-Google Contacts display and/or modify the overridden data.
+this practice is NOT RECOMMENDED. Overriding built-in data-kinds/mimetypes for use in your own apps 
+may work just fine in your own apps BUT may result in unexpected behavior when other apps such as 
+AOSP or Google Contacts display and/or modify the overridden data kind. Furthermore, unexpected 
+behavior may result during sync (built-in sync adapter operations).
 
-In case you really want to override a built-in mimetype, simply use one of the mimetypes shown in 
-the above table as your custom data's mimetype. This library provides prebuilt custom data that
-overrides a built-in mimetype, which you may use in your own apps or just for reference.
+In case you really want to override a built-in data-kind/mimetype, use one of the mimetypes shown in 
+the above table as your custom data's mimetype. This library provides pre-built custom data that
+overrides a built-in data kind, which you may use in your own apps or just for reference.
 
 - [Integrate the multiple notes custom data](./../customdata/integrate-multiple-notes-custom-data.md)
+
+> ⚠️ If a built-in data kind is overridden, then instances of it retrieved from queries will always
+> be null and will be ignored in insert and update operations. Reading/writing the underlying data
+> will have to be done via the custom data API.
 
 ## 2. Define the entities
 
