@@ -1327,6 +1327,27 @@
   
   
     <li class="md-nav__item">
+      <a href="customdata/integrate-multiple-notes-custom-data/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Integrate the Multiple Notes custom data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="customdata/integrate-pokemon-custom-data/" class="md-nav__link">
         
   
@@ -2865,6 +2886,7 @@ as the AOSP Android Contacts app and Google Contacts app, this library is for yo
 <li>🍬 <a href="customdata/integrate-gender-custom-data/">Gender custom data</a></li>
 <li>🍬 <a href="customdata/integrate-googlecontacts-custom-data/">Google Contacts custom data</a></li>
 <li>🍬 <a href="customdata/integrate-handlename-custom-data/">Handle name custom data</a></li>
+<li>🍬 <a href="customdata/integrate-multiple-notes-custom-data/">Multiple notes custom data</a></li>
 <li>🍬 <a href="customdata/integrate-pokemon-custom-data/">Pokemon custom data</a></li>
 <li>🍬 <a href="customdata/integrate-rpg-custom-data/">Role Playing Game (RPG) custom data</a></li>
 <li>🍬 <a href="ui/integrate-rudimentary-contacts-integrated-ui-components/">Rudimentary contacts-integrated UI components</a></li>
@@ -2896,26 +2918,32 @@ as the AOSP Android Contacts app and Google Contacts app, this library is for yo
 </span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:customdata-gender:0.3.2&#39;</span>
 </span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:customdata-googlecontacts:0.3.2&#39;</span>
 </span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:customdata-handlename:0.3.2&#39;</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:customdata-pokemon:0.3.2&#39;</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:customdata-rpg:0.3.2&#39;</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:debug:0.3.2&#39;</span>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:permissions:0.3.2&#39;</span>
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:test:0.3.2&#39;</span>
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:ui:0.3.2&#39;</span>
-</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">    </span><span class="c1">// Notice that when importing specific modules/subprojects, the first &quot;:&quot; comes after &quot;contacts-android&quot;.</span>
-</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="o">}</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="c1">// Intentionally commented out multiple notes in case someone just copy-pastes this.</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="c1">// Multiple notes custom data overrides the built-in note data kind so users should only </span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="c1">// integrate it if they know exactly what they are doing.</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="c1">// implementation &#39;com.github.vestrel00.contacts-android:customdata-multiplenotes:0.3.2&#39;</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:customdata-pokemon:0.3.2&#39;</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:customdata-rpg:0.3.2&#39;</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:debug:0.3.2&#39;</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:permissions:0.3.2&#39;</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:test:0.3.2&#39;</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00.contacts-android:ui:0.3.2&#39;</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">    </span><span class="c1">// Notice that when importing specific modules/subprojects, the first &quot;:&quot; comes after &quot;contacts-android&quot;.</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="o">}</span>
 </span></code></pre></div>
 <p><strong>The <code>core</code> module is really all you need. All other modules are optional.</strong></p>
-<p>To install all modules in a single line,</p>
+<p>To install all modules in a single line <strong>NOT RECOMMENDED</strong>,</p>
 <div class="language-groovy highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">dependencies</span><span class="w"> </span><span class="o">{</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00:contacts-android:0.3.2&#39;</span>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="c1">// Notice that when importing all modules, the first &quot;:&quot; comes after &quot;vestrel00&quot;.</span>
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="o">}</span>
 </span></code></pre></div>
 <blockquote>
-<p>⚠️ Starting with version 0.2.0, installing all modules in a single line is only supported when 
+<p>⚠️ This is <strong>NOT RECOMMENDED</strong> because starting in version <code>0.4.0</code> it would also install 
+the <code>customdata-multiplenotes</code> module, which you probably do not want.</p>
+<p>ℹ️ Starting with version 0.2.0, installing all modules in a single line is only supported when 
 using the <a href="https://developer.android.com/studio/build/dependencies#remote-repositories"><code>dependencyResolutionManagement</code> in <code>settings.gradle</code></a>.
-You are still able to install all modules by specifying them individually. </p>
+You are still able to install all modules by specifying them individually.</p>
 </blockquote>
 <p>For more info about the different modules and dependency resolution management, 
 read the <a href="setup/installation/">Installation guide</a>.</p>

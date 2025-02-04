@@ -1121,6 +1121,30 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="1. Define the mimetype">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#be-aware-of-built-in-mimetypes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Be aware of built-in mimetypes!
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#overriding-built-in-mimetypes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overriding built-in mimetypes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1378,6 +1402,27 @@
   
   <span class="md-ellipsis">
     Integrate the Handle Name custom data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integrate-multiple-notes-custom-data/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Integrate the Multiple Notes custom data
   </span>
   
 
@@ -2706,6 +2751,30 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="1. Define the mimetype">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#be-aware-of-built-in-mimetypes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Be aware of built-in mimetypes!
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#overriding-built-in-mimetypes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overriding built-in mimetypes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -2932,7 +3001,9 @@ boilerplate code that needs to be written. Thankfully none of this stuff is diff
 </ol>
 <blockquote>
 <p>ℹ️ Maybe someday someone with code generation experience (or I'll learn how to do it), will create
-annotations and annotation processors to eliminate having to manually write this stuff =)</p>
+annotations and annotation processors to eliminate having to manually write this stuff =)
+There's actually an issue for this if anyone wants to take it!
+https://github.com/vestrel00/contacts-android/issues/210</p>
 </blockquote>
 <p>To help illustrate the above steps, we'll use the <code>HandleName</code> and <code>Gender</code> custom data provided in
 this library's <code>customdata-handlename</code> and <code>customdata-gender</code> respectively as an example.</p>
@@ -2974,10 +3045,10 @@ a link to that page.</p>
 mimetype values, then changing them could result in "data loss". Old rows in the Data table will not
 be compatible if the mimetype value changes. You can certainly perform migrations by creating a new
 custom data altogether and migrating your old custom data to your new one.</p>
-<p><strong>Do not use built-in mimetypes!</strong> The Contacts Provider has predefined the mimetypes for all of the
-common data kinds it supports (e.g. email). Make sure that your custom data does not use any of
-those. You can take a look at built-in mimetypes in <code>contacs.core.entities.MimeType.kt</code>. But, here
-they are for your convenience =)</p>
+<h4 id="be-aware-of-built-in-mimetypes">Be aware of built-in mimetypes!<a class="headerlink" href="#be-aware-of-built-in-mimetypes" title="Permanent link">&para;</a></h4>
+<p>In general, it is recommended to <strong>avoid using built-in mimetypes!</strong> The Contacts Provider has 
+predefined the mimetypes for all of the common data kinds it supports (e.g. email). You can take a 
+look at built-in mimetypes in <code>contacs.core.entities.MimeType.kt</code>. Here they are for reference...</p>
 <table>
 <thead>
 <tr>
@@ -3044,6 +3115,23 @@ they are for your convenience =)</p>
 </tr>
 </tbody>
 </table>
+<h4 id="overriding-built-in-mimetypes">Overriding built-in mimetypes<a class="headerlink" href="#overriding-built-in-mimetypes" title="Permanent link">&para;</a></h4>
+<p>This API allows you to override the behavior of built-in mimetypes. However, as previously mentioned,
+this practice is NOT RECOMMENDED. Overriding built-in data-kinds/mimetypes for use in your own apps 
+may work just fine in your own apps BUT may result in unexpected behavior when other apps such as 
+AOSP or Google Contacts display and/or modify the overridden data kind. Furthermore, unexpected 
+behavior may result during sync (built-in sync adapter operations).</p>
+<p>In case you really want to override a built-in data-kind/mimetype, use one of the mimetypes shown in 
+the above table as your custom data's mimetype. This library provides pre-built custom data that
+overrides a built-in data kind, which you may use in your own apps or just for reference.</p>
+<ul>
+<li><a href="../integrate-multiple-notes-custom-data/">Integrate the multiple notes custom data</a></li>
+</ul>
+<blockquote>
+<p>⚠️ If a built-in data kind is overridden, then instances of it retrieved from queries will always
+be null and will be ignored in insert and update operations. Reading/writing the underlying data
+will have to be done via the custom data API.</p>
+</blockquote>
 <h2 id="2-define-the-entities">2. Define the entities<a class="headerlink" href="#2-define-the-entities" title="Permanent link">&para;</a></h2>
 <p>The entities are the main code that users of your custom data will be exposed to. The properties
 model/represent the fields/columns in the Data table.</p>
@@ -3588,7 +3676,7 @@ like this,</p>
 </span><span id="__span-25-8"><a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a><span class="w">        </span><span class="na">viewStreamItemActivity=</span><span class="s">&quot;viewstream_activity_name&quot;</span>
 </span><span id="__span-25-9"><a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a><span class="w">        </span><span class="na">viewStreamItemPhotoActivity=</span><span class="s">&quot;viewphotostream_activity_name&quot;</span><span class="nt">&gt;</span>
 </span><span id="__span-25-10"><a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a><span class="w">    </span><span class="nt">&lt;ContactsDataKind</span>
-</span><span id="__span-25-11"><a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a><span class="w">        </span><span class="na">android:mimeType=</span><span class="s">&quot;MIMEtype&quot;</span>
+</span><span id="__span-25-11"><a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a><span class="w">        </span><span class="na">android:mimeType=</span><span class="s">&quot;mimetype&quot;</span>
 </span><span id="__span-25-12"><a id="__codelineno-25-12" name="__codelineno-25-12" href="#__codelineno-25-12"></a><span class="w">        </span><span class="na">android:icon=</span><span class="s">&quot;icon_resources&quot;</span>
 </span><span id="__span-25-13"><a id="__codelineno-25-13" name="__codelineno-25-13" href="#__codelineno-25-13"></a><span class="w">        </span><span class="na">android:summaryColumn=</span><span class="s">&quot;column_name&quot;</span>
 </span><span id="__span-25-14"><a id="__codelineno-25-14" name="__codelineno-25-14" href="#__codelineno-25-14"></a><span class="w">        </span><span class="na">android:detailColumn=</span><span class="s">&quot;column_name&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
