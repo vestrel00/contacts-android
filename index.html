@@ -2932,15 +2932,13 @@ as the AOSP Android Contacts app and Google Contacts app, this library is for yo
 </span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="o">}</span>
 </span></code></pre></div>
 <p><strong>The <code>core</code> module is really all you need. All other modules are optional.</strong></p>
-<p>To install all modules in a single line <strong>NOT RECOMMENDED</strong>,</p>
+<p>To install all modules in a single line,</p>
 <div class="language-groovy highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">dependencies</span><span class="w"> </span><span class="o">{</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="n">implementation</span><span class="w"> </span><span class="s1">&#39;com.github.vestrel00:contacts-android:0.3.2&#39;</span>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="c1">// Notice that when importing all modules, the first &quot;:&quot; comes after &quot;vestrel00&quot;.</span>
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="o">}</span>
 </span></code></pre></div>
 <blockquote>
-<p>⚠️ This is <strong>NOT RECOMMENDED</strong> because starting in version <code>0.4.0</code> it would also install 
-the <code>customdata-multiplenotes</code> module, which you probably do not want.</p>
 <p>ℹ️ Starting with version 0.2.0, installing all modules in a single line is only supported when 
 using the <a href="https://developer.android.com/studio/build/dependencies#remote-repositories"><code>dependencyResolutionManagement</code> in <code>settings.gradle</code></a>.
 You are still able to install all modules by specifying them individually.</p>
