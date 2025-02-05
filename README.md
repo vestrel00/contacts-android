@@ -156,7 +156,7 @@ dependencies {
 
 **The `core` module is really all you need. All other modules are optional.**
 
-To install all modules in a single line **NOT RECOMMENDED**,
+To install all modules in a single line,
 
 ```groovy
 dependencies {
@@ -164,9 +164,6 @@ dependencies {
     // Notice that when importing all modules, the first ":" comes after "vestrel00".
 }
 ```
-
-> ⚠️ This is **NOT RECOMMENDED** because starting in version `0.4.0` it would also install 
-> the `customdata-multiplenotes` module, which you probably do not want.
 
 > ℹ️ Starting with version 0.2.0, installing all modules in a single line is only supported when 
 > using the [`dependencyResolutionManagement` in `settings.gradle`](https://developer.android.com/studio/build/dependencies#remote-repositories).

@@ -64,10 +64,7 @@ Here is a brief description of the individual modules you can install.
 - `customdata-pokemon`: Custom data for [pokemon](https://en.wikipedia.org/wiki/Pokémon).
 - `customdata-rpg`: Custom data for [role playing games (RPG)](https://en.wikipedia.org/wiki/Role-playing_game).
 
-## Installing all modules in one line **NOT RECOMMENDED**
-
-> ⚠️ This is **NOT RECOMMENDED** because starting in version `0.4.0` it would also install
-> the `customdata-multiplenotes` module, which you probably do not want.
+## Installing all modules in one line
 
 To install all modules in a single line,
 
