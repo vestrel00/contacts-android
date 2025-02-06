@@ -33,8 +33,8 @@ as the AOSP Android Contacts app and Google Contacts app, this library is for yo
 ## Quick links
 
 - 📜 [Documentation][github-pages]
-- 🚉 [Current Release - 0.3.2](https://github.com/vestrel00/contacts-android/releases/tag/0.3.2)
-- 🚂 [Upcoming Release - 0.4.0](https://github.com/vestrel00/contacts-android/discussions/349)
+- 🚉 [Current Release - 0.4.0](https://github.com/vestrel00/contacts-android/releases/tag/0.4.0)
+- 🚂 [Upcoming Release - 0.5.0](https://github.com/vestrel00/contacts-android/discussions/368)
 - ℹ️ [Project Status][project-status]
 - 🗺 [Project Roadmap][project-roadmap]
 - 💌 [Why use this library?][why-use-this]
@@ -134,22 +134,22 @@ To install individual modules,
 
 ```groovy
 dependencies {
-    implementation 'com.github.vestrel00.contacts-android:core:0.3.2'
+    implementation 'com.github.vestrel00.contacts-android:core:0.4.0'
     
-    implementation 'com.github.vestrel00.contacts-android:async:0.3.2'
-    implementation 'com.github.vestrel00.contacts-android:customdata-gender:0.3.2'
-    implementation 'com.github.vestrel00.contacts-android:customdata-googlecontacts:0.3.2'
-    implementation 'com.github.vestrel00.contacts-android:customdata-handlename:0.3.2'
+    implementation 'com.github.vestrel00.contacts-android:async:0.4.0'
+    implementation 'com.github.vestrel00.contacts-android:customdata-gender:0.4.0'
+    implementation 'com.github.vestrel00.contacts-android:customdata-googlecontacts:0.4.0'
+    implementation 'com.github.vestrel00.contacts-android:customdata-handlename:0.4.0'
     // Intentionally commented out multiple notes in case someone just copy-pastes this.
     // Multiple notes custom data overrides the built-in note data kind so users should only 
     // integrate it if they know exactly what they are doing.
-    // implementation 'com.github.vestrel00.contacts-android:customdata-multiplenotes:0.3.2'
-    implementation 'com.github.vestrel00.contacts-android:customdata-pokemon:0.3.2'
-    implementation 'com.github.vestrel00.contacts-android:customdata-rpg:0.3.2'
-    implementation 'com.github.vestrel00.contacts-android:debug:0.3.2'
-    implementation 'com.github.vestrel00.contacts-android:permissions:0.3.2'
-    implementation 'com.github.vestrel00.contacts-android:test:0.3.2'
-    implementation 'com.github.vestrel00.contacts-android:ui:0.3.2'
+    // implementation 'com.github.vestrel00.contacts-android:customdata-multiplenotes:0.4.0'
+    implementation 'com.github.vestrel00.contacts-android:customdata-pokemon:0.4.0'
+    implementation 'com.github.vestrel00.contacts-android:customdata-rpg:0.4.0'
+    implementation 'com.github.vestrel00.contacts-android:debug:0.4.0'
+    implementation 'com.github.vestrel00.contacts-android:permissions:0.4.0'
+    implementation 'com.github.vestrel00.contacts-android:test:0.4.0'
+    implementation 'com.github.vestrel00.contacts-android:ui:0.4.0'
     // Notice that when importing specific modules/subprojects, the first ":" comes after "contacts-android".
 }
 ```
@@ -160,7 +160,7 @@ To install all modules in a single line,
 
 ```groovy
 dependencies {
-    implementation 'com.github.vestrel00:contacts-android:0.3.2'
+    implementation 'com.github.vestrel00:contacts-android:0.4.0'
     // Notice that when importing all modules, the first ":" comes after "vestrel00".
 }
 ```
