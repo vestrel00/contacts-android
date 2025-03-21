@@ -12,7 +12,7 @@ update, and deletes), there is a corresponding `xxxWithContext` and `xxxAsync` e
 
 ## Using `withContext` extensions
 
-To perform an query, insert, update, and delete **in order (sequential)** outside the main UI thread,
+To perform a query, insert, update, and delete **in order (sequential)** outside the main UI thread,
 
 ```kotlin
 launch {
@@ -31,11 +31,11 @@ Computations automatically stops if the parent coroutine scope / job is cancelle
 
 ## Using `async` extensions
 
-To perform an query, insert, update, and delete **in parallel** outside the main UI thread,
+To perform a query, insert, update, and delete **in parallel** outside the main UI thread,
 
 ```kotlin
 launch {
-    val deferredQueryResult = query.findAsynct()
+    val deferredQueryResult = query.findAsync()
     val deferredInsertResult = insert.commitAsync()
     val deferredUpdateResult = update.commitAsync()
     val deferredDeleteResult = delete.commitAsync()

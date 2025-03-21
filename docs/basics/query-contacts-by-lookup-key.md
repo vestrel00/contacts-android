@@ -29,12 +29,26 @@ val query = Contacts(context).lookupQuery()
 To get the contact with the given lookup key,
 
 ```kotlin
-val contact = Contacts(context)
+val contacts = Contacts(context)
     .lookupQuery()
     .whereLookupKeyMatches(lookupKey)
     .find()
     .firstOrNull()
 ```
+
+For optimization purposes, include the last known ID,
+
+```kotlin
+val contact = Contacts(context)
+    .lookupQuery()
+    .whereLookupKeyWithIdMatches(LookupQuery.LookupKeyWithId(lookupKey, contactId))
+    .find()
+    .firstOrNull()
+```
+
+> ℹ️ Note that if the lookup key or id is a reference to a linked Contact (a Contact with two or more
+> constituent RawContacts), and the linked Contact is unlinked, then the query will return
+> multiple Contacts. If you want to handle this scenario, do not use functions like `firstOrNull`.
 
 ## Specifying Accounts
 
