@@ -5,7 +5,7 @@ There are only a few loose guidelines to follow. Read the **Setup** and **Guidel
 ## Setup
 
 To open, build, and run this project, you will need to use 
-[Android Studio Ladybug | 2024.2.1 Patch 3][android-studio] and later versions.
+[Android Studio Meerkat Feature Drop | 2024.3.2][android-studio] and later versions.
 
 If you run into any build issues, open up Android Studio preferences and make sure the following is 
 set correctly...
