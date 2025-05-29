@@ -5,7 +5,6 @@
 ![Android Contacts, Reborn banner](/docs/assets/images/banner.gif)
 
 [![JitPack](https://jitpack.io/v/vestrel00/contacts-android.svg)](https://jitpack.io/#vestrel00/contacts-android)
-[![Monthly Downloads](https://jitpack.io/v/vestrel00/contacts-android/month.svg)](https://jitpack.io/#vestrel00/contacts-android)
 
 [![Google Dev Library](https://img.shields.io/badge/Google%20Dev%20Library-Entry-2872e8.svg?style=flat&logo=google)](https://devlibrary.withgoogle.com/products/android/repos/vestrel00-contacts-android)
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Entry-green.svg?style=flat&logo=android)](https://android-arsenal.com/details/1/8393)
