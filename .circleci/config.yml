@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  android: circleci/android@3.0.2
+  android: circleci/android@3.2.0
 jobs:
   build:
     executor:
