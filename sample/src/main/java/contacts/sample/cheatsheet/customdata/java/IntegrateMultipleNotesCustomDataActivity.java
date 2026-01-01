@@ -41,8 +41,14 @@ public class IntegrateMultipleNotesCustomDataActivity extends Activity {
 
     Update.Result updateRawContactMultipleNotesCustomData(RawContact rawContact) {
         MutableRawContact mutableRawContact = rawContact.mutableCopy();
-        MutableMultipleNotesEntity mutableMultipleNotes =
-                RawContactMultipleNotesKt.multipleNotesList(mutableRawContact, contacts).get(0);
+
+        List<MutableMultipleNotesEntity> mutableMultipleNotesList =
+                RawContactMultipleNotesKt.multipleNotesList(mutableRawContact, contacts);
+        MutableMultipleNotesEntity mutableMultipleNotes = null;
+        if (!mutableMultipleNotesList.isEmpty()) {
+            mutableMultipleNotes = mutableMultipleNotesList.get(0);
+        }
+
         if (mutableMultipleNotes != null) {
             mutableMultipleNotes.setNote("A note");
         }

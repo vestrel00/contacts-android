@@ -48,9 +48,6 @@ internal fun CursorHolder<AbstractDataField>.nicknameCursor() =
 internal fun CursorHolder<AbstractDataField>.noteCursor() =
     NoteCursor(cursor, includeFields?.let(Fields.Note::intersect))
 
-internal fun CursorHolder<AbstractDataField>.dataContactsOptionsCursor() =
-    DataContactsOptionsCursor(cursor, includeFields)
-
 internal fun CursorHolder<AbstractDataField>.organizationCursor() =
     OrganizationCursor(cursor, includeFields?.let(Fields.Organization::intersect))
 

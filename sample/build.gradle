@@ -9,7 +9,9 @@ android {
     defaultConfig {
         minSdk versions.android.minSdk
         targetSdk versions.android.targetSdk
-        compileSdk versions.android.compileSdk
+        compileSdk {
+            version(release(versions.android.compileSdk))
+        }
     }
 
     compileOptions {
@@ -20,10 +22,10 @@ android {
     buildFeatures {
         buildConfig = true
     }
+}
 
-    kotlinOptions {
-        jvmTarget = versions.java.version
-    }
+kotlin {
+    jvmToolchain(versions.java.version)
 }
 
 dependencies {
@@ -45,5 +47,4 @@ dependencies {
 
     implementation "$libraries.kotlin.coroutines"
     implementation "$libraries.kotlin.coroutinesAndroid"
-
 }

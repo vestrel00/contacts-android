@@ -18,7 +18,6 @@ import contacts.core.entities.cursor.account
 import contacts.core.entities.cursor.rawContactsCursor
 import contacts.core.entities.mapper.groupMembershipMapper
 import contacts.core.equalTo
-import contacts.core.util.contacts
 import contacts.core.util.isProfileId
 import contacts.core.util.nullIfNotInSystem
 import contacts.core.util.query

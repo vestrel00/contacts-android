@@ -5,7 +5,6 @@ import contacts.core.entities.ExistingDataEntity
 import contacts.core.entities.custom.CustomDataRegistry
 import contacts.core.entities.operation.updateOperation
 import contacts.core.util.applyBatch
-import contacts.core.util.contacts
 import contacts.core.util.isEmpty
 
 /**

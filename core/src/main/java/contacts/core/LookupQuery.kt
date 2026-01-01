@@ -9,7 +9,6 @@ import contacts.core.entities.Contact
 import contacts.core.entities.Group
 import contacts.core.entities.cursor.contactsCursor
 import contacts.core.entities.custom.CustomDataRegistry
-import contacts.core.util.contacts
 import contacts.core.util.findContactIdsInDataTable
 import contacts.core.util.findContactIdsInRawContactsTable
 import contacts.core.util.forSyncAdapter
@@ -765,7 +764,7 @@ private fun Contacts.resolve(
 private fun Contacts.findMatchingContactIds(
     lookupKeys: Set<LookupQuery.LookupKeyWithId>, cancel: () -> Boolean
 ): Set<Long> {
-    val contactIds = mutableSetOf<Long>();
+    val contactIds = mutableSetOf<Long>()
 
     for (lookupKey in lookupKeys) {
         if (cancel()) {

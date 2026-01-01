@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.telephony.TelephonyManager
 import contacts.core.Contacts
-import contacts.core.ContactsPermissions
 import contacts.core.contentResolver
 import contacts.core.entities.NewSimContact
 import contacts.core.isSimCardReady

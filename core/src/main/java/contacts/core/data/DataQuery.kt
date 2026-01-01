@@ -10,7 +10,6 @@ import contacts.core.AddressFields
 import contacts.core.CompoundOrderBy
 import contacts.core.Contacts
 import contacts.core.ContactsException
-import contacts.core.ContactsPermissions
 import contacts.core.CrudApi
 import contacts.core.DEPRECATED_IM
 import contacts.core.DEPRECATED_SIP_ADDRESS
@@ -19,7 +18,6 @@ import contacts.core.EmailField
 import contacts.core.EmailFields
 import contacts.core.EventField
 import contacts.core.EventFields
-import contacts.core.F
 import contacts.core.Fields
 import contacts.core.GroupMembershipField
 import contacts.core.GroupMembershipFields
@@ -62,7 +60,6 @@ import contacts.core.onPreExecute
 import contacts.core.permissions
 import contacts.core.redactedCopies
 import contacts.core.redactedCopyOrThis
-import contacts.core.util.contacts
 import contacts.core.util.dataUri
 import contacts.core.util.isEmpty
 import contacts.core.util.offsetAndLimit

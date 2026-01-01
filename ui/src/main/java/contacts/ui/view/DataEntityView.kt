@@ -106,9 +106,9 @@ open class DataEntityView<E : DataEntity> @JvmOverloads constructor(
     private fun setDataDeleteButtonVisibility() {
         dataDeleteButton?.visibility =
             if (!dataDeleteButtonIsVisible || dataField.text.isNullOrEmpty()) {
-                View.INVISIBLE
+                INVISIBLE
             } else {
-                View.VISIBLE
+                VISIBLE
             }
     }
 

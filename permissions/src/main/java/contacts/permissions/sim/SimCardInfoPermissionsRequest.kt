@@ -1,13 +1,13 @@
 package contacts.permissions.sim
 
-import contacts.core.ContactsPermissions
 import contacts.core.sim.SimCardInfo
 import contacts.core.sim.SimCardMaxCharacterLimits
 import contacts.permissions.requestReadPermission
 import contacts.permissions.requestWritePermission
 
 /**
- * If [ContactsPermissions.READ_PERMISSION] and [ContactsPermissions.WRITE_PERMISSION] is not yet
+ * If [contacts.core.ContactsPermissions.READ_PERMISSION] and
+ * [contacts.core.ContactsPermissions.WRITE_PERMISSION] is not yet
  * granted, suspends the current coroutine, requests for the permissions, and then returns a new
  * [SimCardMaxCharacterLimits] instance.
  *

@@ -10,7 +10,6 @@ import contacts.core.entities.Contact
 import contacts.core.entities.Group
 import contacts.core.entities.cursor.phoneLookupCursor
 import contacts.core.entities.custom.CustomDataRegistry
-import contacts.core.util.contacts
 import contacts.core.util.findContactIdsInDataTable
 import contacts.core.util.findContactIdsInRawContactsTable
 import contacts.core.util.forSyncAdapter

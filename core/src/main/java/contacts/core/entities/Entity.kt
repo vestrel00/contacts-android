@@ -119,11 +119,7 @@ sealed interface MutableEntity : Entity {
  * This is useful for saving a reference to the same mutable list (if it is an instance of it) so
  * that modifications to the same mutable list can be made in multiple places.
  */
-fun <T : Entity> List<T>.asMutableList(): MutableList<T> = if (this is MutableList) {
-    this
-} else {
-    toMutableList()
-}
+fun <T : Entity> List<T>.asMutableList(): MutableList<T> = this as? MutableList ?: toMutableList()
 
 /**
  * Returns an immutable list containing mutable copies of type [T] for each instance of type [R] in

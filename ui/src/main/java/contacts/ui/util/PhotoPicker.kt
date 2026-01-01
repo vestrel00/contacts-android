@@ -170,7 +170,7 @@ fun onPhotoPicked(
 
     when (requestCode) {
         REQUEST_TAKE_PHOTO -> {
-            val bitmap = intent?.extras?.getParcelableCompat("data") as Bitmap?
+            val bitmap: Bitmap? = intent?.extras?.getParcelableCompat("data")
             bitmap?.let(photoBitmapPicked)
         }
         REQUEST_SELECT_PHOTO -> {

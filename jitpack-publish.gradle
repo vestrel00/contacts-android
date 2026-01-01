@@ -6,11 +6,26 @@
 // JitPack + GitHub = LOVE
 
 // Additionally, the maven-publish plugin needs to be applied to the library module.
+// plugins {
+//     id 'maven-publish'
+// }
 
-afterEvaluate {
+android {
     publishing {
-        publications {
-            release(MavenPublication) {
+        singleVariant('release') {
+            withSourcesJar()
+        }
+    }
+}
+
+publishing {
+    publications {
+        release(MavenPublication) {
+            // The groupId is automatically derived from the root project name.
+            // The artifactId is derived from the module name.
+            // The version is derived from the tag.
+
+            afterEvaluate {
                 from components.release
             }
         }

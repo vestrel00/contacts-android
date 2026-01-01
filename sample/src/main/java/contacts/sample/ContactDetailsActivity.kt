@@ -91,7 +91,7 @@ class ContactDetailsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contact_details)
-        contactView = findViewById<ContactView?>(R.id.contactView).also {
+        contactView = findViewById<ContactView>(R.id.contactView).also {
             it.setOnMoveExistingRawContactToAccountListener(::onMoveExistingRawContactToAccount)
         }
 

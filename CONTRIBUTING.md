@@ -5,7 +5,7 @@ There are only a few loose guidelines to follow. Read the **Setup** and **Guidel
 ## Setup
 
 To open, build, and run this project, you will need to use 
-[Android Studio Meerkat Feature Drop | 2024.3.2][android-studio] and later versions.
+[Android Studio Otter 2 Feature Drop | 2025.2.2 Patch 1][android-studio] or later versions.
 
 If you run into any build issues, open up Android Studio preferences and make sure the following is 
 set correctly...
@@ -40,4 +40,4 @@ Restart Android Studio, clean, build, and invalidate caches & restart.
     - Don't deviate from the existing API design. New code should follow existing API design to
       promote uniformity. It'll be easier to maintain and cross-pollinate.
       
-[android-studio]: https://developer.android.com/studio
+[android-studio-archive]: https://developer.android.com/studio/archive

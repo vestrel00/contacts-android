@@ -88,15 +88,19 @@ fun Where<AbstractDataField>.toRawContactsTableWhere(): Where<RawContactsField>?
  * false if even one field in this [Where] is not in [fieldColumnNames].
  */
 private fun Where<Field>.allFieldsContainedIn(fieldColumnNames: Collection<String>): Boolean = run {
-    if (lhs is FieldHolder) {
-        // Base case.
-        fieldColumnNames.contains(lhs.field.columnName)
-    } else if (lhs is WhereHolder && operator is Operator.Combine && rhs is WhereHolder) {
-        // Recursive case.
-        lhs.where.allFieldsContainedIn(fieldColumnNames)
-                && rhs.where.allFieldsContainedIn(fieldColumnNames)
-    } else {
-        throw InvalidWhereFormException(this)
+    when (lhs) {
+        is FieldHolder -> {
+            // Base case.
+            fieldColumnNames.contains(lhs.field.columnName)
+        }
+        is WhereHolder if operator is Operator.Combine && rhs is WhereHolder -> {
+            // Recursive case.
+            lhs.where.allFieldsContainedIn(fieldColumnNames)
+                    && rhs.where.allFieldsContainedIn(fieldColumnNames)
+        }
+        else -> {
+            throw InvalidWhereFormException(this)
+        }
     }
 }
 
@@ -104,14 +108,18 @@ private fun Where<Field>.allFieldsContainedIn(fieldColumnNames: Collection<Strin
  * Returns true if this [Where] contains the given [fieldColumnName].
  */
 private fun Where<Field>.containsField(fieldColumnName: String): Boolean = run {
-    if (lhs is FieldHolder) {
-        // Base case.
-        lhs.field.columnName == fieldColumnName
-    } else if (lhs is WhereHolder && operator is Operator.Combine && rhs is WhereHolder) {
-        // Recursive case.
-        lhs.where.containsField(fieldColumnName) || rhs.where.containsField(fieldColumnName)
-    } else {
-        throw InvalidWhereFormException(this)
+    when (lhs) {
+        is FieldHolder -> {
+            // Base case.
+            lhs.field.columnName == fieldColumnName
+        }
+        is WhereHolder if operator is Operator.Combine && rhs is WhereHolder -> {
+            // Recursive case.
+            lhs.where.containsField(fieldColumnName) || rhs.where.containsField(fieldColumnName)
+        }
+        else -> {
+            throw InvalidWhereFormException(this)
+        }
     }
 }
 
@@ -144,36 +152,42 @@ internal fun <T : Field, R : Field> Where<T>.copyWithFieldValueSubstitutions(
      *
      * Without further ado, here is the code!
      */
-    if (lhs is FieldHolder && operator is Operator.Match && rhs is ValueHolder) {
-        // Base case. Perform the substitution.
-        Where(
-            lhs = substituteField(lhs),
-            operator = operator,
-            rhs = substituteValue(rhs),
-            options = options,
-            isRedacted = isRedacted
-        )
-    } else if (lhs is WhereHolder && operator is Operator.Combine && rhs is WhereHolder) {
-        // Recursive case. Traverse tree.
-        Where(
-            lhs = WhereHolder(
-                lhs.where.copyWithFieldValueSubstitutions(
-                    substituteField,
-                    substituteValue
-                )
-            ),
-            operator = operator,
-            rhs = WhereHolder(
-                rhs.where.copyWithFieldValueSubstitutions(
-                    substituteField,
-                    substituteValue
-                )
-            ),
-            options = options,
-            isRedacted = isRedacted
-        )
-    } else {
-        throw InvalidWhereFormException(this)
+    when (lhs) {
+        is FieldHolder if operator is Operator.Match && rhs is ValueHolder -> {
+            // Base case. Perform the substitution.
+            Where(
+                lhs = substituteField(lhs),
+                operator = operator,
+                rhs = substituteValue(rhs),
+                options = options,
+                isRedacted = isRedacted
+            )
+        }
+
+        is WhereHolder if operator is Operator.Combine && rhs is WhereHolder -> {
+            // Recursive case. Traverse tree.
+            Where(
+                lhs = WhereHolder(
+                    lhs.where.copyWithFieldValueSubstitutions(
+                        substituteField,
+                        substituteValue
+                    )
+                ),
+                operator = operator,
+                rhs = WhereHolder(
+                    rhs.where.copyWithFieldValueSubstitutions(
+                        substituteField,
+                        substituteValue
+                    )
+                ),
+                options = options,
+                isRedacted = isRedacted
+            )
+        }
+
+        else -> {
+            throw InvalidWhereFormException(this)
+        }
     }
 
 internal fun Contacts.reduceDataTableWhereForMatchingContactIds(
@@ -317,35 +331,43 @@ private fun <T : Field> Where<T>.copyWithSubstitutions(
         options: String?,
         isRedacted: Boolean
     ) -> Where<T>
-): Where<T> = if (lhs is FieldHolder && operator is Operator.Match && rhs is ValueHolder) {
-    // Base case. No substitutions at this level. Just return this as is.
-    this
-} else if (lhs is WhereHolder && operator is Operator.Combine && rhs is WhereHolder) {
-    // Recursive case. Traverse tree (post-order).
-    val lhsSub = (lhs.where as Where<T>).copyWithSubstitutions(substitute)
-    val rhsSub = (rhs.where as Where<T>).copyWithSubstitutions(substitute)
+): Where<T> = when (lhs) {
+    is FieldHolder if operator is Operator.Match && rhs is ValueHolder -> {
+        // Base case. No substitutions at this level. Just return this as is.
+        this
+    }
+    is WhereHolder if operator is Operator.Combine && rhs is WhereHolder -> {
+        // Recursive case. Traverse tree (post-order).
+        val lhsSub = (lhs.where as Where<T>).copyWithSubstitutions(substitute)
+        val rhsSub = (rhs.where as Where<T>).copyWithSubstitutions(substitute)
 
-    // Pass in this Where's evaluated components instead of the entire where to avoid requiring
-    // callers to perform the casting.
-    substitute(
-        lhsSub,
-        operator,
-        rhsSub,
-        options,
-        isRedacted
-    )
-} else {
-    throw InvalidWhereFormException(this)
+        // Pass in this Where's evaluated components instead of the entire where to avoid requiring
+        // callers to perform the casting.
+        substitute(
+            lhsSub,
+            operator,
+            rhsSub,
+            options,
+            isRedacted
+        )
+    }
+    else -> {
+        throw InvalidWhereFormException(this)
+    }
 }
 
 private fun hasIdAccumulator(idField: AbstractDataField, where: Where<*>): Boolean = where.run {
-    if (lhs is FieldHolder && operator is Operator.Match && rhs is ValueHolder) {
-        // Base case.
-        lhs.field == idField && operator == Operator.Match.In
-    } else if (lhs is WhereHolder && operator is Operator.Combine && rhs is WhereHolder) {
-        // Recursive case.
-        hasIdAccumulator(idField, lhs.where) || hasIdAccumulator(idField, rhs.where)
-    } else {
-        throw InvalidWhereFormException(this)
+    when (lhs) {
+        is FieldHolder if operator is Operator.Match && rhs is ValueHolder -> {
+            // Base case.
+            lhs.field == idField && operator == Operator.Match.In
+        }
+        is WhereHolder if operator is Operator.Combine && rhs is WhereHolder -> {
+            // Recursive case.
+            hasIdAccumulator(idField, lhs.where) || hasIdAccumulator(idField, rhs.where)
+        }
+        else -> {
+            throw InvalidWhereFormException(this)
+        }
     }
 }

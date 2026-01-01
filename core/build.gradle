@@ -13,15 +13,17 @@ android {
     defaultConfig {
         minSdk versions.android.minSdk
         targetSdk versions.android.targetSdk
-        compileSdk versions.android.compileSdk
+        compileSdk {
+            version(release(versions.android.compileSdk))
+        }
     }
 
     compileOptions {
         sourceCompatibility versions.java.version
         targetCompatibility versions.java.version
     }
+}
 
-    kotlinOptions {
-        jvmTarget = versions.java.version
-    }
+kotlin {
+    jvmToolchain(versions.java.version)
 }

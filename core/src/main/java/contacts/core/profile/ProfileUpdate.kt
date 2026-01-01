@@ -3,9 +3,7 @@ package contacts.core.profile
 import contacts.core.*
 import contacts.core.entities.ExistingContactEntity
 import contacts.core.entities.ExistingRawContactEntity
-import contacts.core.util.contacts
 import contacts.core.util.isEmpty
-import contacts.core.util.rawContacts
 
 /**
  * Updates the Profile contact in the Contacts Provider database to ensure that it contains the same

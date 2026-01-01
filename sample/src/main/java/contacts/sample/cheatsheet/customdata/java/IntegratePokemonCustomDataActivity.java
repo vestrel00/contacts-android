@@ -43,8 +43,14 @@ public class IntegratePokemonCustomDataActivity extends Activity {
 
     Update.Result updateRawContactPokemonCustomData(RawContact rawContact) {
         MutableRawContact mutableRawContact = rawContact.mutableCopy();
-        MutablePokemonEntity mutablePokemon =
-                RawContactPokemonKt.pokemonList(mutableRawContact, contacts).get(0);
+
+        List<MutablePokemonEntity> mutablePokemonList =
+                RawContactPokemonKt.pokemonList(mutableRawContact, contacts);
+        MutablePokemonEntity mutablePokemon = null;
+        if (!mutablePokemonList.isEmpty()) {
+            mutablePokemon = mutablePokemonList.get(0);
+        }
+
         if (mutablePokemon != null) {
             mutablePokemon.setNickname("OP");
             mutablePokemon.setLevel(99);

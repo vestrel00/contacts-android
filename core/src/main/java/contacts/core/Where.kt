@@ -1,7 +1,6 @@
 package contacts.core
 
 import android.database.DatabaseUtils
-import contacts.core.ValueHolder.ValueDecorator
 import contacts.core.entities.DataEntity
 import contacts.core.entities.EventDate
 import contacts.core.entities.MimeType

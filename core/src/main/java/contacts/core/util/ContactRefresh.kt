@@ -1,7 +1,6 @@
 package contacts.core.util
 
 import contacts.core.Contacts
-import contacts.core.ContactsException
 import contacts.core.LookupQuery
 import contacts.core.entities.Contact
 import contacts.core.entities.ExistingContactEntity
@@ -67,13 +66,6 @@ fun <T : ExistingContactEntity> T.refresh(
     return when (this) {
         is Contact -> contact
         is MutableContact -> contact?.mutableCopy()
-        // This else is required because we are using the generic type T as the receiver. As of
-        // Kotlin 1.6, this else is required. Using reified for T does not work (even if it did,
-        // we'd have to inline the function, which is not Java-friendly). Changing the receiver
-        // to ExistingContactEntity instead of T removes the need for the else block.
-        else -> throw ContactsException(
-            "Unrecognized ExistingContactEntity: ${this.javaClass.simpleName}"
-        )
     } as T?
 }
 

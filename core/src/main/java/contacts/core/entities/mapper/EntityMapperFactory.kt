@@ -1,3 +1,5 @@
+@file:Suppress("Deprecation")
+
 package contacts.core.entities.mapper
 
 import contacts.core.AbstractDataField
@@ -33,8 +35,6 @@ import contacts.core.entities.cursor.CursorHolder
 import contacts.core.entities.cursor.addressCursor
 import contacts.core.entities.cursor.blockedNumbersCursor
 import contacts.core.entities.cursor.contactsCursor
-import contacts.core.entities.cursor.dataContactsCursor
-import contacts.core.entities.cursor.dataContactsOptionsCursor
 import contacts.core.entities.cursor.emailCursor
 import contacts.core.entities.cursor.eventCursor
 import contacts.core.entities.cursor.groupMembershipCursor
@@ -61,11 +61,6 @@ import contacts.core.intersect
 internal fun CursorHolder<AbstractDataField>.addressMapper(): DataEntityMapper<Address> =
     AddressMapper(addressCursor())
 
-internal fun CursorHolder<AbstractDataField>.dataContactsMapper():
-        EntityMapper<Contact> = ContactMapper(
-    dataContactsCursor(), dataContactsOptionsMapper()
-)
-
 internal fun CursorHolder<AbstractDataField>.emailMapper(): DataEntityMapper<Email> =
     EmailMapper(emailCursor())
 
@@ -86,9 +81,6 @@ internal fun CursorHolder<AbstractDataField>.nicknameMapper(): DataEntityMapper<
 
 internal fun CursorHolder<AbstractDataField>.noteMapper(): DataEntityMapper<Note> =
     NoteMapper(noteCursor())
-
-internal fun CursorHolder<AbstractDataField>.dataContactsOptionsMapper(): EntityMapper<Options> =
-    OptionsMapper(dataContactsOptionsCursor())
 
 internal fun CursorHolder<AbstractDataField>.organizationMapper(): DataEntityMapper<Organization> =
     OrganizationMapper(organizationCursor())

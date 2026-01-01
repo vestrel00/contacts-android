@@ -39,8 +39,14 @@ public class IntegrateHandleNameCustomDataActivity extends Activity {
 
     Update.Result updateRawContactHandleNameCustomData(RawContact rawContact) {
         MutableRawContact mutableRawContact = rawContact.mutableCopy();
-        MutableHandleNameEntity mutableHandleName =
-                RawContactHandleNameKt.handleNameList(mutableRawContact, contacts).get(0);
+
+        List<MutableHandleNameEntity> mutableHandleNameList =
+                RawContactHandleNameKt.handleNameList(mutableRawContact, contacts);
+        MutableHandleNameEntity mutableHandleName = null;
+        if (!mutableHandleNameList.isEmpty()) {
+            mutableHandleName = mutableHandleNameList.get(0);
+        }
+
         if (mutableHandleName != null) {
             mutableHandleName.setHandle("The Beast");
         }

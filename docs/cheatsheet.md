@@ -1500,8 +1500,13 @@ heading explore each API in full detail. You may also find these samples in the 
         Update.Result updateRawContactGoogleContactsCustomData(RawContact rawContact) {
             MutableRawContact mutableRawContact = rawContact.mutableCopy();
             MutableFileAsEntity mutableFileAs = RawContactFileAsKt.fileAs(mutableRawContact, contacts);
-            MutableUserDefinedEntity mutableUserDefined = 
-                    RawContactUserDefinedKt.userDefinedList(mutableRawContact, contacts).get(0);
+
+            List<MutableUserDefinedEntity> mutableUserDefinedList =
+                RawContactUserDefinedKt.userDefinedList(mutableRawContact, contacts);
+            MutableUserDefinedEntity mutableUserDefined = null;
+            if (!mutableUserDefinedList.isEmpty()) {
+                mutableUserDefined = mutableUserDefinedList.get(0);
+            }
     
             if (mutableFileAs != null) {
                 mutableFileAs.setName("Unfortunate");
@@ -1787,10 +1792,12 @@ heading explore each API in full detail. You may also find these samples in the 
     
         Update.Result updateRawContactHandleNameCustomData(RawContact rawContact) {
             MutableRawContact mutableRawContact = rawContact.mutableCopy();
-            MutableHandleNameEntity mutableHandleName =
-                    RawContactHandleNameKt.handleNameList(mutableRawContact, contacts).get(0);
-            if (mutableHandleName != null) {
-                mutableHandleName.setHandle("The Beast");
+
+            List<MutableHandleNameEntity> mutableHandleNameList =
+                    RawContactHandleNameKt.handleNameList(mutableRawContact, contacts);
+            MutableHandleNameEntity mutableHandleName = null;
+            if (!mutableHandleNameList.isEmpty()) {
+                mutableHandleName = mutableHandleNameList.get(0);
             }
     
             return contacts
@@ -1932,8 +1939,14 @@ heading explore each API in full detail. You may also find these samples in the 
     
         Update.Result updateRawContactMultipleNotesCustomData(RawContact rawContact) {
             MutableRawContact mutableRawContact = rawContact.mutableCopy();
-            MutableMultipleNotesEntity mutableMultipleNotes =
-                    RawContactMultipleNotesKt.multipleNotesList(mutableRawContact, contacts).get(0);
+
+            List<MutableMultipleNotesEntity> mutableMultipleNotesList =
+                    RawContactMultipleNotesKt.multipleNotesList(mutableRawContact, contacts);
+            MutableMultipleNotesEntity mutableMultipleNotes = null;
+            if (!mutableMultipleNotesList.isEmpty()) {
+                mutableMultipleNotes = mutableMultipleNotesList.get(0);
+            }
+
             if (mutableMultipleNotes != null) {
                 mutableMultipleNotes.setNote("A note");
             }
@@ -2079,8 +2092,14 @@ heading explore each API in full detail. You may also find these samples in the 
     
         Update.Result updateRawContactPokemonCustomData(RawContact rawContact) {
             MutableRawContact mutableRawContact = rawContact.mutableCopy();
-            MutablePokemonEntity mutablePokemon =
-                    RawContactPokemonKt.pokemonList(mutableRawContact, contacts).get(0);
+
+            List<MutablePokemonEntity> mutablePokemonList =
+                    RawContactPokemonKt.pokemonList(mutableRawContact, contacts);
+            MutablePokemonEntity mutablePokemon = null;
+            if (!mutablePokemonList.isEmpty()) {
+                mutablePokemon = mutablePokemonList.get(0);
+            }
+
             if (mutablePokemon != null) {
                 mutablePokemon.setNickname("OP");
                 mutablePokemon.setLevel(99);

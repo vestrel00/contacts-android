@@ -1,6 +1,5 @@
 package contacts.permissions.accounts
 
-import contacts.core.ContactsPermissions
 import contacts.core.accounts.Accounts
 import contacts.core.accounts.AccountsPermissions
 import contacts.core.accounts.AccountsQuery
@@ -25,8 +24,8 @@ suspend fun Accounts.queryWithPermission(): AccountsQuery {
 }
 
 /**
- * If [AccountsPermissions.GET_ACCOUNTS_PERMISSION], [ContactsPermissions.READ_PERMISSION], and
- * [ContactsPermissions.WRITE_PERMISSION] are not yet granted, suspends the current coroutine,
+ * If [AccountsPermissions.GET_ACCOUNTS_PERMISSION], [contacts.core.ContactsPermissions.READ_PERMISSION], and
+ * [contacts.core.ContactsPermissions.WRITE_PERMISSION] are not yet granted, suspends the current coroutine,
  * requests for the permission, and then returns a new [MoveRawContactsAcrossAccounts] instance.
  *
  * If permissions are already granted, then immediately returns a new
@@ -42,7 +41,7 @@ suspend fun Accounts.moveWithPermission(): MoveRawContactsAcrossAccounts {
 
 /**
  * Requests the [AccountsPermissions.GET_ACCOUNTS_PERMISSION] and
- * [ContactsPermissions.READ_PERMISSION]. The current coroutine is suspended until the user either
+ * [contacts.core.ContactsPermissions.READ_PERMISSION]. The current coroutine is suspended until the user either
  * grants or denies the permission request.
  *
  * Returns true if permission is granted. False otherwise.
@@ -52,7 +51,8 @@ suspend fun requestQueryAccountsPermission(): Boolean =
 
 /**
  * Requests the [AccountsPermissions.GET_ACCOUNTS_PERMISSION],
- * [ContactsPermissions.READ_PERMISSION], and [ContactsPermissions.WRITE_PERMISSION]. The current
+ * [contacts.core.ContactsPermissions.READ_PERMISSION], and
+ * [contacts.core.ContactsPermissions.WRITE_PERMISSION]. The current
  * coroutine is suspended until the user either grants or denies the permission request.
  *
  * Returns true if permission is granted. False otherwise.

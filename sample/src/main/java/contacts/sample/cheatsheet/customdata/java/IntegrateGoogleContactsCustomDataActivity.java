@@ -49,8 +49,13 @@ public class IntegrateGoogleContactsCustomDataActivity extends Activity {
     Update.Result updateRawContactGoogleContactsCustomData(RawContact rawContact) {
         MutableRawContact mutableRawContact = rawContact.mutableCopy();
         MutableFileAsEntity mutableFileAs = RawContactFileAsKt.fileAs(mutableRawContact, contacts);
-        MutableUserDefinedEntity mutableUserDefined =
-                RawContactUserDefinedKt.userDefinedList(mutableRawContact, contacts).get(0);
+
+        List<MutableUserDefinedEntity> mutableUserDefinedList =
+                RawContactUserDefinedKt.userDefinedList(mutableRawContact, contacts);
+        MutableUserDefinedEntity mutableUserDefined = null;
+        if (!mutableUserDefinedList.isEmpty()) {
+            mutableUserDefined = mutableUserDefinedList.get(0);
+        }
 
         if (mutableFileAs != null) {
             mutableFileAs.setName("Unfortunate");

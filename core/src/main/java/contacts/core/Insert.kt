@@ -26,10 +26,8 @@ import contacts.core.entities.operation.SipAddressOperation
 import contacts.core.entities.operation.WebsiteOperation
 import contacts.core.util.PhotoDataOperation
 import contacts.core.util.applyBatch
-import contacts.core.util.contacts
 import contacts.core.util.isEmpty
 import contacts.core.util.nullIfNotIn
-import contacts.core.util.rawContacts
 import contacts.core.util.setRawContactPhotoDirect
 
 /**
@@ -674,7 +672,7 @@ private class InsertImpl(
                 return
             }
 
-            if (accumulatedOperations.size == 0 && operations.size > MAX_OPERATIONS_PER_BATCH) {
+            if (accumulatedOperations.isEmpty() && operations.size > MAX_OPERATIONS_PER_BATCH) {
                 /*
                  * This one RawContact has produced more than MAX_OPERATIONS_PER_BATCH. This is
                  * probably an edge case with very low occurrence, so we will just attempt to

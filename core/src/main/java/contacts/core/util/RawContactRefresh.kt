@@ -1,7 +1,6 @@
 package contacts.core.util
 
 import contacts.core.Contacts
-import contacts.core.ContactsException
 import contacts.core.RawContactsFields
 import contacts.core.entities.ExistingRawContactEntity
 import contacts.core.entities.MutableRawContact
@@ -42,13 +41,6 @@ fun <T : ExistingRawContactEntity> T.refresh(
     return when (this) {
         is RawContact -> rawContact
         is MutableRawContact -> rawContact?.mutableCopy()
-        // This else is required because we are using the generic type T as the receiver. As of
-        // Kotlin 1.6, this else is required. Using reified for T does not work (even if it did,
-        // we'd have to inline the function, which is not Java-friendly). Changing the receiver
-        // to ExistingRawContactEntity instead of T removes the need for the else block.
-        else -> throw ContactsException(
-            "Unrecognized ExistingRawContactEntity: ${this.javaClass.simpleName}"
-        )
     } as T?
 }
 

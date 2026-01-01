@@ -3,7 +3,6 @@ package contacts.core.util
 import android.content.ContentProviderOperation
 import android.content.ContentProviderOperation.newUpdate
 import contacts.core.Contacts
-import contacts.core.ContactsPermissions
 import contacts.core.Fields
 import contacts.core.and
 import contacts.core.contentResolver

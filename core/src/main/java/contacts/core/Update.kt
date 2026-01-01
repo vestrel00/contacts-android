@@ -25,9 +25,7 @@ import contacts.core.entities.operation.SipAddressOperation
 import contacts.core.entities.operation.WebsiteOperation
 import contacts.core.util.PhotoDataOperation
 import contacts.core.util.applyBatch
-import contacts.core.util.contacts
 import contacts.core.util.isEmpty
-import contacts.core.util.rawContacts
 import contacts.core.util.removeRawContactPhotoDirect
 import contacts.core.util.setRawContactPhotoDirect
 

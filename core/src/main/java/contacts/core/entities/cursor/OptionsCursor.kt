@@ -29,21 +29,6 @@ internal sealed class OptionsCursor<T : Field>(cursor: Cursor, includeFields: Se
 // Yes, code duplication for type safety. Hurray! Nice! Chill out...take in the sarcasm!
 
 /**
- * The [OptionsCursor] for the Data table. Options data are specific to Contacts.
- */
-internal class DataContactsOptionsCursor(cursor: Cursor, includeFields: Set<AbstractDataField>?) :
-    OptionsCursor<AbstractDataField>(cursor, includeFields) {
-
-    override val id: Long by nonNullLong(Fields.Contact.Options.Id, Entity.INVALID_ID)
-
-    override val starred: Boolean? by boolean(Fields.Contact.Options.Starred)
-
-    override val customRingtone: Uri? by uri(Fields.Contact.Options.CustomRingtone)
-
-    override val sendToVoicemail: Boolean? by boolean(Fields.Contact.Options.SendToVoicemail)
-}
-
-/**
  * The [OptionsCursor] for the RawContacts table. Options data are specific to RawContacts.
  */
 internal class RawContactsOptionsCursor(cursor: Cursor, includeFields: Set<RawContactsField>?) :
