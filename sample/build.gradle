@@ -4,13 +4,13 @@ plugins {
 }
 
 android {
-    namespace 'contacts.sample'
+    namespace = 'contacts.sample'
 
     defaultConfig {
         minSdk versions.android.minSdk
         targetSdk versions.android.targetSdk
         compileSdk {
-            version(release(versions.android.compileSdk))
+            version = release(versions.android.compileSdk)
         }
     }
 

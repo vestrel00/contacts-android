@@ -8,13 +8,13 @@ plugins {
 apply from: "$rootDir/jitpack-publish.gradle"
 
 android {
-    namespace 'contacts.ui'
+    namespace = 'contacts.ui'
 
     defaultConfig {
         minSdk versions.android.minSdk
         targetSdk versions.android.targetSdk
         compileSdk {
-            version(release(versions.android.compileSdk))
+            version = release(versions.android.compileSdk)
         }
     }
 

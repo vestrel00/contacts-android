@@ -16,7 +16,7 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         // Only required when using published binaries from Jitpack in the sample app..
-        maven { url "https://jitpack.io" }
+        maven { url = "https://jitpack.io" }
     }
 }
 
